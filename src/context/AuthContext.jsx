@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) =>{
         await csrf();
         setErrors([]);
         try {
-            await axios.post('/login', data );
+            await axios.post('/api/login', data );
             await getUser();
             navigate("/");
           } catch (error) {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) =>{
         await csrf();
         setErrors([]);
         try {
-            await axios.post("/register", data);
+            await axios.post("/api/register", data);
             await getUser();
             navigate("/");
           } catch (error) {
@@ -51,7 +51,7 @@ const forgotPassword = async (email) => {
   await csrf();
   setErrors([]); 
   try {
-      const response = await axios.post("/forgot-password", { email });
+      const response = await axios.post("/api/forgot-password", { email });
       return response.data; 
   } catch (error) {
       if (error.response.status === 422 || error.response.status === 429) {
@@ -66,7 +66,7 @@ const resetPassword = async ({ email, token, password, password_confirmation }, 
   await csrf(); 
   setErrors([]); 
   try {
-      const response = await axios.post("/reset-password", {
+      const response = await axios.post("/api/reset-password", {
           token,
           email,
           password,
@@ -86,7 +86,7 @@ const resetPassword = async ({ email, token, password, password_confirmation }, 
 
 
     const logout = () =>{
-        axios.post("/logout")
+        axios.post("/api/logout")
         .then(()=>{
             setUser(null);
         })
