@@ -1,45 +1,72 @@
 import { useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
+import Logo from "../components/Logo";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, errors } = useAuthContext();
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    login({email, password})
+    login({ email, password });
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
-        <h3 className="text-2xl font-bold text-center">Iniciar sesión</h3>
-        <form onSubmit={handleLogin}>
-          <div className="mt-4">
-            <div>
-              <label className="block" htmlFor="email">Correo electrónico</label>
-              <input type="email" placeholder="Email" id="email" value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
-              {errors.email && <div className="text-red-500">{errors.email[0]}</div>}
-            </div>
-            <div className="mt-4">
-              <label className="block">Contraseña</label>
-              <input type="password" placeholder="Contraseña" value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
-              {errors.password && <div className="text-red-500">{errors.password[0]}</div>}
-            </div>
-            <div className="flex items-baseline justify-between">
-              <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Iniciar sesión</button>
-              <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</Link>
-            </div>
+    <section className="flex items-center justify-center min-h-screen bg-teal-green">
+      {/* Contenedor principal con opacidad en el color de fondo */}
+      <div className="w-full max-w-xs mx-auto bg-white/50 p-6 rounded-lg shadow-lg">
+        {/* Logo y título */}
+        <div className="flex flex-col items-center">
+          <Logo />
+          <h3 className="text-xl font-bold text-center text-burgundy mb-4">Iniciar sesión</h3>
+        </div>
+        {/* Formulario de inicio de sesión */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          {/* Input de email */}
+          <div>
+            <input 
+              type="email" 
+              placeholder="Usuario, correo electrónico o móvil" 
+              id="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
+              style={{ backgroundColor: '#faa531' }} 
+            />
+            {errors.email && <div className="text-red-500 text-xs">{errors.email[0]}</div>}
           </div>
+          
+          {/* Input de contraseña */}
+          <div>
+            <input 
+              type="password" 
+              placeholder="Contraseña" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
+              style={{ backgroundColor: '#faa531' }}
+            />
+            {errors.password && <div className="text-red-500 text-xs">{errors.password[0]}</div>}
+          </div>
+
+          {/* Botón de iniciar sesión */}
+          <button 
+            className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+            style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+          >
+            Iniciar sesión
+          </button>
         </form>
-        <div className="mt-6 text-grey-dark">
-          ¿No tienes una cuenta?
-          <Link to="/register" className="text-blue-600 hover:underline"> Regístrate</Link>
+        {/* Enlaces de ¿Olvidaste tu contraseña? y Crear cuenta nueva */}
+        <div className="flex flex-col items-center mt-6">
+          <Link to="/forgot-password" className="text-xs text-amber-600 hover:underline">¿Olvidaste tu contraseña?</Link>
+          <Link to="/register" className="text-xs text-amber-600 hover:underline mt-4">Crear cuenta nueva</Link>
+        </div>
+        {/* Footer con MyPic */}
+        <div className="mt-4 text-center">
+          <span className="text-xs text-burgundy">MyPic</span>
         </div>
       </div>
     </section>
@@ -47,3 +74,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+

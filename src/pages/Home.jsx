@@ -1,4 +1,3 @@
-
 import useAuthContext from "../context/AuthContext";
 
 const Home = () => {

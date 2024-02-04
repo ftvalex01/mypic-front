@@ -1,118 +1,79 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import useAuthContext from "../context/AuthContext";
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable react/jsx-key */
+  import { useEffect, useState } from "react";
+  import { Link, useNavigate } from "react-router-dom";
+  import useAuthContext from "../context/AuthContext";
+  import NameInput from "../components/NameInput";
+  import UserNameInput from "../components/UsernameInput";
+  import EmailInput from "../components/EmailInput";
+  import PasswordInput from "../components/PasswordInput";
+  import BirthdateInput from "../components/BirthdateInput";
 
-const Register = () => {
+  const Register = () => {
+    const [step, setStep] = useState(1);
+    const [userData, setUserData] = useState({
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      birth_date: "",
+    });
 
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const { register, errors } = useAuthContext();
+    const navigate = useNavigate();
+    const { register, errors } = useAuthContext();
 
-  
+    useEffect(() => {
+      console.log("Datos actuales del formulario:", userData);
+    }, [userData]);
 
-  const handleRegister = async (event) => {
-    event.preventDefault();
-    register({name, username, email, password, password_confirmation: confirmPassword, birth_date:birthDate})
-  };
+    const nextStep = () => {
+      if (step < 5) {
+        setStep(prevStep => prevStep + 1);
+      } else {
+        handleRegister();
+      }
+    };
 
-  return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
-        <h3 className="text-2xl font-bold text-center">Registrarse</h3>
-        <form onSubmit={handleRegister}>
+    const updateField = (field, value) => {
+      setUserData(prev => ({ ...prev, [field]: value }));
+    };
+    
 
-          <div className="mt-4">
-            <label className="block">Nombre</label>
-            <input
-              type="text"
-              placeholder="Nombre"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-      
-            {errors.name && <div className="text-red-500">{errors.name[0]}</div>}
-          </div>
-          <div className="mt-4">
-            <label className="block">Usuario</label>
-            <input
-              type="text"
-              placeholder="Usuario"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            
-            {errors.username && <div className="text-red-500">{errors.username[0]}</div>}
-          </div>
-          <div className="mt-4">
-            <label className="block" htmlFor="email">Correo electrónico</label>
-            <input
-              type="email"
-              placeholder="Email"
-              id="email"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            
-            {errors.email && <div className="text-red-500">{errors.email[0]}</div>}
-          </div>
-          <div className="mt-4">
-            <label className="block">Contraseña</label>
-            <input
-              type="password"
-              placeholder="Contraseña"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+    const handleRegister = async () => {
+      const { confirmPassword, ...formData } = userData; // Excluye confirmPassword del objeto enviado
+      formData.password_confirmation = userData.confirmPassword; // Añade la confirmación de contraseña correctamente
+
+      try {
+        await register(formData);
+        navigate("/"); // Asume que quieres redirigir al usuario a una ruta "/dashboard" después del registro exitoso
+      } catch (error) {
+        console.error("Error durante el registro:", error.response.data);
+        // Aquí podrías manejar errores específicos de la respuesta, como mostrarlos al usuario
+      }
+    };
+
+    const stepComponents = [
+      <NameInput onNext={nextStep} value={userData.name} onChange={(value) => updateField("name", value)} error={errors.name} />,
+      <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
+      <EmailInput onNext={nextStep} value={userData.email} onChange={(value) => updateField("email", value)} error={errors.email} />,
+      <PasswordInput onNext={nextStep} password={userData.password} confirmPassword={userData.confirmPassword} onPasswordChange={(value) => updateField("password", value)} onConfirmPasswordChange={(value) => updateField("confirmPassword", value)} error={errors.password} />,
+      <BirthdateInput onNext={nextStep} value={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />,
+    ];
+
    
-            {errors.password && <div className="text-red-500">{errors.password[0]}</div>}
-          </div>
-          <div className="mt-4">
-            <label className="block">Confirmar contraseña</label>
-            <input
-              type="password"
-              placeholder="Confirmar contraseña"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-           
-            {errors.confirmPassword && <div className="text-red-500">{errors.confirmPassword[0]}</div>}
-          </div>
-          <div className="mt-4">
-            <label className="block">Fecha de Nacimiento</label>
-            <input
-              type="date"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-            />
-     
-            {errors.birth_date && <div className="text-red-500">{errors.birth_date[0]}</div>}
-          </div>
-          <div className="flex items-center justify-between mt-4">
-            <button
-              type="submit"
-              className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-            >
-              Registrarse
-            </button>
-          </div>
-        </form>
-        <div className="mt-6 text-grey-dark">
+  return (
+    <section className="flex items-center justify-center w-full h-screen bg-teal-green">
+      <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
+        <h3 className="text-2xl my-3 font-bold text-center text-burgundy">Registrarse</h3>
+        {stepComponents[step - 1]}
+        <div className="mt-6 text-center text-burgundy">
           ¿Ya tienes una cuenta?
-          <Link to="/login" className="text-blue-600 hover:underline">Inicia sesión</Link>
+          <Link to="/login" className="text-amber-600 hover:underline"> Inicia sesión</Link>
         </div>
       </div>
     </section>
   );
 };
 
-export default Register;
+  export default Register;
