@@ -1,5 +1,6 @@
 
 import { Outlet } from 'react-router-dom';
+import Sidebar from '../components/SideBar';
 
 const Layout = () => {
   return (
@@ -8,7 +9,7 @@ const Layout = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Columna Izquierda: Menú */}
           <div className="col-span-1 hidden md:block">
-            {/* Aquí va el menú lateral */}
+            <Sidebar/>
           </div>
           {/* Columna Central: Contenido Principal */}
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
