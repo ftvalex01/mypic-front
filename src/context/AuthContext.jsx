@@ -185,7 +185,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUserByUsername = async (username) => {
         try {
-            const response = await axios.get(api/user/${username}); // Actualiza esta línea para usar la nueva ruta
+            const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
             console.log(response.data);
             return response.data;
         } catch (error) {
