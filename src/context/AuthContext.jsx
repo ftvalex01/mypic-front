@@ -97,6 +97,28 @@ export const AuthProvider = ({ children }) => {
             throw error;
         }
     };
+    const updateProfile = async (formData) => {
+        await csrf();
+        setErrors([]);
+        try {
+            const response = await axios.post(`/api/user/${user.data.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            const updatedUser = response.data;
+          
+            setUser(updatedUser); // Actualizar el usuario en el contexto
+            navigate("/profile"); // Redirigir al perfil o donde sea apropiado
+        } catch (error) {
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            } else {
+                console.error("Error during profile update:", error.message);
+                setErrors({ general: ["An unexpected error occurred during profile update. Please try again."] });
+            }
+        }
+    };
 
     const logout = async () => {
         try {
@@ -115,7 +137,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            user, errors, getUser, login, register, logout, forgotPassword, resetPassword
+            user, errors, getUser, login, register, logout, forgotPassword, resetPassword, updateProfile
         }}>
             {children}
         </AuthContext.Provider>

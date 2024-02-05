@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthLayout from "./layouts/AuthLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import Profile from "./components/Profile";
+import EditarPerfil from "./components/EditarPerfil";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/" element={<MainLayout />}>
             <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditarPerfil />} />
           </Route>
         </Route>
         <Route element={<GuestLayout />}>
