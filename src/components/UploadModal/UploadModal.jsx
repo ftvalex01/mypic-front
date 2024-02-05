@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import useAuthContext from '../../context/AuthContext'; 
-import './modal.css'; 
+import useAuthContext from '../../context/AuthContext';
+import './modal.css';
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
-  const { uploadMedia } = useAuthContext(); 
+  const { uploadPost } = useAuthContext(); // Asumiendo que tienes esta función en tu AuthContext
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleDescriptionChange = (e) => setDescription(e.target.value);
@@ -22,16 +22,17 @@ const UploadModal = ({ isOpen, onClose }) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('description', description);
+    formData.append('type', 'photo'); // Asumiendo 'photo' como tipo por defecto
 
     setUploading(true);
 
     try {
-
-      await uploadMedia(formData);
+      await uploadPost(formData); // Usando una nueva función en AuthContext para subir la publicación
       alert('File uploaded successfully.');
       setUploading(false);
       onClose();
     } catch (error) {
+      console.error('Error uploading file:', error);
       alert('Error uploading file.');
       setUploading(false);
     }
@@ -56,10 +57,10 @@ const UploadModal = ({ isOpen, onClose }) => {
           />
           <div className="modal-footer">
             <button type="button" onClick={onClose} disabled={uploading} className="cancel-button">
-              Cancelar
+              Cancel
             </button>
             <button type="submit" disabled={uploading} className="submit-button">
-              {uploading ? 'Subiendo...' : 'Subir Foto'}
+              {uploading ? 'Uploading...' : 'Upload Photo'}
             </button>
           </div>
         </form>
