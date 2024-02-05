@@ -1,13 +1,28 @@
-import { FaCog, FaPlusCircle } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import useAuthContext from '../context/AuthContext';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { FaCog, FaPlusCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import useAuthContext from "../context/AuthContext"; // Asegúrate de que la ruta sea correcta
 
 const Profile = () => {
-  const { user } = useAuthContext();
-  console.log(user.data.profile_picture)
-  const { username } = useParams();
-  console.log(user)
+  const { user, getUserImages } = useAuthContext(); // Asume que getUserImages ya está implementado en tu AuthContext
+  const [userImages, setUserImages] = useState([]);
+  const baseUrl = "http://localhost:8000";
+  useEffect(() => {
+    const fetchUserImages = async () => {
+      if (user && user.data.id) {
+        try {
+          const images = await getUserImages(user.data.id); 
+          setUserImages(images);
+          
+        } catch (error) {
+          console.error("Error fetching user images:", error);
+        }
+      }
+    };
+
+    fetchUserImages();
+  }, [user, getUserImages]);
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col justify-center md:flex-row md:items-center">
@@ -19,10 +34,12 @@ const Profile = () => {
         <div className="md:ml-4">
           <h1 className="text-xl font-bold">{user.data.username}</h1>
           <div className="flex space-x-4 my-2">
-            <Link to="edit" className="border px-2 py-1 rounded">
+            <Link to="/edit" className="border px-2 py-1 rounded">
               Editar perfil
             </Link>
-            <FaCog />
+            <button className="border px-2 py-1 rounded flex items-center">
+              <FaCog />
+            </button>
           </div>
           <div className="flex space-x-4">
             <span>{user.data.postsCount} publicaciones</span>
@@ -38,11 +55,16 @@ const Profile = () => {
       </div>
       <hr className="my-4" />
 
-      <div className="grid grid-cols-3 gap-3 justify-center ">
-        {/* {userPosts.map((post, index) => (
-          <img key={index} src={post} alt={`Post ${index}`} className="w-80" />
-        ))} */}
-      </div>
+      <div className="grid grid-cols-3 gap-3 justify-center">
+      {userImages.map((image, index) => (
+        <img
+          key={index}
+          src={`${baseUrl}${image.url}`} // Usa la URL base aquí
+          alt={`User Post ${index}`}
+          className="w-full h-auto"
+        />
+      ))}
+    </div>
     </div>
   );
 };
