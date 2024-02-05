@@ -1,26 +1,25 @@
-
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/SideBar';
 
 const Layout = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Columna Izquierda: Menú */}
-          <div className="col-span-1 hidden md:block">
-            <Sidebar/>
-          </div>
-          {/* Columna Central: Contenido Principal */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-1">
-            {/* Aquí van las historias y las publicaciones */}
-            <Outlet /> {/* Utiliza el Outlet para renderizar el contenido de las rutas anidadas */}
-          </div>
-          {/* Columna Derecha: Barra Lateral de Usuarios/Sugerencias */}
-          <div className="col-span-1 hidden lg:block">
-            {/* Aquí va la barra lateral de usuarios y sugerencias */}
-          </div>
+    <div className="flex bg-gray-100 min-h-screen overflow-hidden">
+      {/* Sidebar: Menú para pantallas medianas y grandes, oculto en móviles */}
+      <div className="hidden md:flex md:flex-col md:w-64 bg-black text-white fixed inset-y-0 z-20">
+        <Sidebar />
+      </div>
+      {/* Contenedor Principal: Aquí va el contenido principal con scroll */}
+      <div className="flex-1 flex flex-col overflow-auto md:ml-64 pt-4 pb-16 md:pb-0">
+        {/* Padding top es agregado para cualquier navbar superior que pueda tener */}
+        <div className="pt-4 flex-1">
+          <Outlet /> {/* Utiliza el Outlet para renderizar el contenido de las rutas anidadas */}
         </div>
+      </div>
+      {/* Barra Lateral Derecha: Barra Lateral de Usuarios/Sugerencias, visible solo en grandes pantallas */}
+      
+      {/* Sidebar en el pie de página para dispositivos móviles */}
+      <div className="md:hidden fixed inset-x-0 bottom-0 z-10">
+        <Sidebar />
       </div>
     </div>
   );

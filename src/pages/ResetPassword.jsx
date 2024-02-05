@@ -46,44 +46,44 @@ const ResetPassword = () => {
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+    <section className="flex items-center justify-center w-full h-screen bg-teal-green">
+      <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
         {status && (
           <div className="bg-green-700 m-2 p-2 rounded text-white">
             {status}
           </div>
         )}
-        <h3 className="text-2xl font-bold text-center">
+        <h3 className="text-2xl my-3 font-bold text-center text-burgundy">
           Escribe tu nueva contraseña
         </h3>
-        <form onSubmit={handleSubmit}>
-          <div className="mt-4">
-            <label className="block">Contraseña</label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
             <input
               type="password"
               placeholder="Contraseña"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             {errors.password && (
-              <div className="text-red-500">{errors.password[0]}</div>
+              <div className="text-red-500 text-xs mt-2">{errors.password[0]}</div>
             )}
           </div>
-          <div className="mt-4">
-            <label className="block">Confirmar contraseña</label>
+          <div>
             <input
               type="password"
               placeholder="Confirmar contraseña"
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {errors.confirmPassword && (
-              <div className="text-red-500">{errors.confirmPassword[0]}</div>
+              <div className="text-red-500 text-xs mt-2">{errors.confirmPassword[0]}</div>
             )}
           </div>
-          <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
+          <button
+            className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+          >
             Recuperar contraseña
           </button>
         </form>
