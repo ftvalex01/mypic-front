@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             const updatedUser = response.data;
-          
+
             setUser(updatedUser); // Actualizar el usuario en el contexto
             navigate("/profile"); // Redirigir al perfil o donde sea apropiado
         } catch (error) {
@@ -142,6 +142,29 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const fetchAllUsers = async () => {
+        try {
+            const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error while fetching all users:", error.message);
+            throw error;
+        }
+    };
+
+    const fetchUserByUsername = async (username) => {
+        try {
+            const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error while fetching all users:", error.message);
+            throw error;
+        }
+    };
+
+
     useEffect(() => {
         if (!user) {
             getUser();
@@ -150,7 +173,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            user, errors, getUser, login, register, logout, forgotPassword, resetPassword, updateProfile, uploadMedia
+            user, errors, getUser, login, register, logout, forgotPassword, resetPassword, updateProfile, uploadMedia, fetchAllUsers, fetchUserByUsername
         }}>
             {children}
         </AuthContext.Provider>

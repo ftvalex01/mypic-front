@@ -8,6 +8,9 @@ import AuthLayout from "./layouts/AuthLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import Profile from "./components/Profile";
 import EditarPerfil from "./components/EditarPerfil";
+import BuscarPerfil from "./components/BuscarPerfil";
+import ProfileByUsername from "./components/ProfileByUsername";
+
 
 function App() {
   return (
@@ -17,6 +20,8 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="profile" element={<Profile />} />
             <Route path="profile/edit" element={<EditarPerfil />} />
+            <Route path="/profile/:username" element={<ProfileByUsername />} />
+            <Route path="search" element={<BuscarPerfil/>}/>
           </Route>
         </Route>
         <Route element={<GuestLayout />}>
