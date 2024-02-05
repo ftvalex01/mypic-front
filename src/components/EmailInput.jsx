@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
- // Importar PropTypes para la validación de props
+
 
  const EmailInput = ({ onNext, value, onChange, error }) => {
   const validateEmail = (email) => {

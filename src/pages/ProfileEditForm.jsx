@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from '../api/axios'; // Asegúrate de que la ruta es correcta para tu configuración
-import useAuthContext from "../context/AuthContext"; // Importa tu contexto de autenticación si es necesario
+import axios from '../api/axios'; 
+import useAuthContext from "../context/AuthContext"; 
 
 const ProfileEditForm = () => {
     const [formData, setFormData] = useState({
@@ -14,11 +14,11 @@ const ProfileEditForm = () => {
         accumulated_points: '',
     });
 
-    const { user, getUser } = useAuthContext(); // Si estás usando el contexto para manejar el usuario
+    const { user, getUser } = useAuthContext(); 
 
     useEffect(() => {
         if (user) {
-            // Carga inicial de los datos del usuario
+
             setFormData(prevState => ({
                 ...prevState,
                 name: user.name,
@@ -43,15 +43,15 @@ const ProfileEditForm = () => {
         e.preventDefault();
         const dataToSend = {
             ...formData,
-            password_confirmation: formData.password, // Asegúrate de manejar correctamente la confirmación de la contraseña
+            password_confirmation: formData.password, 
         };
         try {
-            await axios.put('/api/user/{user}', dataToSend); // Asegúrate de reemplazar {user} con el ID del usuario o ajustar según tu API
-            getUser(); // Actualiza los datos del usuario en el contexto (si lo estás usando)
+            await axios.put('/api/user/{user}', dataToSend); 
+            getUser(); 
             alert('Perfil actualizado con éxito');
         } catch (error) {
             console.error('Error al actualizar el perfil', error);
-            // Manejar los errores (p.ej., mostrar mensajes de error)
+           
         }
     };
 

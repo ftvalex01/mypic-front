@@ -119,7 +119,20 @@ export const AuthProvider = ({ children }) => {
             }
         }
     };
-
+    const uploadMedia = async (formData) => {
+        await csrf();
+        try {
+            const response = await axios.post('/api/media', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error during media upload:", error.message);
+            throw error;
+        }
+    };
     const logout = async () => {
         try {
             await axios.post("/api/logout");
@@ -137,7 +150,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            user, errors, getUser, login, register, logout, forgotPassword, resetPassword, updateProfile
+            user, errors, getUser, login, register, logout, forgotPassword, resetPassword, updateProfile, uploadMedia
         }}>
             {children}
         </AuthContext.Provider>

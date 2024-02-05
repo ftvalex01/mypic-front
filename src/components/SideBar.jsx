@@ -5,11 +5,18 @@ import { MdMessage, MdOutlineMoreHoriz } from 'react-icons/md';
 import { CgProfile } from 'react-icons/cg';
 import { RiLiveLine } from 'react-icons/ri';
 import useAuthContext from "../context/AuthContext";
+import { useState } from 'react';
+import UploadModal from './UploadModal/UploadModal';
 
 const Sidebar = () => {
   const {  logout } = useAuthContext(); 
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
 
   return (
+    <>
     <aside className="flex flex-col justify-between bg-gray-700 md:h-screen">
       <div className="hidden md:flex md:flex-col space-y-6 p-4">
         {/* Logo o título del sitio */}
@@ -40,10 +47,10 @@ const Sidebar = () => {
             <FaRegHeart className="text-lg" />
             <span>Notificaciones</span>
           </Link>
-          <Link to="/create" className="flex items-center space-x-2">
-            <FaPlusSquare className="text-lg" />
-            <span>Crear</span>
-          </Link>
+          <Link to="#" onClick={openModal} className="flex items-center space-x-2">
+          <FaPlusSquare className="text-lg" />
+          <span>Crear</span>
+        </Link>
           <Link to="/profile" className="flex items-center space-x-2">
             <CgProfile className="text-lg" />
             <span>Perfil</span>
@@ -81,6 +88,8 @@ const Sidebar = () => {
         </Link>
       </nav>
     </aside>
+    <UploadModal isOpen={isModalOpen} onClose={closeModal} />
+    </>
   );
 };
 

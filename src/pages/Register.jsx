@@ -41,15 +41,15 @@
     
 
     const handleRegister = async () => {
-      const { confirmPassword, ...formData } = userData; // Excluye confirmPassword del objeto enviado
-      formData.password_confirmation = userData.confirmPassword; // Añade la confirmación de contraseña correctamente
+      const { confirmPassword, ...formData } = userData; 
+      formData.password_confirmation = userData.confirmPassword; 
 
       try {
         await register(formData);
-        navigate("/"); // Asume que quieres redirigir al usuario a una ruta "/dashboard" después del registro exitoso
+        navigate("/"); 
       } catch (error) {
         console.error("Error durante el registro:", error.response.data);
-        // Aquí podrías manejar errores específicos de la respuesta, como mostrarlos al usuario
+        
       }
     };
 

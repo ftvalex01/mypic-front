@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-// NameInput.jsx
+
 
 
 const NameInput = ({ onNext, value, onChange, error }) => {

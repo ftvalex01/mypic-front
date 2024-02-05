@@ -10,9 +10,9 @@ const Layout = () => {
       </div>
       {/* Contenedor Principal: Aquí va el contenido principal con scroll */}
       <div className="flex-1 flex flex-col overflow-auto md:ml-64 pt-4 pb-16 md:pb-0">
-        {/* Padding top es agregado para cualquier navbar superior que pueda tener */}
+   
         <div className="pt-4 flex-1">
-          <Outlet /> {/* Utiliza el Outlet para renderizar el contenido de las rutas anidadas */}
+          <Outlet />
         </div>
       </div>
       {/* Barra Lateral Derecha: Barra Lateral de Usuarios/Sugerencias, visible solo en grandes pantallas */}
