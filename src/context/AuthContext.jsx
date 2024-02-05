@@ -172,7 +172,27 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+  const fetchAllUsers = async () => {
+        try {
+            const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error while fetching all users:", error.message);
+            throw error;
+        }
+    };
 
+    const fetchUserByUsername = async (username) => {
+        try {
+            const response = await axios.get(api/user/${username}); // Actualiza esta línea para usar la nueva ruta
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error while fetching all users:", error.message);
+            throw error;
+        }
+    };
   const logout = async () => {
     try {
       await axios.post("/api/logout");
@@ -181,7 +201,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error during logout:", error.message);
     }
   };
-
+  
   useEffect(() => {
     if (!user) {
       getUser();
@@ -202,6 +222,8 @@ export const AuthProvider = ({ children }) => {
         updateProfile,
         uploadPost,
         getUserImages,
+        fetchAllUsers,
+        fetchUserByUsername
       }}
     >
       {children}
