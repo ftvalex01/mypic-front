@@ -1,4 +1,7 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
   const handleDateChange = (e) => {
     onChange(e.target.value);
@@ -6,8 +9,16 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onNext();
+
+    Promise.resolve(onNext())
+      .then((result) => {
+        Swal.fire('¡Completado!', 'Usuario creado con exito, serás redireccionado automáticamente', 'success');
+      })
+      .catch((error) => {
+        Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
+      });
   };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -21,7 +32,7 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
         />
         {error && <p className="text-red-500 text-xs">{error}</p>}
       </div>
-      <button 
+      <button
         type="submit"
         className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
         style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}

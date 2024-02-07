@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "../api/axios";
-import { useNavigate } from "react-router-dom/";
+import { json, useNavigate } from "react-router-dom/";
 
 const AuthContext = createContext({});
 
@@ -153,48 +153,72 @@ export const AuthProvider = ({ children }) => {
   const uploadPost = async (formData) => {
     await csrf();
     try {
-        const response = await axios.post("/api/post", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-        return response.data;
+      const response = await axios.post("/api/post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
     } catch (error) {
-        console.error("Error during post upload:", error.message);
-        throw error;
+      console.error("Error during post upload:", error.message);
+      throw error;
     }
-};
+  };
   const getUserImages = async (userId) => {
-    await csrf(); 
+    await csrf();
     try {
       const response = await axios.get(`/api/user/${userId}/images`);
-      return response.data; 
+      return response.data;
     } catch (error) {
       console.error("Error fetching user images:", error.message);
       throw error;
     }
   };
-  const fetchAllUsers = async () => {
-        try {
-            const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
-            console.log(response.data);
-            return response.data;
-        } catch (error) {
-            console.error("Error while fetching all users:", error.message);
-            throw error;
-        }
-    };
+  
+const fetchAllUsers = async () => {
+    try {
+      const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching all users:", error.message);
+      throw error;
+    }
+  };
 
-    const fetchUserByUsername = async (username) => {
-        try {
-            const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
-            console.log(response.data);
-            return response.data;
-        } catch (error) {
-            console.error("Error while fetching all users:", error.message);
-            throw error;
-        }
-    };
+  const fetchUserByUsername = async (username) => {
+    try {
+      const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching all users:", error.message);
+      throw error;
+    }
+  };
+
+  const followUser = async (userId) => {
+    await csrf();
+    try {
+      const response = await axios.post(`http://localhost:8000/api/user/${userId}/follow`);
+      // Suponiendo que tu endpoint devuelve el estado actualizado de seguimiento (seguido o no seguido)
+      return response.data;
+    } catch (error) {
+      console.error("Error during follow/unfollow action:", error.message);
+      throw error;
+    }
+  };
+
+  const getFollowData = async (userId) => {
+    try {
+      const response = await axios.get(`/api/user/${userId}/follow-data`);
+      console.log(JSON.stringify(response) + "response getfollowdata")
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching follow data:", error);
+      throw error;
+    }
+  };
 
     const likePost = async (postId) => {
       console.log(postId);
@@ -278,6 +302,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     
+
   const logout = async () => {
     try {
       await axios.post("/api/logout");
@@ -286,7 +311,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error during logout:", error.message);
     }
   };
-  
+
   useEffect(() => {
     if (!user) {
       getUser();
@@ -309,6 +334,8 @@ export const AuthProvider = ({ children }) => {
         getUserImages,
         fetchAllUsers,
         fetchUserByUsername,
+        followUser,
+        getFollowData,
         likePost,
         commentOnPost,
         fetchAllPosts,
