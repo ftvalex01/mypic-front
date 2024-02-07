@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthContext from '../context/AuthContext'; // Asegúrate de ajustar la ruta de importación según tu estructura de archivos
 import { Link } from 'react-router-dom';
 
