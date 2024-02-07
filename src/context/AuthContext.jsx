@@ -9,6 +9,8 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [errors, setErrors] = useState([]);
+  const [posts, setPosts] = useState([]);
+
 
   const navigate = useNavigate();
 
@@ -193,6 +195,89 @@ export const AuthProvider = ({ children }) => {
             throw error;
         }
     };
+
+    const likePost = async (postId) => {
+      console.log(postId);
+      await csrf();
+      try {
+        const response = await axios.post(`/api/post/${postId}/reactions`, {
+          reactable_id: postId,
+          reactable_type: 'Post' // Asegúrate de que el backend pueda interpretar correctamente este tipo
+        });
+        // Supongamos que la respuesta incluye el estado actualizado del like y el conteo total de likes
+        const { liked, likesCount } = response.data;
+    
+        const updatedPosts = posts.map(post => {
+          if (post.id === postId) {
+            // Actualizamos el post con la nueva información
+            return { ...post, isLiked: liked, likesCount: likesCount };
+          }
+          return post;
+        });
+    
+        setPosts(updatedPosts); // Actualizamos el estado global de los posts
+        console.log('Like updated successfully');
+      } catch (error) {
+        console.error("Error during post like:", error.message);
+        throw error;
+      }
+    };
+    
+    
+    const commentOnPost = async (postId, text) => {
+      console.log(postId, text); // Asegúrate de que estás recibiendo postId y text correctamente
+      await csrf(); // Asumiendo que csrf() maneja la autenticación CSRF como se espera
+    
+      try {
+        const response = await axios.post(`/api/post/${postId}/comments`, {
+          text: text, // Asegúrate de que el campo se llame "text" para que coincida con el backend
+          postId: postId // Pasa el postId como parte de la solicitud
+        });
+        
+        // Supongamos que la respuesta incluye los datos del comentario recién creado
+        const newComment = response.data;
+        
+        // Aquí puedes manejar la actualización de la UI o el estado según sea necesario
+        console.log('Comment created successfully:', newComment);
+        
+        return newComment; // Devuelve el comentario recién creado si es necesario
+      } catch (error) {
+        console.error("Error during post comment:", error.message);
+        throw error;
+      }
+    };
+    
+    const fetchAllPosts = async () => {
+      await csrf(); 
+      try {
+        const response = await axios.get('/api/post');
+        const posts = response.data.data;  // Asegúrate de que esta ruta coincida con la configurada en tu backend
+        return posts; // Esta será una lista de posts
+      } catch (error) {
+        console.error("Error fetching posts:", error.message);
+        throw error;
+      }
+    };
+    const likeComment = async (postId, commentId) => {
+      try {
+        const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
+        // Aquí podrías actualizar el estado con la respuesta del backend si es necesario
+        console.log(response.data); // Suponiendo que el backend responde con algún dato relevante
+      } catch (error) {
+        console.error('Error al dar like al comentario:', error);
+      }
+    };
+  
+    // Función para borrar un comentario
+    const deleteComment = async (postId, commentId) => {
+      try {
+        await axios.delete(`/api/posts/${postId}/comments/${commentId}`);
+        // Aquí podrías actualizar el estado para reflejar la eliminación del comentario
+      } catch (error) {
+        console.error('Error al borrar el comentario:', error);
+      }
+    };
+    
   const logout = async () => {
     try {
       await axios.post("/api/logout");
@@ -223,7 +308,12 @@ export const AuthProvider = ({ children }) => {
         uploadPost,
         getUserImages,
         fetchAllUsers,
-        fetchUserByUsername
+        fetchUserByUsername,
+        likePost,
+        commentOnPost,
+        fetchAllPosts,
+        likeComment,
+        deleteComment
       }}
     >
       {children}

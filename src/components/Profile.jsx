@@ -34,7 +34,7 @@ const Profile = () => {
         <div className="md:ml-4">
           <h1 className="text-xl font-bold">{user.data.username}</h1>
           <div className="flex space-x-4 my-2">
-            <Link to="/edit" className="border px-2 py-1 rounded">
+            <Link to="edit" className="border px-2 py-1 rounded">
               Editar perfil
             </Link>
             <button className="border px-2 py-1 rounded flex items-center">

@@ -22,12 +22,12 @@ const UploadModal = ({ isOpen, onClose }) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('description', description);
-    formData.append('type', 'photo'); // Asumiendo 'photo' como tipo por defecto
+    formData.append('type', 'photo'); 
 
     setUploading(true);
 
     try {
-      await uploadPost(formData); // Usando una nueva función en AuthContext para subir la publicación
+      await uploadPost(formData);
       alert('File uploaded successfully.');
       setUploading(false);
       onClose();

@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import EditarPerfil from "./components/EditarPerfil";
 import BuscarPerfil from "./components/BuscarPerfil";
 import ProfileByUsername from "./components/ProfileByUsername";
+import Feed from "./components/Feed";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="profile/edit" element={<EditarPerfil />} />
             <Route path="/profile/:username" element={<ProfileByUsername />} />
             <Route path="search" element={<BuscarPerfil/>}/>
+            <Route index element={<Feed />}/>
           </Route>
         </Route>
         <Route element={<GuestLayout />}>
