@@ -15,6 +15,7 @@ const UserNameInput = ({ onNext, value, onChange, error }) => {
             <input 
               id="username"
               type="text"
+              required
               placeholder="Nombre de usuario"
               value={value}
               onChange={(e) => onChange(e.target.value)}
