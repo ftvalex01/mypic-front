@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useAuthContext from '../context/AuthContext'; 
+import Swal from 'sweetalert2';
 
 const EditarPerfil = () => {
     const { user, updateProfile } = useAuthContext();
@@ -25,8 +26,34 @@ const EditarPerfil = () => {
     
 
     const handleImageChange = (e) => {
-        setProfileImage(e.target.files[0]);
+        const file = e.target.files[0];
+    
+        if (file) {
+            const fileSize = file.size / 1024; // size in KB
+            const validMimeTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    
+            if (!validMimeTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Invalid file type. Only JPG, JPEG, and PNG are allowed.',
+                });
+                return;
+            }
+    
+            if (fileSize > 2048) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'File size exceeds limit of 2048KB.',
+                });
+                return;
+            }
+    
+            setProfileImage(file);
+        }
     };
+    
 
     return (
         <div className="max-w-md mx-auto bg-white p-5 border rounded-lg shadow-md mt-5">

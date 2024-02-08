@@ -44,7 +44,7 @@ const Profile = () => {
     <div className="container mx-auto p-4">
       <div className="flex flex-col justify-center md:flex-row md:items-center">
         <img
-          src={user.data.profile_picture}
+          src={user.data.profile_picture || "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"}
           alt="Profile"
           className="rounded-full w-20 h-20 md:w-40 md:h-40"
         />
