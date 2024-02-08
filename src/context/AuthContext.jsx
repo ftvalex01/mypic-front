@@ -299,14 +299,20 @@ const fetchAllUsers = async () => {
     };
   
     // Función para borrar un comentario
-    const deleteComment = async (postId, commentId) => {
-      try {
-        await axios.delete(`/api/posts/${postId}/comments/${commentId}`);
-        // Aquí podrías actualizar el estado para reflejar la eliminación del comentario
-      } catch (error) {
-        console.error('Error al borrar el comentario:', error);
-      }
-    };
+  // Dentro de AuthProvider
+
+const deleteComment = async (commentId) => {
+  await csrf();
+  try {
+    await axios.delete(`/api/comments/${commentId}`);
+    // Puedes agregar lógica aquí si necesitas actualizar algo en el estado global después de borrar un comentario
+    console.log(`Comment ${commentId} deleted successfully`);
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+  }
+};
+
+    
     
 
   const logout = async () => {
