@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FiHeart, FiMessageCircle, FiTrash2 } from 'react-icons/fi';
 import { IoHeartSharp } from 'react-icons/io5';
 import useAuthContext from '../context/AuthContext';
@@ -11,6 +11,7 @@ const PostCard = ({ post }) => {
   const { likePost, commentOnPost, user, handleLikeComment, handleDeleteComment } = useAuthContext();
   const baseUrl = "http://localhost:8000";
   const [remainingHours, setRemainingHours] = useState(null);
+ // Aquí definimos showComments correctamente
 
   useEffect(() => {
     // Calcula las horas restantes desde el momento de la publicación
@@ -48,6 +49,10 @@ const PostCard = ({ post }) => {
     }
   };
 
+  // const toggleComments = () => {
+  //   setShowComments(!showComments);
+  // };
+
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -79,36 +84,34 @@ const PostCard = ({ post }) => {
 
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
-        {/* Aquí puedes mapear y mostrar los comentarios existentes */}
-        <div className="comments-section">
-  {post.comments.map((comment) => (
-    <div key={comment.id} className="comment">
-      <p>{comment.text} - <span>by {comment.user.name}</span></p>
-      <div className="comment-actions">
-        <button onClick={() => handleLikeComment(comment.id)}>
-          {comment.isLiked ? <IoHeartSharp className="icon liked" /> : <FiHeart className="icon" />}
-        </button>
-        {(user.id === comment.user_id || user.id === post.user_id) && (
-          <button onClick={() => handleDeleteComment(comment.id)}>
-            <FiTrash2 className="icon" />
-          </button>
-        )}
-      </div>
-    </div>
-  ))}
-</div>
 
-        <form className="p-4" onSubmit={handleSubmitComment}>
-          <input
-            type="text"
-            className="w-full rounded-full border p-2 text-sm"
-            placeholder="Add a comment..."
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          />
-          <button type="submit" className="text-blue-500 text-sm font-semibold mt-2">Post</button>
-        </form>
+        {post.comments.map((comment) => (
+          <div key={comment.id} className="comment my-2">
+            <p>{comment.text} - <span>by </span></p>
+            <div className="comment-actions">
+              <button onClick={() => handleLikeComment(comment.id)}>
+                {comment.isLiked ? <IoHeartSharp className="icon liked" /> : <FiHeart className="icon" />}
+              </button>
+              {(user && (user.id === comment.user_id || user.id === post.user_id)) && (
+                <button onClick={() => handleDeleteComment(comment.id)}>
+                  <FiTrash2 className="icon" />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
+
+      <form className="p-4" onSubmit={handleSubmitComment}>
+        <input
+          type="text"
+          className="w-full rounded-full border p-2 text-sm"
+          placeholder="Add a comment..."
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+        <button type="submit" className="text-blue-500 text-sm font-semibold mt-2">Post</button>
+      </form>
     </div>
   );
 };

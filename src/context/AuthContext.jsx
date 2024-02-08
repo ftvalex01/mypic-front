@@ -256,29 +256,26 @@ const fetchAllUsers = async () => {
       }
     };
     
-    
     const commentOnPost = async (postId, text) => {
-      console.log(postId, text); // Asegúrate de que estás recibiendo postId y text correctamente
-      await csrf(); // Asumiendo que csrf() maneja la autenticación CSRF como se espera
-    
+      console.log(postId, text); // Para asegurarte de que los valores son correctos
+      await csrf(); // Obtiene el token CSRF para la petición
+  
       try {
+        const commentDate = new Date().toISOString(); // Genera la fecha actual en formato ISO 8601
         const response = await axios.post(`/api/post/${postId}/comments`, {
-          text: text, // Asegúrate de que el campo se llame "text" para que coincida con el backend
-          postId: postId // Pasa el postId como parte de la solicitud
+          text: text,
+          comment_date: commentDate, // Incluye la fecha del comentario
         });
-        
-        // Supongamos que la respuesta incluye los datos del comentario recién creado
+  
         const newComment = response.data;
-        
-        // Aquí puedes manejar la actualización de la UI o el estado según sea necesario
         console.log('Comment created successfully:', newComment);
-        
-        return newComment; // Devuelve el comentario recién creado si es necesario
+        return newComment;
       } catch (error) {
         console.error("Error during post comment:", error.message);
         throw error;
       }
     };
+  
     
     const fetchAllPosts = async () => {
       await csrf(); 
