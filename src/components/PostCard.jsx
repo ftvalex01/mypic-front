@@ -6,15 +6,14 @@ import useAuthContext from '../context/AuthContext';
 
 const PostCard = ({ post }) => {
   const [commentText, setCommentText] = useState('');
+  const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likesCount, setLikesCount] = useState(post.reactions ? post.reactions.length : 0);
   const { likePost, commentOnPost, user, handleLikeComment, handleDeleteComment } = useAuthContext();
   const baseUrl = "http://localhost:8000";
   const [remainingHours, setRemainingHours] = useState(null);
- // Aquí definimos showComments correctamente
 
   useEffect(() => {
-    // Calcula las horas restantes desde el momento de la publicación
     const calculateRemainingHours = () => {
       const publishDate = new Date(post.publish_date * 1000);
       const currentDate = new Date();
@@ -40,19 +39,15 @@ const PostCard = ({ post }) => {
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
+
     try {
-      await commentOnPost(post.id, commentText);
+      const newComment = await commentOnPost(post.id, commentText);
+      setComments(prevComments => [...prevComments, { ...newComment, text: commentText }]);
       setCommentText('');
-      // Aquí podrías invocar una función para recargar los comentarios del post o actualizar el estado local/global
     } catch (error) {
       console.error('Error al enviar comentario:', error);
     }
   };
-
-  // const toggleComments = () => {
-  //   setShowComments(!showComments);
-  // };
-
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -84,8 +79,7 @@ const PostCard = ({ post }) => {
 
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
-
-        {post.comments.map((comment) => (
+        {comments.map((comment) => (
           <div key={comment.id} className="comment my-2">
             <p>{comment.text} - <span>by </span></p>
             <div className="comment-actions">
