@@ -1,8 +1,9 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import  { useState } from 'react';
 
-const EmailInput = ({ onNext, value, onChange, error }) => {
+const EmailInput = ({ onNext, value, onChange }) => {
   const [emailError, setEmailError] = useState('');
-  const [submitted, setSubmitted] = useState(false); // Estado añadido aquí
+  const [isFocused, setIsFocused] = useState(false); // Estado para gestionar el enfoque
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -10,36 +11,40 @@ const EmailInput = ({ onNext, value, onChange, error }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true); // Marca que el usuario ha intentado enviar el formulario
-
     if (!validateEmail(value)) {
       setEmailError('Por favor introduce un correo electrónico válido.');
-      // No procedas a onNext si el correo no es válido
       return;
     }
-    // Si el correo es válido, limpia el mensaje de error y continúa
     setEmailError('');
     onNext();
   };
 
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(value !== ''); // Mantén el label arriba si hay contenido
+
   const handleEmailChange = (e) => {
     onChange(e.target.value);
-    // Opcionalmente, restablece el estado de submitted si quieres que el mensaje de error desaparezca al empezar a editar
-    setSubmitted(false);
-    setEmailError('');
+    setEmailError(''); // Opcionalmente, restablece el mensaje de error al editar
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+    <form onSubmit={handleSubmit} className="space-y-7">
+      <div className="form-field">
+        <label htmlFor="email" className={`label ${isFocused || value ? 'focused' : ''}`}>
+          Introduce tu correo electrónico
+        </label>
         <input
+          id="email"
           type="email"
-          placeholder="Introduce tu correo electrónico"
+          required
+          placeholder=" "
           value={value}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onChange={handleEmailChange}
-          className="w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none bg-corn-yellow"
+          className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
         />
-        {submitted && emailError && <p className="text-red-500 text-xs mt-2">{emailError}</p>}
+        {emailError && <p className="text-red-500 text-xs mt-2">{emailError}</p>}
       </div>
       <button
         type="submit"

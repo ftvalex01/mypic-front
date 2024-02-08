@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import useAuthContext from '../../context/AuthContext';
-import './modal.css';
+import './uploadmodal.css';
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [file, setFile] = useState(null);

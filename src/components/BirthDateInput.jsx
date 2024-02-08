@@ -1,24 +1,46 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+
 const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
   const handleDateChange = (e) => {
     onChange(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Función para calcular la edad
+  const calculateAge = (birthDate) => {
+    const dob = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  
 
-    Promise.resolve(onNext())
-      .then((result) => {
-        Swal.fire('¡Completado!', 'Usuario creado con exito, serás redireccionado automáticamente', 'success');
-      })
-      .catch((error) => {
-        Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
-      });
+  // Validar si el usuario tiene al menos 18 años
+  const isEighteenOrOlder = (birthDate) => {
+    console.log(birthDate)
+    return calculateAge(birthDate) >= 18;
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Verificar si el usuario tiene 18 años o más
+    if (isEighteenOrOlder(birthDate)) {
+      Promise.resolve(onNext())
+        .then((result) => {
+          Swal.fire('¡Completado!', 'Usuario creado con éxito, serás redireccionado automáticamente', 'success');
+        })
+        .catch((error) => {
+          Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
+        });
+    } else {
+      // Si el usuario no tiene 18 años, mostrar un mensaje de error con SweetAlert
+      Swal.fire('Error', 'Debes tener al menos 18 años para registrarte.', 'error');
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

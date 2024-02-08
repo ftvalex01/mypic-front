@@ -1,0 +1,59 @@
+.form-field {
+    position: relative;
+    margin-top: 20px;
+  }
+  
+  .label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 4px;
+    border:transparent;
+    pointer-events: none;
+    transition: all 0.6s ease;
+    background: transparent;
+  }
+  
+  .input:focus ~ .label,
+  .label.focused {
+    top: -20px;
+    left: 20px;
+    opacity: 0.8;
+    background-color: #FFBF00;
+    border:2px solid rgb(250 165 49);
+    border-radius: 10px;
+    font-size: 8px;
+    color: #252321; /* Color del foco */
+  }
+  
+  .input {
+    width: 100%;
+    padding: 12px 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+  }
+  
+  .input:focus {
+    
+    border-color: #FFBF00;
+  }
+  /* Añade estos estilos en tu archivo CSS global o en un <style> tag si es una sola página */
+.input-date {
+    appearance: none;
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #FFF8DC; /* Corn Yellow */
+    color: #252321; /* Color del texto */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .input-date:focus {
+    outline: none;
+    border-color: #FFBF00; /* Amber Orange */
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.5);
+  }
+  

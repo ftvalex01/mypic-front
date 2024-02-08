@@ -3,11 +3,11 @@
   import { useEffect, useState } from "react";
   import { Link, useNavigate } from "react-router-dom";
   import useAuthContext from "../context/AuthContext";
-  import NameInput from "../components/NameInput";
+  import NameInput from "../components/NameInput.jsx";
   import UserNameInput from "../components/UsernameInput";
   import EmailInput from "../components/EmailInput";
   import PasswordInput from "../components/PasswordInput";
-  import BirthdateInput from "../components/BirthdateInput";
+  import BirthDateInput from "../components/BirthDateInput";
 
   const Register = () => {
     const [step, setStep] = useState(1);
@@ -58,7 +58,8 @@
       <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
       <EmailInput onNext={nextStep} value={userData.email} onChange={(value) => updateField("email", value)} error={errors.email} />,
       <PasswordInput onNext={nextStep} password={userData.password} confirmPassword={userData.confirmPassword} onPasswordChange={(value) => updateField("password", value)} onConfirmPasswordChange={(value) => updateField("confirmPassword", value)} error={errors.password} />,
-      <BirthdateInput onNext={nextStep} value={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />,
+      <BirthDateInput onNext={nextStep} birthDate={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />
+
     ];
 
    

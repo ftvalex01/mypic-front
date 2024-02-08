@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "../api/axios";
-import { json, useNavigate } from "react-router-dom/";
+import { useNavigate } from "react-router-dom/";
 
 const AuthContext = createContext({});
 
@@ -185,7 +185,16 @@ const fetchAllUsers = async () => {
       throw error;
     }
   };
-
+  const verifyEmail = async (email) => {
+    try {
+      const response = await axios.get(`/api/verify-email/${email}`);
+      return response.data.available; // Suponiendo que el backend devuelve un objeto con una propiedad 'available' que indica si el correo electrónico está disponible o no
+    } catch (error) {
+      console.error("Error verifying email:", error.message);
+      throw error;
+    }
+  };
+  
   const fetchUserByUsername = async (username) => {
     try {
       const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
@@ -337,6 +346,7 @@ const fetchAllUsers = async () => {
         followUser,
         getFollowData,
         likePost,
+        verifyEmail,
         commentOnPost,
         fetchAllPosts,
         likeComment,
