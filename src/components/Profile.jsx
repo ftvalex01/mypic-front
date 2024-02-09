@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FaCog, FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useAuthContext from "../context/AuthContext"; // Asegúrate de que la ruta sea correcta
-
 const Profile = () => {
   const { user, getUserImages, getFollowData } = useAuthContext();
   const [userImages, setUserImages] = useState([]);
@@ -14,7 +13,8 @@ const Profile = () => {
         try {
           const images = await getUserImages(user.data.id);
           setUserImages(images);
-
+          console.log(images)
+          
         } catch (error) {
           console.error("Error fetching user images:", error);
         }
@@ -36,7 +36,7 @@ const Profile = () => {
     fetchUserImages();
     fetchFollowData(); // Esta es la forma correcta de llamar a la función recién definida
   }, [user, getUserImages, getFollowData]);
-
+console.log()
   useEffect(() => {
     console.log(JSON.stringify(followData) + " followData updated");
   }, [followData]);
@@ -60,7 +60,7 @@ const Profile = () => {
           </div>
           <div className="flex space-x-4">
             <div className="flex space-x-4">
-              <span>{user.data.postsCount} publicaciones</span>
+              <span>{userImages.length} publicaciones</span>
               <span>{followData.followers} seguidores</span> {/* Actualizado para usar followData */}
               <span>{followData.following} seguidos</span> {/* Actualizado para usar followData */}
             </div>

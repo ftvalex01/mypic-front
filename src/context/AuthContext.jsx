@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
-
+  
   const forgotPassword = async (email) => {
     await csrf();
     setErrors([]);
@@ -158,6 +158,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
+   
       return response.data;
     } catch (error) {
       console.error("Error during post upload:", error.message);
@@ -267,9 +268,9 @@ const fetchAllUsers = async () => {
           comment_date: commentDate, // Incluye la fecha del comentario
         });
   
-        const newComment = response.data;
-        console.log('Comment created successfully:', newComment);
-        return newComment;
+        response.data;
+        console.log('Comment created successfully:',        response.data);
+        return response.data;
       } catch (error) {
         console.error("Error during post comment:", error.message);
         throw error;

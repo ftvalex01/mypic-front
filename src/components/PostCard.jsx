@@ -41,35 +41,33 @@ const PostCard = ({ post }) => {
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
-      setComments(comments.filter((comment) => comment.id !== commentId));
+      setComments(currentComments => currentComments.filter(comment => comment.id !== commentId));
     } catch (error) {
       console.error("Error al intentar borrar el comentario:", error);
     }
   };
+  
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-
+    
     try {
-      const newComment = await commentOnPost(post.id, commentText);
-      setComments((prevComments) => [
-        ...prevComments,
-        { ...newComment, text: commentText },
-      ]);
+      const response = await commentOnPost(post.id, commentText);
+      setComments(prevComments => [...prevComments, response.data]);
       setCommentText("");
     } catch (error) {
       console.error("Error al enviar comentario:", error);
     }
   };
-  /* console.log(comments)
-  console.log(user) */
+  
+
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
       <div className="flex items-center space-x-3 p-4 border-b">
         <img
-          src={post.user.profile_picture}
+          src={post.user.profile_picture || "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"}
           alt={post.user.name}
           className="w-10 h-10 rounded-full"
         />
@@ -110,7 +108,7 @@ const PostCard = ({ post }) => {
       <div className="px-4 pb-2">
       {comments.map((comment) => (
   <div key={comment.id} className="comment my-2">
-    <p>{comment.text} - <span>by </span></p>
+    <p>{comment.text} - <span>by {user.data.name} </span></p>
     <div className="comment-actions">
       <button onClick={() => handleLikeComment(comment.id)}>
         {comment.isLiked ? <IoHeartSharp className="icon liked" /> : <FiHeart className="icon" />}

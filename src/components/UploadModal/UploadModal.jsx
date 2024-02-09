@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import useAuthContext from '../../context/AuthContext';
 import './uploadmodal.css';
+import Swal from 'sweetalert2';
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [file, setFile] = useState(null);
@@ -11,32 +12,47 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleDescriptionChange = (e) => setDescription(e.target.value);
-
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      alert('Please select a file to upload.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Wait...',
+        text: 'Please select a file to upload.',
+      });
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('file', file);
     formData.append('description', description);
-    formData.append('type', 'photo'); 
-
+    formData.append('type', 'photo');
+  
     setUploading(true);
-
+  
     try {
       await uploadPost(formData);
-      alert('File uploaded successfully.');
+      // Replace the alert with SweetAlert
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'File uploaded successfully.',
+        showConfirmButton: false,
+        timer: 1500
+      });
       setUploading(false);
-      onClose();
+      onClose(); // Close the modal
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('Error uploading file.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error uploading file.',
+      });
       setUploading(false);
     }
   };
+  
 
   if (!isOpen) return null;
 
