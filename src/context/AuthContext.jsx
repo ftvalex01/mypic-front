@@ -299,8 +299,16 @@ const fetchAllUsers = async () => {
       }
     };
   
-    // Función para borrar un comentario
-  // Dentro de AuthProvider
+    const updateProfilePrivacy = async (isPrivate) => {
+      await csrf();
+      try {
+        const response = await axios.patch(`/api/user/${user.data.id}/privacy`, { isPrivate });   
+        setUser({ ...user, data: { ...user.data, isPrivate: response.data.isPrivate } }); 
+      } catch (error) {
+        console.error("Error updating profile privacy:", error.message);
+      }
+    };
+    
 
 const deleteComment = async (commentId) => {
   await csrf();
@@ -345,6 +353,7 @@ const deleteComment = async (commentId) => {
         updateProfile,
         uploadPost,
         getUserImages,
+        updateProfilePrivacy,
         fetchAllUsers,
         fetchUserByUsername,
         followUser,

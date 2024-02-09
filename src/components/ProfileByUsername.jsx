@@ -31,21 +31,27 @@ const ProfileByUsername = () => {
             if (profile && profile.id) {
                 try {
                     const images = await getUserImages(profile.id);
-                    setUserImages(images);
-
+                    if (images.message) {
+                        // Manejar el caso en que no se puedan cargar las imágenes.
+                        console.log(images.message); // O mostrar un mensaje en la UI.
+                        setUserImages([]); // O manejar de otra manera según necesites.
+                    } else {
+                        setUserImages(images);
+                    }
+    
                     const data = await getFollowData(profile.id);
-                   
                     setFollowData({ followers: data.followersCount, following: data.followingCount });
                 } catch (error) {
                     console.error("Error fetching additional data:", error);
                 }
             }
         };
-
+    
         if (profile) {
             fetchAdditionalData();
         }
     }, [profile, getUserImages, getFollowData]);
+    
 
     if (!profile) {
         // Aquí puedes manejar el estado de carga o mostrar un mensaje si el perfil no existe
