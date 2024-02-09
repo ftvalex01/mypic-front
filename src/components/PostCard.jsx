@@ -11,7 +11,7 @@ const PostCard = ({ post }) => {
   const [likesCount, setLikesCount] = useState(
     post.reactions ? post.reactions.length : 0
   );
-  const { likePost, commentOnPost, user, handleLikeComment, deleteComment } =
+  const { likePost, commentOnPost, user, likeComment, deleteComment } =
     useAuthContext();
   const baseUrl = "http://localhost:8000";
   const [remainingHours, setRemainingHours] = useState(null);
@@ -46,6 +46,20 @@ const PostCard = ({ post }) => {
       console.error("Error al intentar borrar el comentario:", error);
     }
   };
+  const handleLikeComment = async (commentId) => {
+    try {
+      await likeComment(post.id, commentId);
+      setComments(comments.map(comment => {
+        if (comment.id === commentId) {
+          return { ...comment, isLiked: !comment.isLiked, likesCount: comment.isLiked ? comment.likesCount - 1 : comment.likesCount + 1 };
+        }
+        return comment;
+      }));
+    } catch (error) {
+      console.error('Error al intentar dar like al comentario:', error);
+    }
+  };
+  
   
 
   const handleSubmitComment = async (e) => {
@@ -61,7 +75,7 @@ const PostCard = ({ post }) => {
     }
   };
   
-
+console.log(comments)
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -107,12 +121,17 @@ const PostCard = ({ post }) => {
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
       {comments.map((comment) => (
-  <div key={comment.id} className="comment my-2">
-    <p>{comment.text} - <span>by {user.data.name} </span></p>
+        <div key={comment.id} className="comment my-2">
+    <p>{comment.text} - <span>by {user.data.name}</span></p>
     <div className="comment-actions">
       <button onClick={() => handleLikeComment(comment.id)}>
-        {comment.isLiked ? <IoHeartSharp className="icon liked" /> : <FiHeart className="icon" />}
+        {comment.isLiked ? (
+          <IoHeartSharp className="w-6 h-6 text-red-500" />
+        ) : (
+          <FiHeart className="w-6 h-6 text-gray-500" />
+        )}
       </button>
+      
       {(user && user.data.id === comment.user_id) && (
         <button onClick={() => handleDelete(comment.id)}>
           <FiTrash2 className="icon" />
