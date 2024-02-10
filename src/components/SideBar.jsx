@@ -9,7 +9,7 @@ import { useState } from 'react';
 import UploadModal from './UploadModal/UploadModal';
 
 const Sidebar = () => {
-  const {  logout } = useAuthContext(); 
+  const {  logout, user } = useAuthContext(); 
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => setModalOpen(true);
@@ -53,7 +53,7 @@ const Sidebar = () => {
         </Link>
           <Link to="/profile" className="flex items-center space-x-2">
             <CgProfile className="text-lg" />
-            <span>Perfil</span>
+            <span>{user.data.username}</span>
           </Link>
         </nav>
       </div>

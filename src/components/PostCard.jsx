@@ -75,7 +75,6 @@ const PostCard = ({ post }) => {
     }
   };
   
-console.log(comments)
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}

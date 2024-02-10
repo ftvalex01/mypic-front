@@ -11,6 +11,7 @@ const ProfileByUsername = () => {
     const { followUser } = useAuthContext();
     const [userImages, setUserImages] = useState([]);
     const [followData, setFollowData] = useState({});
+
     useEffect(() => {
         const loadUserProfile = async () => {
             try {
@@ -36,9 +37,9 @@ const ProfileByUsername = () => {
                         console.log(images.message); // O mostrar un mensaje en la UI.
                         setUserImages([]); // O manejar de otra manera según necesites.
                     } else {
-                        setUserImages(images);
+                        
+                        setUserImages(images.data);
                     }
-    
                     const data = await getFollowData(profile.id);
                     setFollowData({ followers: data.followersCount, following: data.followingCount });
                 } catch (error) {
@@ -57,7 +58,7 @@ const ProfileByUsername = () => {
         // Aquí puedes manejar el estado de carga o mostrar un mensaje si el perfil no existe
         return <div>Cargando perfil...</div>;
     }
-
+ 
     const handleFollowClick = async () => {
         try {
             const result = await followUser(profile.id);

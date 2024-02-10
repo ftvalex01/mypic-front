@@ -179,7 +179,7 @@ export const AuthProvider = ({ children }) => {
 const fetchAllUsers = async () => {
     try {
       const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
-      console.log(response.data);
+     
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -199,7 +199,7 @@ const fetchAllUsers = async () => {
   const fetchUserByUsername = async (username) => {
     try {
       const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
-      console.log(response.data);
+    
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -222,7 +222,7 @@ const fetchAllUsers = async () => {
   const getFollowData = async (userId) => {
     try {
       const response = await axios.get(`/api/user/${userId}/follow-data`);
-      console.log(JSON.stringify(response) + "response getfollowdata")
+    
       return response.data;
     } catch (error) {
       console.error("Error fetching follow data:", error);
@@ -231,7 +231,7 @@ const fetchAllUsers = async () => {
   };
 
     const likePost = async (postId) => {
-      console.log(postId);
+      
       await csrf();
       try {
         const response = await axios.post(`/api/post/${postId}/reactions`, {
@@ -250,7 +250,7 @@ const fetchAllUsers = async () => {
         });
     
         setPosts(updatedPosts); // Actualizamos el estado global de los posts
-        console.log('Like updated successfully');
+       
       } catch (error) {
         console.error("Error during post like:", error.message);
         throw error;
@@ -258,7 +258,7 @@ const fetchAllUsers = async () => {
     };
     
     const commentOnPost = async (postId, text) => {
-      console.log(postId, text); // Para asegurarte de que los valores son correctos
+       // Para asegurarte de que los valores son correctos
       await csrf(); // Obtiene el token CSRF para la petición
   
       try {
