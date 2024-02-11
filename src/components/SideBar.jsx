@@ -1,4 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MdMessage, MdOutlineMoreHoriz } from 'react-icons/md';
+import { CgProfile } from 'react-icons/cg';
+import { RiLiveLine } from 'react-icons/ri';
+import UploadModal from './UploadModal/UploadModal';
+import BuscarPerfil from './BuscarPerfil';
+import useAuthContext from "../context/AuthContext";
 import {
   FaHome,
   FaSearch,
@@ -6,14 +13,6 @@ import {
   FaRegHeart,
   FaPlusSquare
 } from 'react-icons/fa';
-import { MdMessage, MdOutlineMoreHoriz } from 'react-icons/md';
-import { CgProfile } from 'react-icons/cg';
-import { RiLiveLine } from 'react-icons/ri';
-import useAuthContext from "../context/AuthContext";
-import { useState } from 'react';
-import UploadModal from './UploadModal/UploadModal';
-import BuscarPerfil from './BuscarPerfil';
-
 const SideBar = () => {
   const { logout, user } = useAuthContext();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,13 +22,15 @@ const SideBar = () => {
   const closeModal = () => setModalOpen(false);
   const openSearchModal = () => setSearchModalOpen(true);
   const closeSearchModal = () => setSearchModalOpen(false);
+
   return (
     <>
-       <aside className="hidden sm:flex flex-col bg-gray-700  fixed inset-y-0 left-0 z-30  transition-width duration-300 w-16 md:w-40 lg:w-64 xl:w-72">
+      {/* Sidebar para pantallas grandes */}
+      <aside className="hidden sm:flex flex-col bg-gray-700 fixed inset-y-0 left-0 z-30 transition-width duration-300 w-16 md:w-40 lg:w-64 xl:w-72">
         <div className="flex flex-col space-y-6 p-4">
           <h1 className="text-3xl font-bold mb-4 hidden lg:block text-white">MyPic</h1>
-          <nav className="flex flex-col space-y-6 ">
-            <Link to="/" className="flex items-center space-x-2  text-white">
+          <nav className="flex flex-col space-y-6">
+            <Link to="/" className="flex items-center space-x-2 text-white">
               <FaHome className="text-lg" />
               <span className="hidden md:inline">Inicio</span>
             </Link>
@@ -74,7 +75,8 @@ const SideBar = () => {
           </Link>
         </div>
       </aside>
-  
+
+      {/* Barra de navegación para pantallas pequeñas */}
       <nav className="sm:hidden flex justify-around text-2xl bg-white w-full fixed inset-x-0 bottom-0 border-t-2 border-gray-200 py-2">
         <Link to="/" className="text-gray-700">
           <FaHome />
@@ -89,8 +91,11 @@ const SideBar = () => {
           <CgProfile />
         </Link>
       </nav>
-  
+
+      {/* Modal para subir */}
       <UploadModal isOpen={isModalOpen} onClose={closeModal} />
+
+      {/* Modal de búsqueda */}
       {isSearchModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeSearchModal}></div>
@@ -101,7 +106,6 @@ const SideBar = () => {
       )}
     </>
   );
-  
 };
 
 export default SideBar;
