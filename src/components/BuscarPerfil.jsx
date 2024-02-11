@@ -7,16 +7,15 @@ const BuscarPerfil = () => {
     const { fetchAllUsers, user: currentUser } = useAuthContext(); // Obtiene el usuario actual y la función para buscar usuarios
     const [allUsers, setAllUsers] = useState([]);
     const navigate = useNavigate();
-    console.log(currentUser)
+    
     useEffect(() => {
         const loadUsers = async () => {
             try {
                 const response = await fetchAllUsers();
-                // Asume que la respuesta incluye una propiedad 'data' que es un arreglo de usuarios
                 setAllUsers(response.data || []);
             } catch (error) {
                 console.error("Error fetching users:", error);
-                setAllUsers([]); // Maneja errores asegurando que allUsers sea un arreglo
+                setAllUsers([]);
             }
         };
 
@@ -31,41 +30,40 @@ const BuscarPerfil = () => {
         setSearchTerm(e.target.value);
     };
 
-    // Maneja el clic en el nombre de usuario para redirigir correctamente
     const handleUserClick = username => {
-        // Asegúrate de acceder a currentUser.data.username para la comparación
         if (username === currentUser?.data?.username) {
-            navigate("/profile"); // Redirige al perfil del usuario actual
+            navigate("/profile");
         } else {
-            navigate(`/profile/${username}`); // Redirige al perfil por nombre de usuario
+            navigate(`/profile/${username}`);
         }
     };
 
     return (
-        <>
+        <div className="relative">
             <input
                 type="text"
                 placeholder="Buscar perfil..."
                 onChange={handleChange}
                 value={searchTerm}
-                className="form-control my-3"
+                className="form-control my-3 w-full px-4 py-2 border rounded"
             />
-            <ul className="list-group">
-                {filteredUsers.map(user => (
-                    <li key={user.id} 
-                        className="list-group-item" 
-                        style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-                        onClick={() => handleUserClick(user.username)}>
-                        <img src={user.profile_picture || "https://via.placeholder.com/150"} 
-                             alt={user.username} 
-                             style={{ width: '30px', height: '30px', marginRight: '10px', borderRadius: '50%' }} />
-                        <span style={{ textDecoration: 'none', color: 'inherit' }}>
-                            {user.username}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-        </>
+            {searchTerm && (
+                <ul className="absolute w-full bg-white shadow-lg max-h-60 overflow-auto z-10">
+                    {filteredUsers.map(user => (
+                        <li key={user.id} 
+                            className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => handleUserClick(user.username)}>
+                            <img src={user.profile_picture || "https://via.placeholder.com/150"} 
+                                alt={user.username} 
+                                className="w-8 h-8 mr-2 rounded-full" />
+                            <span className="text-gray-700">
+                                {user.username}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
 };
 

@@ -1,25 +1,36 @@
-import { Outlet } from 'react-router-dom';
-import Sidebar from '../components/SideBar';
+import { useState } from 'react';
+import { Outlet, Link } from 'react-router-dom';
+import SideBar from '../components/SideBar';
+import BuscarPerfil from '../components/BuscarPerfil';
+import { FaRegHeart } from 'react-icons/fa';
 
 const Layout = () => {
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
+
+  const toggleSearchPanel = () => {
+    setShowSearchPanel(!showSearchPanel);
+  };
+
   return (
     <div className="flex bg-gray-100 min-h-screen overflow-hidden">
-      {/* Sidebar: Menú para pantallas medianas y grandes, oculto en móviles */}
-      <div className="hidden md:flex md:flex-col md:w-64 bg-black text-white fixed inset-y-0 z-20">
-        <Sidebar />
-      </div>
-      {/* Contenedor Principal: Aquí va el contenido principal con scroll */}
-      <div className="flex-1 flex flex-col overflow-auto md:ml-64 pt-4 pb-16 md:pb-0">
-   
-        <div className="pt-4 flex-1">
+      {/* Sidebar for large and medium screens */}
+      <SideBar onSearchClick={toggleSearchPanel} />
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-auto">
+        {/* Top bar for small screens */}
+        <div className="sm:hidden flex justify-between items-center p-2 bg-black text-white fixed top-0 inset-x-0 z-10">
+          <span className="text-3xl font-bold">MyPic</span>
+          <BuscarPerfil />
+          <Link to="/notifications" className="text-lg">
+            <FaRegHeart />
+          </Link>
+        </div>
+
+        {/* Outlet - Main content */}
+        <div className="pt-16 sm:pt-0">
           <Outlet />
         </div>
-      </div>
-      {/* Barra Lateral Derecha: Barra Lateral de Usuarios/Sugerencias, visible solo en grandes pantallas */}
-      
-      {/* Sidebar en el pie de página para dispositivos móviles */}
-      <div className="md:hidden fixed inset-x-0 bottom-0 z-10">
-        <Sidebar />
       </div>
     </div>
   );
