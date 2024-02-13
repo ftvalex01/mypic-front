@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { Transition } from '@headlessui/react';
 import { MdMessage, MdOutlineMoreHoriz } from 'react-icons/md';
 import { CgProfile } from 'react-icons/cg';
 import { RiLiveLine } from 'react-icons/ri';
@@ -16,14 +17,12 @@ import {
 
 const SideBar = () => {
   const { logout, user } = useAuthContext();
+  const [isSearchSidebarOpen, setSearchSidebarOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isSearchModalOpen, setSearchModalOpen] = useState(false);
-
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
-  const openSearchModal = () => setSearchModalOpen(true);
-  const closeSearchModal = () => setSearchModalOpen(false);
-
+  const openSearchSidebar = () => setSearchSidebarOpen(true);
+  const closeSearchSidebar = () => setSearchSidebarOpen(false);
   return (
     <>
       {/* Sidebar para pantallas medianas y grandes */}
@@ -35,10 +34,10 @@ const SideBar = () => {
               <FaHome className="text-lg" />
               <span>Inicio</span>
             </Link>
-            <Link to="#" onClick={openSearchModal} className="flex items-center space-x-2 text-white">
+            <button onClick={openSearchSidebar} className="flex items-center space-x-2 text-white">
               <FaSearch className="text-lg" />
               <span>Búsqueda</span>
-            </Link>
+            </button>
             <Link to="/explore" className="flex items-center space-x-2 text-white">
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
@@ -55,18 +54,18 @@ const SideBar = () => {
               <FaRegHeart className="text-lg" />
               <span>Notificaciones</span>
             </Link>
-            <Link to="#" onClick={openModal} className="flex items-center space-x-2 text-white">
+            <button onClick={openModal} className="flex items-center space-x-2 text-white">
               <FaPlusSquare className="text-lg" />
               <span>Crear</span>
-            </Link>
+            </button>
             <Link to="/profile" className="flex items-center space-x-2 text-white">
               <CgProfile className="text-lg" />
               <span>{user?.data.username}</span>
             </Link>
-            <Link onClick={logout} to="/" className="flex items-center space-x-2 text-white">
+            <button onClick={logout} className="flex items-center space-x-2 text-white">
               <MdOutlineMoreHoriz className="text-lg" />
               <span>Logout</span>
-            </Link>
+            </button>
             <Link to="/more" className="flex items-center space-x-2 text-white">
               <MdOutlineMoreHoriz className="text-lg" />
               <span>Más</span>
@@ -74,21 +73,35 @@ const SideBar = () => {
           </nav>
         </div>
       </aside>
-
+  
       {/* Modal para subir */}
       <UploadModal isOpen={isModalOpen} onClose={closeModal} />
-
-      {/* Modal de búsqueda */}
-      {isSearchModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black opacity-50" onClick={closeSearchModal}></div>
-          <div className="bg-white p-4 rounded-md">
+  
+      {/* Menú lateral de búsqueda */}
+      <Transition
+        as={Fragment}
+        show={isSearchSidebarOpen}
+        enter="transition ease-in-out duration-300 transform"
+        enterFrom="translate-x-full"
+        enterTo="translate-x-0"
+        leave="transition ease-in-out duration-300 transform"
+        leaveFrom="translate-x-0"
+        leaveTo="translate-x-full"
+      >
+        <div className="fixed inset-y-0 right-0 z-40 w-80 bg-white shadow-lg overflow-y-auto">
+          <div className="p-4">
+            <button onClick={closeSearchSidebar} className="text-gray-600 hover:text-gray-800">
+              {/* Aquí puedes agregar un ícono de cierre si lo deseas */}
+              <span>Cerrar</span>
+            </button>
             <BuscarPerfil />
+            {/* Contenido adicional si es necesario */}
           </div>
         </div>
-      )}
+      </Transition>
     </>
   );
+  
 };
 
 export default SideBar;
