@@ -25,7 +25,7 @@ function App() {
             <Route path="/profile/:username" element={<ProfileByUsername />} />
             <Route path="search" element={<BuscarPerfil/>}/>
             <Route path="/explore" element={<ExploreView/>}/>
-            <Route path="notifications" element={<Notificaciones />} />
+            <Route path="/notifications" element={<Notificaciones />} />
             <Route index element={<Feed />}/>
           </Route>
         </Route>
