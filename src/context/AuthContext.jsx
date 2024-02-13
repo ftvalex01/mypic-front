@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
-  
+
   const forgotPassword = async (email) => {
     await csrf();
     setErrors([]);
@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-   
+
       return response.data;
     } catch (error) {
       console.error("Error during post upload:", error.message);
@@ -175,11 +175,11 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-  
-const fetchAllUsers = async () => {
+
+  const fetchAllUsers = async () => {
     try {
       const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
-     
+
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -195,11 +195,11 @@ const fetchAllUsers = async () => {
       throw error;
     }
   };
-  
+
   const fetchUserByUsername = async (username) => {
     try {
       const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
-    
+
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -222,14 +222,23 @@ const fetchAllUsers = async () => {
   const getFollowData = async (userId) => {
     try {
       const response = await axios.get(`/api/user/${userId}/follow-data`);
-    
+
       return response.data;
     } catch (error) {
       console.error("Error fetching follow data:", error);
       throw error;
     }
   };
-
+  const getNotifications = async () => {
+    await csrf();
+    try {
+      const response = await axios.get("/api/notifications"); // Asume este endpoint
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching notifications:", error.message);
+      throw error;
+    }
+  };
     const likePost = async (postId) => {
       
       await csrf();
@@ -322,22 +331,18 @@ const fetchAllUsers = async () => {
         console.error("Error updating profile privacy:", error.message);
       }
     };
-    
-
-const deleteComment = async (commentId) => {
-  await csrf();
-  try {
-    await axios.delete(`/api/comments/${commentId}`);
-    // Puedes agregar lógica aquí si necesitas actualizar algo en el estado global después de borrar un comentario
-    console.log(`Comment ${commentId} deleted successfully`);
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-  }
-};
-
-    
-    
-
+    const deleteComment = async (commentId) => {
+      await csrf();
+      try {
+        await axios.delete(`/api/comments/${commentId}`);
+        // Puedes agregar lógica aquí si necesitas actualizar algo en el estado global después de borrar un comentario
+        console.log(`Comment ${commentId} deleted successfully`);
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+      }
+    };
+  
+   
   const logout = async () => {
     try {
       await axios.post("/api/logout");
@@ -378,7 +383,8 @@ const deleteComment = async (commentId) => {
         commentOnPost,
         fetchAllPosts,
         likeComment,
-        deleteComment
+        deleteComment,
+        getNotifications
       }}
     >
       {children}
