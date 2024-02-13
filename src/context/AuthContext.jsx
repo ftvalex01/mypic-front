@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
-
+  
   const forgotPassword = async (email) => {
     await csrf();
     setErrors([]);
@@ -158,6 +158,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
+   
       return response.data;
     } catch (error) {
       console.error("Error during post upload:", error.message);
@@ -178,7 +179,7 @@ export const AuthProvider = ({ children }) => {
 const fetchAllUsers = async () => {
     try {
       const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
-      console.log(response.data);
+     
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -198,7 +199,7 @@ const fetchAllUsers = async () => {
   const fetchUserByUsername = async (username) => {
     try {
       const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
-      console.log(response.data);
+    
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -221,7 +222,7 @@ const fetchAllUsers = async () => {
   const getFollowData = async (userId) => {
     try {
       const response = await axios.get(`/api/user/${userId}/follow-data`);
-      console.log(JSON.stringify(response) + "response getfollowdata")
+    
       return response.data;
     } catch (error) {
       console.error("Error fetching follow data:", error);
@@ -230,7 +231,7 @@ const fetchAllUsers = async () => {
   };
 
     const likePost = async (postId) => {
-      console.log(postId);
+      
       await csrf();
       try {
         const response = await axios.post(`/api/post/${postId}/reactions`, {
@@ -249,7 +250,7 @@ const fetchAllUsers = async () => {
         });
     
         setPosts(updatedPosts); // Actualizamos el estado global de los posts
-        console.log('Like updated successfully');
+       
       } catch (error) {
         console.error("Error during post like:", error.message);
         throw error;
@@ -257,7 +258,7 @@ const fetchAllUsers = async () => {
     };
     
     const commentOnPost = async (postId, text) => {
-      console.log(postId, text); // Para asegurarte de que los valores son correctos
+       // Para asegurarte de que los valores son correctos
       await csrf(); // Obtiene el token CSRF para la petición
   
       try {
@@ -267,9 +268,9 @@ const fetchAllUsers = async () => {
           comment_date: commentDate, // Incluye la fecha del comentario
         });
   
-        const newComment = response.data;
-        console.log('Comment created successfully:', newComment);
-        return newComment;
+        response.data;
+        console.log('Comment created successfully:',        response.data);
+        return response.data;
       } catch (error) {
         console.error("Error during post comment:", error.message);
         throw error;
@@ -298,8 +299,16 @@ const fetchAllUsers = async () => {
       }
     };
   
-    // Función para borrar un comentario
-  // Dentro de AuthProvider
+    const updateProfilePrivacy = async (isPrivate) => {
+      await csrf();
+      try {
+        const response = await axios.patch(`/api/user/${user.data.id}/privacy`, { isPrivate });   
+        setUser({ ...user, data: { ...user.data, isPrivate: response.data.isPrivate } }); 
+      } catch (error) {
+        console.error("Error updating profile privacy:", error.message);
+      }
+    };
+    
 
 const deleteComment = async (commentId) => {
   await csrf();
@@ -344,6 +353,7 @@ const deleteComment = async (commentId) => {
         updateProfile,
         uploadPost,
         getUserImages,
+        updateProfilePrivacy,
         fetchAllUsers,
         fetchUserByUsername,
         followUser,

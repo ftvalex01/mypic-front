@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { FaCog, FaPlusCircle } from 'react-icons/fa';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import { useParams } from 'react-router-dom';
 import useAuthContext from '../context/AuthContext';
 
 const ProfileByUsername = () => {
@@ -11,6 +11,7 @@ const ProfileByUsername = () => {
     const { followUser } = useAuthContext();
     const [userImages, setUserImages] = useState([]);
     const [followData, setFollowData] = useState({});
+
     useEffect(() => {
         const loadUserProfile = async () => {
             try {
@@ -31,27 +32,33 @@ const ProfileByUsername = () => {
             if (profile && profile.id) {
                 try {
                     const images = await getUserImages(profile.id);
-                    setUserImages(images);
-
+                    if (images.message) {
+                        // Manejar el caso en que no se puedan cargar las imágenes.
+                        console.log(images.message); // O mostrar un mensaje en la UI.
+                        setUserImages([]); // O manejar de otra manera según necesites.
+                    } else {
+                        
+                        setUserImages(images.data);
+                    }
                     const data = await getFollowData(profile.id);
-                    console.log(JSON.stringify(userImages, null, 2) + "imagen post");
                     setFollowData({ followers: data.followersCount, following: data.followingCount });
                 } catch (error) {
                     console.error("Error fetching additional data:", error);
                 }
             }
         };
-
+    
         if (profile) {
             fetchAdditionalData();
         }
     }, [profile, getUserImages, getFollowData]);
+    
 
     if (!profile) {
         // Aquí puedes manejar el estado de carga o mostrar un mensaje si el perfil no existe
         return <div>Cargando perfil...</div>;
-    };
-
+    }
+ 
     const handleFollowClick = async () => {
         try {
             const result = await followUser(profile.id);
@@ -67,9 +74,9 @@ const ProfileByUsername = () => {
     };
 
 
-    let changedUrl = 'http://localhost:8000/storage/' + profile.profile_picture;
+    let changedUrl = 'http://localhost:8000/storage/' + profile.profile_picture || "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg";
     let followButton;
-    console.log(isFollowing + "isfollowing")
+
     if (isFollowing) {
         followButton = (
             <button onClick={() => handleFollowClick()} className="px-4 py-2 rounded bg-blue-500 text-white">
@@ -83,6 +90,7 @@ const ProfileByUsername = () => {
             </button>
         );
     }
+  
     return (
         <div className="container mx-auto p-4">
             <div className="flex flex-col justify-center md:flex-row md:items-center">
