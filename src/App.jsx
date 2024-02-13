@@ -22,8 +22,9 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="profile/edit" element={<EditarPerfil />} />
             <Route path="/profile/:username" element={<ProfileByUsername />} />
-            <Route path="search" element={<BuscarPerfil/>}/>
-            <Route index element={<Feed />}/>
+            <Route path="search" element={<BuscarPerfil />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route index element={<Feed />} />
           </Route>
         </Route>
         <Route element={<GuestLayout />}>

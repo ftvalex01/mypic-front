@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
-  
+
   const forgotPassword = async (email) => {
     await csrf();
     setErrors([]);
@@ -158,7 +158,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-   
+
       return response.data;
     } catch (error) {
       console.error("Error during post upload:", error.message);
@@ -175,11 +175,11 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-  
-const fetchAllUsers = async () => {
+
+  const fetchAllUsers = async () => {
     try {
       const response = await axios.get('api/users'); // Actualiza esta línea para usar la nueva ruta
-     
+
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -195,11 +195,11 @@ const fetchAllUsers = async () => {
       throw error;
     }
   };
-  
+
   const fetchUserByUsername = async (username) => {
     try {
       const response = await axios.get(`api/user/${username}`); // Actualiza esta línea para usar la nueva ruta
-    
+
       return response.data;
     } catch (error) {
       console.error("Error while fetching all users:", error.message);
@@ -222,7 +222,7 @@ const fetchAllUsers = async () => {
   const getFollowData = async (userId) => {
     try {
       const response = await axios.get(`/api/user/${userId}/follow-data`);
-    
+
       return response.data;
     } catch (error) {
       console.error("Error fetching follow data:", error);
@@ -230,99 +230,109 @@ const fetchAllUsers = async () => {
     }
   };
 
-    const likePost = async (postId) => {
-      
-      await csrf();
-      try {
-        const response = await axios.post(`/api/post/${postId}/reactions`, {
-          reactable_id: postId,
-          reactable_type: 'Post' // Asegúrate de que el backend pueda interpretar correctamente este tipo
-        });
-        // Supongamos que la respuesta incluye el estado actualizado del like y el conteo total de likes
-        const { liked, likesCount } = response.data;
-    
-        const updatedPosts = posts.map(post => {
-          if (post.id === postId) {
-            // Actualizamos el post con la nueva información
-            return { ...post, isLiked: liked, likesCount: likesCount };
-          }
-          return post;
-        });
-    
-        setPosts(updatedPosts); // Actualizamos el estado global de los posts
-       
-      } catch (error) {
-        console.error("Error during post like:", error.message);
-        throw error;
-      }
-    };
-    
-    const commentOnPost = async (postId, text) => {
-       // Para asegurarte de que los valores son correctos
-      await csrf(); // Obtiene el token CSRF para la petición
-  
-      try {
-        const commentDate = new Date().toISOString(); // Genera la fecha actual en formato ISO 8601
-        const response = await axios.post(`/api/post/${postId}/comments`, {
-          text: text,
-          comment_date: commentDate, // Incluye la fecha del comentario
-        });
-  
-        response.data;
-        console.log('Comment created successfully:',        response.data);
-        return response.data;
-      } catch (error) {
-        console.error("Error during post comment:", error.message);
-        throw error;
-      }
-    };
-  
-    
-    const fetchAllPosts = async () => {
-      await csrf(); 
-      try {
-        const response = await axios.get('/api/post');
-        const posts = response.data.data;  // Asegúrate de que esta ruta coincida con la configurada en tu backend
-        return posts; // Esta será una lista de posts
-      } catch (error) {
-        console.error("Error fetching posts:", error.message);
-        throw error;
-      }
-    };
-    const likeComment = async (postId, commentId) => {
-      try {
-        const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
-        // Aquí podrías actualizar el estado con la respuesta del backend si es necesario
-        console.log(response.data); // Suponiendo que el backend responde con algún dato relevante
-      } catch (error) {
-        console.error('Error al dar like al comentario:', error);
-      }
-    };
-  
-    const updateProfilePrivacy = async (isPrivate) => {
-      await csrf();
-      try {
-        const response = await axios.patch(`/api/user/${user.data.id}/privacy`, { isPrivate });   
-        setUser({ ...user, data: { ...user.data, isPrivate: response.data.isPrivate } }); 
-      } catch (error) {
-        console.error("Error updating profile privacy:", error.message);
-      }
-    };
-    
+  const likePost = async (postId) => {
 
-const deleteComment = async (commentId) => {
-  await csrf();
-  try {
-    await axios.delete(`/api/comments/${commentId}`);
-    // Puedes agregar lógica aquí si necesitas actualizar algo en el estado global después de borrar un comentario
-    console.log(`Comment ${commentId} deleted successfully`);
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-  }
-};
+    await csrf();
+    try {
+      const response = await axios.post(`/api/post/${postId}/reactions`, {
+        reactable_id: postId,
+        reactable_type: 'Post' // Asegúrate de que el backend pueda interpretar correctamente este tipo
+      });
+      // Supongamos que la respuesta incluye el estado actualizado del like y el conteo total de likes
+      const { liked, likesCount } = response.data;
 
-    
-    
+      const updatedPosts = posts.map(post => {
+        if (post.id === postId) {
+          // Actualizamos el post con la nueva información
+          return { ...post, isLiked: liked, likesCount: likesCount };
+        }
+        return post;
+      });
+
+      setPosts(updatedPosts); // Actualizamos el estado global de los posts
+
+    } catch (error) {
+      console.error("Error during post like:", error.message);
+      throw error;
+    }
+  };
+
+  const commentOnPost = async (postId, text) => {
+    // Para asegurarte de que los valores son correctos
+    await csrf(); // Obtiene el token CSRF para la petición
+
+    try {
+      const commentDate = new Date().toISOString(); // Genera la fecha actual en formato ISO 8601
+      const response = await axios.post(`/api/post/${postId}/comments`, {
+        text: text,
+        comment_date: commentDate, // Incluye la fecha del comentario
+      });
+
+      response.data;
+      console.log('Comment created successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during post comment:", error.message);
+      throw error;
+    }
+  };
+
+
+  const fetchAllPosts = async () => {
+    await csrf();
+    try {
+      const response = await axios.get('/api/post');
+      const posts = response.data.data;  // Asegúrate de que esta ruta coincida con la configurada en tu backend
+      return posts; // Esta será una lista de posts
+    } catch (error) {
+      console.error("Error fetching posts:", error.message);
+      throw error;
+    }
+  };
+  const likeComment = async (postId, commentId) => {
+    try {
+      const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
+      // Aquí podrías actualizar el estado con la respuesta del backend si es necesario
+      console.log(response.data); // Suponiendo que el backend responde con algún dato relevante
+    } catch (error) {
+      console.error('Error al dar like al comentario:', error);
+    }
+  };
+
+  const updateProfilePrivacy = async (isPrivate) => {
+    await csrf();
+    try {
+      const response = await axios.patch(`/api/user/${user.data.id}/privacy`, { isPrivate });
+      setUser({ ...user, data: { ...user.data, isPrivate: response.data.isPrivate } });
+    } catch (error) {
+      console.error("Error updating profile privacy:", error.message);
+    }
+  };
+
+
+  const deleteComment = async (commentId) => {
+    await csrf();
+    try {
+      await axios.delete(`/api/comments/${commentId}`);
+      // Puedes agregar lógica aquí si necesitas actualizar algo en el estado global después de borrar un comentario
+      console.log(`Comment ${commentId} deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  const getNotifications = async () => {
+    await csrf();
+    try {
+      const response = await axios.get("/api/notifications"); // Asume este endpoint
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching notifications:", error.message);
+      throw error;
+    }
+  };
+
+
 
   const logout = async () => {
     try {
@@ -363,7 +373,8 @@ const deleteComment = async (commentId) => {
         commentOnPost,
         fetchAllPosts,
         likeComment,
-        deleteComment
+        deleteComment,
+        getNotifications
       }}
     >
       {children}
