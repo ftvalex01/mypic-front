@@ -11,6 +11,7 @@ import EditarPerfil from "./components/EditarPerfil";
 import BuscarPerfil from "./components/BuscarPerfil";
 import ProfileByUsername from "./components/ProfileByUsername";
 import Feed from "./components/Feed";
+import ExploreView from "./pages/ExploreView";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="profile/edit" element={<EditarPerfil />} />
             <Route path="/profile/:username" element={<ProfileByUsername />} />
             <Route path="search" element={<BuscarPerfil/>}/>
+            <Route path="/explore" element={<ExploreView/>}/>
             <Route index element={<Feed />}/>
           </Route>
         </Route>

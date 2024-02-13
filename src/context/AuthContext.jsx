@@ -289,6 +289,20 @@ const fetchAllUsers = async () => {
         throw error;
       }
     };
+    // Dentro de tu AuthProvider
+
+    const fetchAllPublicPosts = async () => {
+      await csrf();
+      try {
+        const response = await axios.get('/api/explore');
+        console.log(response.data)
+        // Asegúrate de devolver solo la parte de la respuesta que contiene los posts
+        return response.data; // Esto devuelve el objeto completo, incluyendo data, links, y meta
+      } catch (error) {
+        console.error("Error fetching public posts:", error.message);
+        return { data: [] }; // Devuelve un objeto con un array vacío en caso de error
+      }
+    };
     const likeComment = async (postId, commentId) => {
       try {
         const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
@@ -350,6 +364,7 @@ const deleteComment = async (commentId) => {
         logout,
         forgotPassword,
         resetPassword,
+        fetchAllPublicPosts,
         updateProfile,
         uploadPost,
         getUserImages,
