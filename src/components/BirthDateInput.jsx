@@ -17,7 +17,7 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
     }
     return age;
   };
-  
+
 
   // Validar si el usuario tiene al menos 18 años
   const isEighteenOrOlder = (birthDate) => {
@@ -31,7 +31,18 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
     if (isEighteenOrOlder(birthDate)) {
       Promise.resolve(onNext())
         .then((result) => {
-          Swal.fire('¡Completado!', 'Usuario creado con éxito, serás redireccionado automáticamente', 'success');
+          Swal.fire({
+            title: '¡Completado!',
+            text: 'Usuario creado con éxito, serás redireccionado automáticamente',
+            icon: 'success',
+            timer: 10000, // 3000 ms = 3 segundos antes de cerrarse automáticamente
+            timerProgressBar: true,
+            showConfirmButton: false,
+            didClose: () => {
+              // Redireccionar después de cerrar el Swal
+              navigate("/"); // Asegúrate de que este es el camino correcto que quieres seguir
+            }
+          });
         })
         .catch((error) => {
           Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
