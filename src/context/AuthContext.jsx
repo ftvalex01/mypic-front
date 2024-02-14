@@ -265,6 +265,26 @@ export const AuthProvider = ({ children }) => {
         throw error;
       }
     };
+    const markNotificationAsRead = async (notificationId) => {
+      await csrf();
+      try {
+          // Hacemos una solicitud PATCH al servidor para actualizar la notificación
+          await axios.patch(`/api/notifications/${notificationId}`, { read: true });
+          // Aquí puedes opcionalmente actualizar el estado de las notificaciones en el contexto si lo estás manejando allí
+      } catch (error) {
+          console.error("Error marking notification as read:", error);
+      }
+  };
+    
+    const markAllNotificationsAsRead = async () => {
+      await csrf();
+      try {
+        await axios.patch('/api/notifications/mark-all-read');
+        // Aquí también, actualizar el estado si mantienes un estado de notificaciones en el contexto
+      } catch (error) {
+        console.error("Error marking all notifications as read:", error);
+      }
+    };
     
     const commentOnPost = async (postId, text) => {
        // Para asegurarte de que los valores son correctos
@@ -321,6 +341,29 @@ export const AuthProvider = ({ children }) => {
         console.error('Error al dar like al comentario:', error);
       }
     };
+    const acceptFollowRequest = async (notificationId) => {
+      await csrf();
+      try {
+          const response = await axios.post(`/api/notifications/${notificationId}/accept`);
+          console.log('Solicitud de seguimiento aceptada.');
+          return response.data; // Devuelve la respuesta del servidor
+      } catch (error) {
+          console.error("Error accepting follow request:", error);
+          throw error; // Lanza el error para manejarlo en el componente
+      }
+  };
+  
+  const rejectFollowRequest = async (notificationId) => {
+      await csrf();
+      try {
+          const response = await axios.post(`/api/notifications/${notificationId}/reject`);
+          console.log('Solicitud de seguimiento rechazada.');
+          return response.data; // Devuelve la respuesta del servidor
+      } catch (error) {
+          console.error("Error rejecting follow request:", error);
+          throw error; // Lanza el error para manejarlo en el componente
+      }
+  };
   
     const updateProfilePrivacy = async (isPrivate) => {
       await csrf();
@@ -367,14 +410,18 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        markAllNotificationsAsRead,
+        markNotificationAsRead,
         forgotPassword,
         resetPassword,
         fetchAllPublicPosts,
         updateProfile,
         uploadPost,
         getUserImages,
+        rejectFollowRequest,
         updateProfilePrivacy,
         fetchAllUsers,
+        acceptFollowRequest,
         fetchUserByUsername,
         followUser,
         getFollowData,

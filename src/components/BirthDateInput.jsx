@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
+import { Navigate, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
   const handleDateChange = (e) => {
     onChange(e.target.value);
   };
-
+  const navigate = useNavigate();
   // Función para calcular la edad
   const calculateAge = (birthDate) => {
     const dob = new Date(birthDate);
