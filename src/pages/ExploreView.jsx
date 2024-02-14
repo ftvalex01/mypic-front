@@ -6,26 +6,42 @@ const ExploreView = () => {
   const { fetchAllPublicPosts } = useAuthContext();
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const baseUrl = "http://localhost:8000";
 
   useEffect(() => {
     fetchMorePosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchMorePosts = async () => {
+    if (isLoading) return; // Evitar llamadas adicionales mientras se carga
+
+    setIsLoading(true); // Iniciar la carga
     try {
-      // Obtener la respuesta de la API
       const response = await fetchAllPublicPosts();
-      // Acceder al array de posts dentro de la respuesta
-      const newPosts = response.data; // Ajusta esto según la estructura exacta de tu respuesta
-  
+      const newPosts = response.data;
+
       if (newPosts.length === 0) {
         setHasMore(false);
       } else {
-        setPosts(prevPosts => [...prevPosts, ...newPosts]);
+        setPosts(prevPosts => {
+          // Crear un nuevo conjunto para evitar duplicados
+          const postIds = new Set(prevPosts.map(post => post.id));
+          const uniqueNewPosts = newPosts.filter(post => !postIds.has(post.id));
+          return [...prevPosts, ...uniqueNewPosts];
+        });
       }
     } catch (error) {
       console.error("Error fetching public posts for explore view:", error);
+    } finally {
+      setIsLoading(false); // Terminar la carga
     }
+  };
+
+  const determineGridItemSize = (index) => {
+    const sizes = ['large', 'medium', 'small'];
+    return sizes[index % sizes.length];
   };
 
   return (
@@ -42,18 +58,13 @@ const ExploreView = () => {
     >
       <div className="grid grid-cols-3 gap-4">
         {posts.map((post, index) => (
-          <div key={index} className={`item ${determineGridItemSize(index)}`}>
-            <img src={post.media.url} alt="Post" /> {/* Asegúrate de que esta propiedad coincida con la estructura de tu objeto de post */}
+          <div key={post.id} className={`item ${determineGridItemSize(index)}`}>
+            <img src={`${baseUrl}${post.media.url}`} alt="Post" />
           </div>
         ))}
       </div>
     </InfiniteScroll>
   );
-};
-
-const determineGridItemSize = (index) => {
-  const sizes = ['large', 'medium', 'small'];
-  return sizes[index % sizes.length];
 };
 
 export default ExploreView;

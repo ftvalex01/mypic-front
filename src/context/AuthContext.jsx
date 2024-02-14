@@ -304,7 +304,7 @@ export const AuthProvider = ({ children }) => {
       await csrf();
       try {
         const response = await axios.get('/api/explore');
-        console.log(response.data)
+       
         // Asegúrate de devolver solo la parte de la respuesta que contiene los posts
         return response.data; // Esto devuelve el objeto completo, incluyendo data, links, y meta
       } catch (error) {
