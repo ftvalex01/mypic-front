@@ -1,86 +1,105 @@
-import { useState } from 'react';
-import useAuthContext from '../context/AuthContext'; 
+import { useState, useRef } from 'react';
+import { useUserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
 
 const EditarPerfil = () => {
-    const { user, updateProfile } = useAuthContext();
- 
-    const [nombre, setNombre] = useState(user.data.name);
-    const [bio, setBio] = useState(user.data.bio || '');
-    const [profileImage, setProfileImage] = useState(null);
+    const { user, updateProfile } = useUserContext();
+    const [formData, setFormData] = useState({
+        nombre: user.data.name,
+        bio: user.data.bio || '',
+    });
+    const profileImageRef = useRef(null);
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const validateAndSetImage = (file) => {
+        const fileSize = file.size / 1024 / 1024; // size in MB
+        const validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!validMimeTypes.includes(file.type) || fileSize > 2) {
+            Swal.fire('Error', 'Archivo no válido. Asegúrate de que sea una imagen (jpg, jpeg, png) y no exceda los 2MB.', 'error');
+            profileImageRef.current.value = ''; // Reset input file
+            return false;
+        }
+        return true;
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = {
-            name: nombre,
-            bio: bio
-        };
-        if (profileImage) {
-            data.profile_picture = profileImage;
-        }
-        
-        console.log(data);
-    
-        await updateProfile(data);
-    };
-    
+        const file = profileImageRef.current.files[0];
+        if (file && !validateAndSetImage(file)) return;
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-    
+        const data = new FormData();
+        data.append('name', formData.nombre);
+        data.append('bio', formData.bio);
         if (file) {
-            const fileSize = file.size / 1024; // size in KB
-            const validMimeTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    
-            if (!validMimeTypes.includes(file.type)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Invalid file type. Only JPG, JPEG, and PNG are allowed.',
-                });
-                return;
-            }
-    
-            if (fileSize > 2048) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'File size exceeds limit of 2048KB.',
-                });
-                return;
-            }
-    
-            setProfileImage(file);
+            data.append('profile_picture', file);
+        }
+
+        try {
+            await updateProfile(data);
+            Swal.fire('¡Éxito!', 'Perfil actualizado correctamente.', 'success');
+        } catch (error) {
+            Swal.fire('Error', 'No se pudo actualizar el perfil.', 'error');
         }
     };
-    
 
     return (
         <div className="max-w-md mx-auto bg-white p-5 border rounded-lg shadow-md mt-5">
-            <div className="mb-4 text-center">
-                <img className="w-24 h-24 rounded-full mx-auto" src={user.profile_picture || 'path_to_some_default_image'} alt="Foto de perfil" />
-                <div className="mt-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Cambiar foto
-                        <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-                    </label>
-                </div>
-            </div>
             <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Nombre */}
                 <div>
                     <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
                         Nombre
                     </label>
-                    <input type="text" id="nombre" name="name" required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                    <input
+                        id="nombre"
+                        name="nombre" // Asegúrate de que el 'name' coincida con las claves del estado del formulario
+                        type="text"
+                        required
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        value={formData.nombre}
+                        onChange={handleInputChange}
+                    />
                 </div>
+                {/* Biografía */}
                 <div>
                     <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
                         Biografía
                     </label>
-                    <textarea id="bio" name="bio" rows="3" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value={bio} onChange={(e) => setBio(e.target.value)}></textarea>
+                    <textarea
+                        id="bio"
+                        name="bio"
+                        rows="3"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        value={formData.bio}
+                        onChange={handleInputChange}
+                    ></textarea>
                 </div>
+                {/* Carga de imagen */}
+                {/* Botón para seleccionar la imagen */}
+                <label className="block text-sm font-medium text-gray-700 cursor-pointer">
+                    Cambiar foto
+                    <input
+                        type="file"
+                        className="hidden"
+                        ref={profileImageRef}
+                        onChange={(e) => {
+                            if (e.target.files[0]) validateAndSetImage(e.target.files[0]);
+                        }}
+                        accept="image/jpeg, image/png, image/jpg"
+                    />
+                </label>
+                {/* Botón de envío */}
                 <div className="flex justify-center">
-                    <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button
+                        type="submit"
+                        className="w-full py-2 text-white rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
                         Guardar cambios
                     </button>
                 </div>

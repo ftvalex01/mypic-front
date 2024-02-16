@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
 import  { useState } from 'react';
+import validator from 'validator';
+
 
 const EmailInput = ({ onNext, value, onChange }) => {
   const [emailError, setEmailError] = useState('');
   const [isFocused, setIsFocused] = useState(false); // Estado para gestionar el enfoque
 
   const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return validator.isEmail(email);
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateEmail(value)) {

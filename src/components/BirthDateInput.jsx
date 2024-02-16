@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
@@ -31,7 +31,7 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
     // Verificar si el usuario tiene 18 años o más
     if (isEighteenOrOlder(birthDate)) {
       Promise.resolve(onNext())
-        .then((result) => {
+       /*  .then((result) => {
           Swal.fire({
             title: '¡Completado!',
             text: 'Usuario creado con éxito, serás redireccionado automáticamente',
@@ -44,7 +44,7 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
               navigate("/"); // Asegúrate de que este es el camino correcto que quieres seguir
             }
           });
-        })
+        }) */
         .catch((error) => {
           Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
         });

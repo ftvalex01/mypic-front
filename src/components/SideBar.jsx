@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 import { MdMessage, MdOutlineMoreHoriz } from "react-icons/md";
@@ -7,6 +7,7 @@ import { RiLiveLine } from "react-icons/ri";
 import UploadModal from "./UploadModal/UploadModal";
 import BuscarPerfil from "./BuscarPerfil";
 import useAuthContext from "../context/AuthContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import {
   FaHome,
   FaSearch,
@@ -14,34 +15,18 @@ import {
   FaRegHeart,
   FaPlusSquare,
 } from "react-icons/fa";
-import axios from "../api/axios";
 
 const SideBar = () => {
   const { logout, user } = useAuthContext();
+  const { hasUnreadNotifications } = useNotificationContext(); // Asegúrate de que esto esté correctamente implementado en tu NotificationContext
   const [isSearchSidebarOpen, setSearchSidebarOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
-  const openSearchSidebar = () => setSearchSidebarOpen(true);
-  const closeSearchSidebar = () => setSearchSidebarOpen(false);
 
-  useEffect(() => {
-    const fetchUnreadNotifications = async () => {
-      try {
-        const { data } = await axios.get("/api/notifications/unread"); // Asegúrate de ajustar la URL
-        setHasUnreadNotifications(data.unreadCount > 0);
-      } catch (error) {
-        console.error("Error fetching unread notifications:", error);
-      }
-    };
-
-    fetchUnreadNotifications();
-  }, []);
+  const toggleModal = () => setModalOpen(!isModalOpen);
+  const toggleSearchSidebar = () => setSearchSidebarOpen(!isSearchSidebarOpen);
 
   return (
     <>
-      {/* Sidebar para pantallas medianas y grandes */}
       <aside className="hidden lg:flex flex-col bg-gray-700 fixed inset-y-0 left-0 z-30 w-64">
         <div className="flex flex-col space-y-6 p-4">
           <h1 className="text-3xl font-bold mb-4 text-white">MyPic</h1>
@@ -51,30 +36,21 @@ const SideBar = () => {
               <span>Inicio</span>
             </Link>
             <button
-              onClick={openSearchSidebar}
+              onClick={toggleSearchSidebar}
               className="flex items-center space-x-2 text-white"
             >
               <FaSearch className="text-lg" />
               <span>Búsqueda</span>
             </button>
-            <Link
-              to="/explore"
-              className="flex items-center space-x-2 text-white"
-            >
+            <Link to="/explore" className="flex items-center space-x-2 text-white">
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
             </Link>
-            <Link
-              to="/reels"
-              className="flex items-center space-x-2 text-white"
-            >
+            <Link to="/reels" className="flex items-center space-x-2 text-white">
               <RiLiveLine className="text-lg" />
               <span>Reels</span>
             </Link>
-            <Link
-              to="/messages"
-              className="flex items-center space-x-2 text-white"
-            >
+            <Link to="/messages" className="flex items-center space-x-2 text-white">
               <MdMessage className="text-lg" />
               <span>Mensajes</span>
             </Link>
@@ -89,16 +65,13 @@ const SideBar = () => {
               )}
             </Link>
             <button
-              onClick={openModal}
+              onClick={toggleModal}
               className="flex items-center space-x-2 text-white"
             >
               <FaPlusSquare className="text-lg" />
               <span>Crear</span>
             </button>
-            <Link
-              to="/profile"
-              className="flex items-center space-x-2 text-white"
-            >
+            <Link to="/profile" className="flex items-center space-x-2 text-white">
               <CgProfile className="text-lg" />
               <span>{user?.data.username}</span>
             </Link>
@@ -109,18 +82,11 @@ const SideBar = () => {
               <MdOutlineMoreHoriz className="text-lg" />
               <span>Logout</span>
             </button>
-            <Link to="/more" className="flex items-center space-x-2 text-white">
-              <MdOutlineMoreHoriz className="text-lg" />
-              <span>Más</span>
-            </Link>
           </nav>
         </div>
       </aside>
 
-      {/* Modal para subir */}
-      <UploadModal isOpen={isModalOpen} onClose={closeModal} />
-
-      {/* Menú lateral de búsqueda */}
+      <UploadModal isOpen={isModalOpen} onClose={toggleModal} />
       <Transition
         as={Fragment}
         show={isSearchSidebarOpen}
@@ -133,15 +99,10 @@ const SideBar = () => {
       >
         <div className="fixed inset-y-0 right-0 z-40 w-80 bg-white shadow-lg overflow-y-auto">
           <div className="p-4">
-            <button
-              onClick={closeSearchSidebar}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              {/* Aquí puedes agregar un ícono de cierre si lo deseas */}
-              <span>Cerrar</span>
+            <button onClick={toggleSearchSidebar} className="text-gray-600 hover:text-gray-800">
+              Cerrar
             </button>
             <BuscarPerfil />
-            {/* Contenido adicional si es necesario */}
           </div>
         </div>
       </Transition>

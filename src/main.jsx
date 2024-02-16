@@ -1,17 +1,31 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client"; // Importa createRoot desde react-dom/client
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { NotificationProvider } from "./context/NotificationContext.jsx";
+import { PostProvider } from "./context/PostContext.jsx";
+import { SocialInteractionProvider } from "./context/SocialInteractionContext.jsx";
+import { UserProvider } from "./context/UserContext.jsx";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const container = document.getElementById("root");
+const root = createRoot(container); // Utiliza createRoot para crear la raíz.
+
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App></App>
+        <NotificationProvider>
+          <PostProvider>
+            <SocialInteractionProvider>
+              <UserProvider>
+                <App />
+              </UserProvider>
+            </SocialInteractionProvider>
+          </PostProvider>
+        </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
-

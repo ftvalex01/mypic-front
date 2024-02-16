@@ -1,26 +1,22 @@
-// Feed.jsx
-import { useEffect, useState } from 'react';
+import  { useEffect } from 'react';
 import PostCard from '../components/PostCard';
-import useAuthContext from '../context/AuthContext'; // Asume que esta es la ruta correcta a tu contexto
+import { usePostContext } from '../context/PostContext';
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
-  const { fetchAllPosts } = useAuthContext(); // Asegúrate de tener esta función en tu contexto
+  const { posts, fetchAllPosts } = usePostContext(); // Directamente usa 'posts' desde el contexto
 
   useEffect(() => {
-    const initFetch = async () => {
-      const fetchedPosts = await fetchAllPosts(); // Obtiene todos los posts
-      setPosts(fetchedPosts);
-    };
-
-    initFetch();
+    fetchAllPosts(); // Esto establece 'posts' dentro del contexto
   }, [fetchAllPosts]);
 
+  // Verifica si el array 'posts' está vacío y muestra un mensaje o la lista de posts
   return (
     <div>
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post) => <PostCard key={post.id} post={post} />)
+      ) : (
+        <p className="text-center mt-10">Empieza a seguir a tus amigos para ver sus publicaciones.</p>
+      )}
     </div>
   );
 };

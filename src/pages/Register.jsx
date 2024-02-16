@@ -1,68 +1,78 @@
-  /* eslint-disable no-unused-vars */
-  /* eslint-disable react/jsx-key */
-  import { useEffect, useState } from "react";
-  import { Link, useNavigate } from "react-router-dom";
-  import useAuthContext from "../context/AuthContext";
-  import NameInput from "../components/NameInput.jsx";
-  import UserNameInput from "../components/UsernameInput";
-  import EmailInput from "../components/EmailInput";
-  import PasswordInput from "../components/PasswordInput";
-  import BirthDateInput from "../components/BirthDateInput";
+/* eslint-disable react/jsx-key */
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useAuthContext from "../context/AuthContext";
+import NameInput from "../components/NameInput.jsx";
+import UserNameInput from "../components/UsernameInput";
+import EmailInput from "../components/EmailInput";
+import PasswordInput from "../components/PasswordInput";
+import BirthDateInput from "../components/BirthDateInput";
+import Swal from 'sweetalert2'; // Asumiendo que quieres usar Swal para la retroalimentación
 
-  const Register = () => {
-    const [step, setStep] = useState(1);
-    const [userData, setUserData] = useState({
-      name: "",
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      birth_date: "",
-    });
+const Register = () => {
+  const [step, setStep] = useState(1);
+  const [userData, setUserData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    birth_date: "",
+  });
 
-    const navigate = useNavigate();
-    const { register, errors } = useAuthContext();
+  const navigate = useNavigate();
+  const { register, errors } = useAuthContext();
 
-    useEffect(() => {
-      console.log("Datos actuales del formulario:", userData);
-    }, [userData]);
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      // Mostrar un mensaje de error si hay errores
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor, corrige los errores antes de continuar.',
+      });
+    }
+  }, [errors, step]);
 
-    const nextStep = () => {
-      if (step < 5) {
-        setStep(prevStep => prevStep + 1);
-      } else {
-        handleRegister();
-      }
-    };
+  const nextStep = () => {
+    if (step < 5) {
+      setStep(prevStep => prevStep + 1);
+    } else {
+      handleRegister();
+    }
+  };
 
-    const updateField = (field, value) => {
-      setUserData(prev => ({ ...prev, [field]: value }));
-    };
-    
+  const updateField = (field, value) => {
+    setUserData(prev => ({ ...prev, [field]: value }));
+  };
+  const handleRegister = async () => {
+    // Verificar si las contraseñas coinciden
+    if (userData.password !== userData.confirmPassword) {
+      Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      return; // Detener la ejecución si las contraseñas no coinciden
+    }
+  
+    const { confirmPassword, birth_date, ...formData } = userData; 
+    formData.birth_date = new Date(birth_date).toISOString(); // Convertir la fecha de nacimiento al formato ISO
+    formData.password_confirmation = confirmPassword; // Asegurarte de incluir esto
+  
+    try {
+      await register(formData);
+      Swal.fire('Registro exitoso', 'Bienvenido a la plataforma.', 'success');
+      navigate("/");
+    } catch (error) {
+      console.error("Error durante el registro:", error);
+      Swal.fire('Error en el registro', 'No se pudo completar tu registro.', 'error');
+    }
+  };
+  const stepComponents = [
+    <NameInput onNext={nextStep} value={userData.name} onChange={(value) => updateField("name", value)} error={errors.name} />,
+    <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
+    <EmailInput onNext={nextStep} value={userData.email} onChange={(value) => updateField("email", value)} error={errors.email} />,
+    <PasswordInput onNext={nextStep} password={userData.password} confirmPassword={userData.confirmPassword} onPasswordChange={(value) => updateField("password", value)} onConfirmPasswordChange={(value) => updateField("confirmPassword", value)} error={errors.password} />,
+    <BirthDateInput onNext={nextStep} birthDate={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />
+  ];
 
-    const handleRegister = async () => {
-      const { confirmPassword, ...formData } = userData; 
-      formData.password_confirmation = userData.confirmPassword; 
-
-      try {
-        await register(formData);
-        navigate("/"); 
-      } catch (error) {
-        console.error("Error durante el registro:", error.response.data);
-        
-      }
-    };
-
-    const stepComponents = [
-      <NameInput onNext={nextStep} value={userData.name} onChange={(value) => updateField("name", value)} error={errors.name} />,
-      <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
-      <EmailInput onNext={nextStep} value={userData.email} onChange={(value) => updateField("email", value)} error={errors.email} />,
-      <PasswordInput onNext={nextStep} password={userData.password} confirmPassword={userData.confirmPassword} onPasswordChange={(value) => updateField("password", value)} onConfirmPasswordChange={(value) => updateField("confirmPassword", value)} error={errors.password} />,
-      <BirthDateInput onNext={nextStep} birthDate={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />
-
-    ];
-
-   
   return (
     <section className="flex items-center justify-center w-full h-screen bg-teal-green">
       <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
@@ -77,4 +87,4 @@
   );
 };
 
-  export default Register;
+export default Register;

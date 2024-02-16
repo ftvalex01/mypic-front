@@ -1,19 +1,19 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { FiHeart, FiMessageCircle, FiTrash2 } from "react-icons/fi";
 import { IoHeartSharp } from "react-icons/io5";
-import useAuthContext from "../context/AuthContext";
+import { usePostContext } from "../context/PostContext";
+import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
 
 const PostCard = ({ post }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likesCount, setLikesCount] = useState(
-    post.reactions ? post.reactions.length : 0
-  );
-  const { likePost, commentOnPost, user, likeComment, deleteComment } =
-    useAuthContext();
-  const baseUrl = "http://localhost:8000";
+  const [likesCount, setLikesCount] = useState(post.reactions ? post.reactions.length : 0);
+  const { likePost, commentOnPost, deleteComment, likeComment } = usePostContext();
+  const { user } = useUserContext(); // Acceso a datos del usuario autenticado
+  const baseUrl = import.meta.REACT_APP_API_URL || "http://localhost:8000"; // Utiliza variables de entorno para definir URLs base
   const [remainingHours, setRemainingHours] = useState(null);
 
   useEffect(() => {
@@ -22,10 +22,8 @@ const PostCard = ({ post }) => {
       const currentDate = new Date();
       const differenceInHours = Math.abs(currentDate - publishDate) / 36e5;
       const remaining = post.life_time - differenceInHours;
-
       return remaining > 0 ? Math.floor(remaining) : 0;
     };
-
     setRemainingHours(calculateRemainingHours());
   }, [post.publish_date, post.life_time]);
 
@@ -38,43 +36,41 @@ const PostCard = ({ post }) => {
       console.error("Error al dar like al post:", error);
     }
   };
+
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
-      setComments(currentComments => currentComments.filter(comment => comment.id !== commentId));
+      setComments((currentComments) => currentComments.filter((comment) => comment.id !== commentId));
     } catch (error) {
       console.error("Error al intentar borrar el comentario:", error);
     }
   };
+
   const handleLikeComment = async (commentId) => {
     try {
       await likeComment(post.id, commentId);
-      setComments(comments.map(comment => {
-        if (comment.id === commentId) {
-          return { ...comment, isLiked: !comment.isLiked, likesCount: comment.isLiked ? comment.likesCount - 1 : comment.likesCount + 1 };
-        }
-        return comment;
-      }));
+      setComments((comments) =>
+        comments.map((comment) =>
+          comment.id === commentId ? { ...comment, isLiked: !comment.isLiked, likesCount: comment.isLiked ? comment.likesCount - 1 : comment.likesCount + 1 } : comment
+        )
+      );
     } catch (error) {
       console.error('Error al intentar dar like al comentario:', error);
     }
   };
-  
-  
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    
     try {
       const response = await commentOnPost(post.id, commentText);
-      setComments(prevComments => [...prevComments, response.data]);
+      setComments((prevComments) => [...prevComments, { ...response, user_id: user?.data?.id }]); // Asumiendo que la respuesta incluye el comentario recién creado
       setCommentText("");
     } catch (error) {
       console.error("Error al enviar comentario:", error);
     }
   };
-  
+
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -119,27 +115,26 @@ const PostCard = ({ post }) => {
 
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
-      {comments.map((comment) => (
-        <div key={comment.id} className="comment my-2">
-    <p>{comment.text} - <span>by {user.data.name}</span></p>
-    <div className="comment-actions">
-      <button onClick={() => handleLikeComment(comment.id)}>
-        {comment.isLiked ? (
-          <IoHeartSharp className="w-6 h-6 text-red-500" />
-        ) : (
-          <FiHeart className="w-6 h-6 text-gray-500" />
-        )}
-      </button>
-      
-      {(user && user.data.id === comment.user_id) && (
-        <button onClick={() => handleDelete(comment.id)}>
-          <FiTrash2 className="icon" />
-        </button>
-      )}
-    </div>
-  </div>
-))}
-
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment my-2">
+            <p>{comment.text} - <span>by {comment.user_id === user?.data?.id ? "you" : "someone"}</span></p>
+            <div className="comment-actions">
+              <button onClick={() => handleLikeComment(comment.id)}>
+                {comment.isLiked ? (
+                  <IoHeartSharp className="w-6 h-6 text-red-500" />
+                ) : (
+                  <FiHeart className="w-6 h-6 text-gray-500" />
+                )}
+              </button>
+              
+              {user && user.data.id === comment.user_id && (
+                <button onClick={() => handleDelete(comment.id)}>
+                  <FiTrash2 className="icon" />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       <form className="p-4" onSubmit={handleSubmitComment}>
