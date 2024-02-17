@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useAuthContext from "../context/AuthContext"; // Asegúrate de que la ruta sea correcta
@@ -30,7 +31,7 @@ const Login = () => {
     console.log("Verificando código 2FA:", twoFactorCode);
     // Simulación de la verificación exitosa del código 2FA
     // setIs2FAEnabled(false); // Si la verificación es exitosa, deshabilitar 2FA
-
+  }
 
   return (
     <section className="flex items-center justify-center min-h-screen bg-teal-green">
