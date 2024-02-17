@@ -30,24 +30,10 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
     e.preventDefault();
     // Verificar si el usuario tiene 18 años o más
     if (isEighteenOrOlder(birthDate)) {
-      Promise.resolve(onNext())
-       /*  .then((result) => {
-          Swal.fire({
-            title: '¡Completado!',
-            text: 'Usuario creado con éxito, serás redireccionado automáticamente',
-            icon: 'success',
-            timer: 10000, // 3000 ms = 3 segundos antes de cerrarse automáticamente
-            timerProgressBar: true,
-            showConfirmButton: false,
-            didClose: () => {
-              // Redireccionar después de cerrar el Swal
-              navigate("/"); // Asegúrate de que este es el camino correcto que quieres seguir
-            }
-          });
-        }) */
-        .catch((error) => {
-          Swal.fire('Error', 'Hubo un problema: ' + error.message, 'error');
-        });
+
+      onNext(); // Pasa al siguiente componente si la verificación de edad es exitosa
+
+   
     } else {
       // Si el usuario no tiene 18 años, mostrar un mensaje de error con SweetAlert
       Swal.fire('Error', 'Debes tener al menos 18 años para registrarte.', 'error');
