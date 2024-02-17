@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { FaCog, FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useAuthContext from "../context/AuthContext";
+import { useUserContext } from "../context/UserContext"; // Asegúrate de que la ruta sea correcta.
+import { useSocialInteractions } from "../context/SocialInteractionContext"; // Importa el hook correcto.
 
 const Profile = () => {
-  const { user, getUserImages, getFollowData, updateProfilePrivacy } = useAuthContext();
+  const { user, getUserImages, updateProfilePrivacy } = useUserContext();
+  const { getFollowData } = useSocialInteractions();
   const [userImages, setUserImages] = useState([]);
-  const [followData, setFollowData] = useState({});
+  const [followData, setFollowData] = useState({ followers: 0, following: 0 });
   const [showSettings, setShowSettings] = useState(false);
   const [isProfilePrivate, setIsProfilePrivate] = useState(user?.data?.isPrivate || false);
-  const baseUrl = "http://localhost:8000";
+  const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
+
   useEffect(() => {
     const fetchUserImages = async () => {
       if (user && user.data.id) {
@@ -43,6 +46,7 @@ const Profile = () => {
     await updateProfilePrivacy(newPrivacySetting);
     setShowSettings(false); // Opcional: cerrar menú tras cambiar la configuración
   };
+  
 
   return (
     <div className="pt-16 flex-1 flex flex-col overflow-auto">
@@ -54,7 +58,7 @@ const Profile = () => {
             className="rounded-full w-20 h-20 md:w-40 md:h-40"
           />
           <div className="md:ml-10 mt-4 md:mt-0">
-            <h1 className="text-2xl font-bold">{user?.data.username}</h1>
+            <h1 className="text-2xl font-bold">{user?.username}</h1>
             <div className="flex flex-wrap space-x-4 mt-4">
               <Link to="edit" className="btn">
                 Editar perfil
@@ -75,7 +79,7 @@ const Profile = () => {
               <span>{followData.followers} seguidores</span>
               <span>{followData.following} seguidos</span>
             </div>
-            <p className="mt-2">{user?.data.bio}</p>
+            <p className="mt-2">{user?.bio}</p>
           </div>
         </div>
 
@@ -89,7 +93,7 @@ const Profile = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {userImages.map((image, index) => (
             <div key={index} className="w-full h-64 overflow-hidden">
-              <img
+            <img
                 src={`${baseUrl}${image.url}`}
                 alt={`User Post ${index}`}
                 className="w-full h-full object-cover"

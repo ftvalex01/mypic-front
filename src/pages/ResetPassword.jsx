@@ -8,7 +8,7 @@ const ResetPassword = () => {
   const [status, setStatus] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { resetPassword, errors } = useAuthContext();
+  const { resetPassword, resetPasswordErrors } = useAuthContext();
   const { token } = useParams();
   const email = searchParams.get("email");
 
@@ -65,8 +65,8 @@ const ResetPassword = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {errors.password && (
-              <div className="text-red-500 text-xs mt-2">{errors.password[0]}</div>
+            {resetPasswordErrors.password && (
+              <div className="text-red-500 text-xs mt-2">{resetPasswordErrors.password[0]}</div>
             )}
           </div>
           <div>
@@ -77,8 +77,8 @@ const ResetPassword = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            {errors.confirmPassword && (
-              <div className="text-red-500 text-xs mt-2">{errors.confirmPassword[0]}</div>
+            {resetPasswordErrors.confirmPassword && (
+              <div className="text-red-500 text-xs mt-2">{resetPasswordErrors.confirmPassword[0]}</div>
             )}
           </div>
           <button

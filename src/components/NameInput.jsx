@@ -6,7 +6,7 @@ const NameInput = ({ onNext, value, onChange, error }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [validationError, setValidationError] = useState('');
 
-  // Validación del nombre
+  // Simplificamos la validación del nombre utilizando una función pura que se define fuera del componente
   const validateName = (name) => {
     if (!name) return 'El nombre no puede estar vacío.';
     if (!isNaN(name)) return 'El nombre no puede contener solo números.';
@@ -15,7 +15,7 @@ const NameInput = ({ onNext, value, onChange, error }) => {
     return '';
   };
 
-  // Manejo del foco y desenfoque de input
+  // Manejo del foco y desenfoque para aplicar la validación
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => {
     setIsFocused(value !== '');
@@ -23,15 +23,15 @@ const NameInput = ({ onNext, value, onChange, error }) => {
     setValidationError(error);
   };
 
-  // Manejo del cambio de input y validación inmediata
+  // Manejo del cambio de input con validación inmediata
   const handleInputChange = (e) => {
     onChange(e.target.value);
-    if (validationError) {
+    if (isFocused) {
       setValidationError(validateName(e.target.value));
     }
   };
 
-  // Manejo del envío del formulario
+  // Manejo del envío del formulario con validación
   const handleSubmit = (e) => {
     e.preventDefault();
     const error = validateName(value);
@@ -46,10 +46,7 @@ const NameInput = ({ onNext, value, onChange, error }) => {
     <form onSubmit={handleSubmit} className="space-y-7 relative">
       <h3 className="text-2xl font-bold text-center text-burgundy mb-6">Pon tu nombre</h3>
       <div className="form-field">
-        <label 
-          htmlFor="name"
-          className={`label ${isFocused || value ? 'focused' : ''}`}
-        >
+        <label htmlFor="name" className={`label ${isFocused || value ? 'focused' : ''}`}>
           Tu nombre completo
         </label>
         <input
@@ -66,7 +63,7 @@ const NameInput = ({ onNext, value, onChange, error }) => {
         />
         {(validationError || error) && <p className="text-red-500 text-xs">{validationError || error}</p>}
       </div>
-      <button 
+      <button
         type="submit"
         className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
         style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}

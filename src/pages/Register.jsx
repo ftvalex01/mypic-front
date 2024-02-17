@@ -1,4 +1,6 @@
+
 /* eslint-disable no-unused-vars */
+
 /* eslint-disable react/jsx-key */
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +11,7 @@ import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import BirthDateInput from "../components/BirthDateInput";
 import TwoFactorOption from "../components/TwoFactorOption.jsx";
+import Swal from 'sweetalert2'; // Asumiendo que quieres usar Swal para la retroalimentación
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -20,15 +23,21 @@ const Register = () => {
     confirmPassword: "",
     birth_date: "",
     enable2FA: false, // Nuevo campo para 2FA
-
   });
 
   const navigate = useNavigate();
   const { register, errors } = useAuthContext();
 
   useEffect(() => {
-    console.log("Datos actuales del formulario:", userData);
-  }, [userData]);
+    if (Object.keys(errors).length > 0) {
+      // Mostrar un mensaje de error si hay errores
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Por favor, corrige los errores antes de continuar.',
+      });
+    }
+  }, [errors, step]);
 
   const nextStep = () => {
     if (step < 6) { // Ajustar el número máximo de pasos
@@ -43,20 +52,27 @@ const Register = () => {
   };
 
 
-  const handleRegister = async () => {
-    const { confirmPassword, ...formData } = userData;
-    formData.password_confirmation = userData.confirmPassword;
-
+   const handleRegister = async () => {
+    // Verificar si las contraseñas coinciden
+    if (userData.password !== userData.confirmPassword) {
+      Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      return; // Detener la ejecución si las contraseñas no coinciden
+    }
+  
+    const { confirmPassword, birth_date, ...formData } = userData; 
+    formData.birth_date = new Date(birth_date).toISOString(); // Convertir la fecha de nacimiento al formato ISO
+    formData.password_confirmation = confirmPassword; // Asegurarte de incluir esto
+  
     try {
       await register(formData);
-      console.log(formData);
-
+      Swal.fire('Registro exitoso', 'Bienvenido a la plataforma.', 'success');
       navigate("/");
     } catch (error) {
-      console.error("Error durante el registro:", error.response.data);
-
+      console.error("Error durante el registro:", error);
+      Swal.fire('Error en el registro', 'No se pudo completar tu registro.', 'error');
     }
   };
+
   const stepComponents = [
       <NameInput onNext={nextStep} value={userData.name} onChange={(value) => updateField("name", value)} error={errors.name} />,
       <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
@@ -65,6 +81,9 @@ const Register = () => {
       <BirthDateInput onNext={nextStep} birthDate={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />,
       <TwoFactorOption onNext={nextStep} onToggle2FA={(isChecked) => updateField("enable2FA", isChecked)} isChecked={userData.enable2FA} />
   ];
+
+
+  });
 
 
   return (

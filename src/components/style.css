@@ -65,3 +65,72 @@
   background-color: #FF0000;
   /* Cambia #FF0000 por el color que prefieras */
 }
+
+
+
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+.notification-item.read {
+  background-color: #e9e9e9;
+}
+
+.notification-item:hover {
+  background-color: #dedede;
+}
+
+.notification-item:not(.read) .notification-icon {
+  color: #007bff; /* Color para íconos de notificaciones no leídas */
+}
+
+.notification-item.read .notification-icon {
+  color: #6c757d; /* Color para íconos de notificaciones leídas */
+}
+
+.notification-content {
+  margin-left: 10px;
+}
+
+.notification-content h4 {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+}
+
+.notification-content p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.filter-btn {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.active-filter {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Estilos adicionales que puedes necesitar para tu layout específico */
+.recent-notifications h3,
+.older-notifications h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}

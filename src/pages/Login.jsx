@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import useAuthContext from "../context/AuthContext";
+import useAuthContext from "../context/AuthContext"; // Asegúrate de que la ruta sea correcta
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const { login, errors } = useAuthContext();
@@ -29,7 +30,7 @@ const Login = () => {
     console.log("Verificando código 2FA:", twoFactorCode);
     // Simulación de la verificación exitosa del código 2FA
     // setIs2FAEnabled(false); // Si la verificación es exitosa, deshabilitar 2FA
-  };
+
 
   return (
     <section className="flex items-center justify-center min-h-screen bg-teal-green">
@@ -38,6 +39,7 @@ const Login = () => {
           <Logo />
           <h3 className="text-xl font-bold text-center text-burgundy mb-4">Iniciar sesión</h3>
         </div>
+
         {!is2FAEnabled ? (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -96,6 +98,7 @@ const Login = () => {
           <Link to="/register" className="text-xs text-amber-600 hover:underline mt-4">Crear cuenta nueva</Link>
           <SocialLogin provider="github" />
           <SocialLogin provider="google" />
+
 
         </div>
         <div className="mt-4 text-center">

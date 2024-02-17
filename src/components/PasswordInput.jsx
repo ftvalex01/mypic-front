@@ -14,20 +14,21 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
-    const minLength = password.length >= 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[^A-Za-z0-9]/.test(password);
+    const updatePasswordCriteria = () => {
+      const criteria = {
+        minLength: password.length >= 8,
+        hasUppercase: /[A-Z]/.test(password),
+        hasNumber: /[0-9]/.test(password),
+        hasSymbol: /[^A-Za-z0-9]/.test(password),
+      };
 
-    setPasswordCriteria({
-      minLength,
-      hasUppercase,
-      hasNumber,
-      hasSymbol,
-    });
+      setPasswordCriteria(criteria);
 
-    const strength = [minLength, hasUppercase, hasNumber, hasSymbol].filter(Boolean).length;
-    setPasswordStrength(strength);
+      const strength = Object.values(criteria).filter(Boolean).length;
+      setPasswordStrength(strength);
+    };
+
+    updatePasswordCriteria();
   }, [password]);
 
   const handleSubmit = (e) => {
@@ -38,6 +39,7 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
     }
     onNext();
   };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="form-field relative">
@@ -48,8 +50,12 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
           className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+          aria-label="Password"
         />
-        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+        <button 
+          type="button" 
+          onClick={() => setShowPassword(!showPassword)} 
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
           {showPassword ? 'Ocultar' : 'Mostrar'}
         </button>
       </div>
@@ -61,28 +67,25 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
           value={confirmPassword}
           onChange={(e) => onConfirmPasswordChange(e.target.value)}
           className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+          aria-label="Confirm Password"
         />
-        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+        <button 
+          type="button" 
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
           {showConfirmPassword ? 'Ocultar' : 'Mostrar'}
         </button>
       </div>
       {formError && <div className="text-red-500 text-xs mt-2">{formError}</div>}
       <ul className="list-disc pl-5 space-y-1">
-        <li className={`${passwordCriteria.minLength ? 'text-green-500' : 'text-red-500'}`}>
-          {passwordCriteria.minLength ? "✅" : "🔴"} Mínimo 8 caracteres
-        </li>
-        <li className={`${passwordCriteria.hasUppercase ? 'text-green-500' : 'text-red-500'}`}>
-          {passwordCriteria.hasUppercase ? "✅" : "🔴"} Al menos una mayúscula
-        </li>
-        <li className={`${passwordCriteria.hasNumber ? 'text-green-500' : 'text-red-500'}`}>
-          {passwordCriteria.hasNumber ? "✅" : "🔴"} Incluye un número
-        </li>
-        <li className={`${passwordCriteria.hasSymbol ? 'text-green-500' : 'text-red-500'}`}>
-          {passwordCriteria.hasSymbol ? "✅" : "🔴"} Contiene un símbolo
-        </li>
+        {Object.entries(passwordCriteria).map(([key, isMet]) => (
+          <li key={key} className={`${isMet ? 'text-green-500' : 'text-red-500'}`}>
+            {isMet ? "✅" : "🔴"} {criteriaText(key)}
+          </li>
+        ))}
       </ul>
       <div className="w-full bg-gray-300 h-2 rounded-lg overflow-hidden my-2">
-        <div className={`h-full transition-width duration-500 ${passwordStrength === 4 ? 'bg-green-500' : passwordStrength >= 2 ? 'bg-yellow-500' : 'bg-red-500'}`}
+        <div className={`h-full ${passwordStrengthColor(passwordStrength)}`}
             style={{ width: `${passwordStrength * 25}%` }}></div>
       </div>
       <button 
@@ -93,7 +96,25 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
       </button>
     </form>
   );
-  
+
+  function criteriaText(key) {
+    switch (key) {
+      case 'minLength':
+        return "Mínimo 8 caracteres";
+      case 'hasUppercase':
+        return "Al menos una mayúscula";
+      case 'hasNumber':
+        return "Incluye un número";
+      case 'hasSymbol':
+        return "Contiene un símbolo";
+      default:
+        return "";
+    }
+  }
+
+  function passwordStrengthColor(strength) {
+    return `h-full transition-width duration-500 ${strength === 4 ? 'bg-green-500' : strength >= 2 ? 'bg-yellow-500' : 'bg-red-500'}`;
+  }
 };
 
 export default PasswordInput;

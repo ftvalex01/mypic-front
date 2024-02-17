@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
   const handleDateChange = (e) => {
     onChange(e.target.value);
   };
-
+  const navigate = useNavigate();
   // Función para calcular la edad
   const calculateAge = (birthDate) => {
     const dob = new Date(birthDate);
@@ -29,7 +30,10 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
     e.preventDefault();
     // Verificar si el usuario tiene 18 años o más
     if (isEighteenOrOlder(birthDate)) {
+
       onNext(); // Pasa al siguiente componente si la verificación de edad es exitosa
+
+   
     } else {
       // Si el usuario no tiene 18 años, mostrar un mensaje de error con SweetAlert
       Swal.fire('Error', 'Debes tener al menos 18 años para registrarte.', 'error');

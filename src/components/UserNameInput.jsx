@@ -1,34 +1,32 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import useAuthContext from '../context/AuthContext'; // Asegúrate de que la ruta sea correcta.
+import useAuthContext from '../context/AuthContext'; // Verifica la ruta.
 
 const UserNameInput = ({ onNext, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { fetchUserByUsername } = useAuthContext();
+  const { fetchUserByUsername } = useAuthContext(); // Asegúrate de que esta función esté implementada.
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(value !== '');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Indica que se está cargando/comprobando
+    setLoading(true);
     try {
-      // Se asume que si el usuario no existe, la función lanzará un error
-      await fetchUserByUsername(value);
-      // Si llega a este punto sin errores, el nombre de usuario ya existe
+      // Intenta buscar el nombre de usuario.
+      const userExists = await fetchUserByUsername(value);
       setLoading(false);
-      alert('El nombre de usuario ya existe.');
-    } catch (error) {
-      // Se asume que un error indica que el nombre de usuario no existe
-      setLoading(false);
-      if (error.response.status === 404) {
-        // El nombre de usuario no existe, por lo que se puede proceder
-        onNext();
+      if (userExists) {
+        alert('El nombre de usuario ya existe.');
       } else {
-        // Manejo de otros posibles errores de la red, servidor, etc.
-        alert('Error al verificar el nombre de usuario. Intente de nuevo.');
+        // Si el usuario no existe, permite continuar.
+        onNext();
       }
+    } catch (error) {
+      setLoading(false);
+      // Considera un manejo de errores más detallado según tu API.
+      alert('Error al verificar el nombre de usuario. Intente de nuevo.');
     }
   };
 
@@ -56,7 +54,6 @@ const UserNameInput = ({ onNext, value, onChange }) => {
       <button 
         type="submit"
         className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
-        style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
         disabled={loading}
       >
         {loading ? 'Comprobando...' : 'Siguiente'}
