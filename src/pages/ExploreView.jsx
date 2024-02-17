@@ -8,6 +8,7 @@ const ExploreView = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetchMorePosts();
@@ -19,13 +20,14 @@ const ExploreView = () => {
     setIsLoading(true);
   
     try {
-      const newPosts = await fetchAllPublicPosts();
+      const newPosts = await fetchAllPublicPosts(page); // Pasar la página actual
       const uniqueNewPosts = newPosts.filter(newPost => !posts.find(post => post.id === newPost.id));
   
       if (uniqueNewPosts.length === 0) {
         setHasMore(false);
       } else {
         setPosts([...posts, ...uniqueNewPosts]);
+        setPage(prevPage => prevPage + 1); // Incrementar la página para la próxima carga
       }
     } catch (error) {
       console.error("Error fetching public posts:", error);
@@ -33,6 +35,7 @@ const ExploreView = () => {
       setIsLoading(false);
     }
   };
+  
   
 
 

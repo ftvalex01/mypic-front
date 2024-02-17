@@ -17,7 +17,7 @@ import {
 } from "react-icons/fa";
 
 const SideBar = () => {
-  const { logout, user } = useAuthContext();
+  const { logout, user, isLoading } = useAuthContext();
   const { hasUnreadNotifications } = useNotificationContext(); // Asegúrate de que esto esté correctamente implementado en tu NotificationContext
   const [isSearchSidebarOpen, setSearchSidebarOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -25,6 +25,12 @@ const SideBar = () => {
   const toggleModal = () => setModalOpen(!isModalOpen);
   const toggleSearchSidebar = () => setSearchSidebarOpen(!isSearchSidebarOpen);
 
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
+  if (!user) {
+    return <div>No se encontró el usuario.</div>;
+  }
   return (
     <>
       <aside className="hidden lg:flex flex-col bg-gray-700 fixed inset-y-0 left-0 z-30 w-64">
@@ -42,15 +48,24 @@ const SideBar = () => {
               <FaSearch className="text-lg" />
               <span>Búsqueda</span>
             </button>
-            <Link to="/explore" className="flex items-center space-x-2 text-white">
+            <Link
+              to="/explore"
+              className="flex items-center space-x-2 text-white"
+            >
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
             </Link>
-            <Link to="/reels" className="flex items-center space-x-2 text-white">
+            <Link
+              to="/reels"
+              className="flex items-center space-x-2 text-white"
+            >
               <RiLiveLine className="text-lg" />
               <span>Reels</span>
             </Link>
-            <Link to="/messages" className="flex items-center space-x-2 text-white">
+            <Link
+              to="/messages"
+              className="flex items-center space-x-2 text-white"
+            >
               <MdMessage className="text-lg" />
               <span>Mensajes</span>
             </Link>
@@ -71,7 +86,10 @@ const SideBar = () => {
               <FaPlusSquare className="text-lg" />
               <span>Crear</span>
             </button>
-            <Link to="/profile" className="flex items-center space-x-2 text-white">
+            <Link
+              to="/profile"
+              className="flex items-center space-x-2 text-white"
+            >
               <CgProfile className="text-lg" />
               <span>{user?.data.username}</span>
             </Link>
@@ -99,7 +117,10 @@ const SideBar = () => {
       >
         <div className="fixed inset-y-0 right-0 z-40 w-80 bg-white shadow-lg overflow-y-auto">
           <div className="p-4">
-            <button onClick={toggleSearchSidebar} className="text-gray-600 hover:text-gray-800">
+            <button
+              onClick={toggleSearchSidebar}
+              className="text-gray-600 hover:text-gray-800"
+            >
               Cerrar
             </button>
             <BuscarPerfil />

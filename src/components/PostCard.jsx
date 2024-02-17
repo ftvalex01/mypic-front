@@ -7,6 +7,7 @@ import { usePostContext } from "../context/PostContext";
 import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
 
 const PostCard = ({ post }) => {
+  console.log(post)
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
@@ -58,18 +59,54 @@ const PostCard = ({ post }) => {
       console.error('Error al intentar dar like al comentario:', error);
     }
   };
+  
+  function calculateTimeAgo(date) {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  
+    let interval = seconds / 31536000;
+  
+    if (interval > 1) {
+      return Math.floor(interval) + " años";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " meses";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " días";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " horas";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutos";
+    }
+    return Math.floor(seconds) + " segundos";
+  }
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
     try {
-      const response = await commentOnPost(post.id, commentText);
-      setComments((prevComments) => [...prevComments, { ...response, user_id: user?.data?.id }]); // Asumiendo que la respuesta incluye el comentario recién creado
-      setCommentText("");
+      const newComment = await commentOnPost(post.id, commentText);
+
+      console.log(newComment); // Deberías ver aquí los datos del comentario, incluido el usuario.
+  
+      if (newComment && newComment.user) {
+        setComments(prevComments => [...prevComments, { ...newComment, user_id: newComment.user.id }]);
+        setCommentText("");
+      } else {
+        console.error("No se recibieron los datos del comentario correctamente.");
+      }
     } catch (error) {
       console.error("Error al enviar comentario:", error);
     }
   };
+  
+  
 
   return (
     <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
@@ -115,9 +152,14 @@ const PostCard = ({ post }) => {
 
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
-        {comments.map((comment) => (
-          <div key={comment.id} className="comment my-2">
-            <p>{comment.text} - <span>by {comment.user_id === user?.data?.id ? "you" : "someone"}</span></p>
+      {comments.map((comment) => (
+  <div key={comment.id} className="comment my-2">
+    <p>
+      {comment.text} - <span>by {comment.user_id}</span> {" "}
+      <span className="text-gray-400">
+        {calculateTimeAgo(new Date(comment.comment_date * 1000))} 
+      </span>
+    </p>
             <div className="comment-actions">
               <button onClick={() => handleLikeComment(comment.id)}>
                 {comment.isLiked ? (

@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
-// NotificationItem.js
-
 import { useNavigate } from "react-router-dom";
 import { FaRegCommentDots, FaRegHeart, FaUserPlus, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { useNotificationContext } from "../context/NotificationContext";
 import { useSocialInteractions } from "../context/SocialInteractionContext";
 
-const NotificationItem = ({ notification, onMouseEnter }) => {
-  const { acceptFollowRequest, rejectFollowRequest } = useSocialInteractions();
+const NotificationItem = ({ notification }) => {
   const navigate = useNavigate();
+  const { markNotificationAsRead, removeNotificationById } = useNotificationContext();
+  const { acceptFollowRequest, rejectFollowRequest } = useSocialInteractions();
 
   const renderIcon = () => {
     switch (notification.type) {
@@ -28,22 +28,27 @@ const NotificationItem = ({ notification, onMouseEnter }) => {
     }
   };
 
+  const handleMouseEnter = () => {
+    if (notification.type !== 'follow_request') {
+      markNotificationAsRead(notification.id);
+    }
+  };
+
   const handleAccept = async (e) => {
     e.stopPropagation();
     await acceptFollowRequest(notification.id);
-    // Aquí podrías llamar a una función prop para refrescar las notificaciones en el componente padre
+    removeNotificationById(notification.id); // Actualiza el estado para reflejar el cambio
   };
-
+  
   const handleReject = async (e) => {
     e.stopPropagation();
     await rejectFollowRequest(notification.id);
-    // Aquí podrías llamar a una función prop para refrescar las notificaciones en el componente padre
+    removeNotificationById(notification.id); // Actualiza el estado para reflejar el cambio
   };
-
   return (
     <div
       className={`notification-item ${notification.read ? "read" : "bg-blue-50"} p-4 mb-2 flex items-start rounded-lg cursor-pointer hover:bg-gray-100`}
-      onMouseEnter={() => onMouseEnter(notification.id)}
+      onMouseEnter={handleMouseEnter}
       onClick={handleClick}
     >
       <div className="notification-icon mr-3 text-lg">{renderIcon()}</div>
@@ -53,7 +58,7 @@ const NotificationItem = ({ notification, onMouseEnter }) => {
         </h4>
         <p className="text-sm text-gray-600">{notification.message}</p>
       </div>
-      {notification.type === "follow_request" && !notification.read && (
+      {notification.type === "follow_request" && (
         <div className="ml-auto flex items-center space-x-2">
           <button onClick={handleAccept} className="text-green-500 hover:text-green-700">
             <FaCheckCircle />

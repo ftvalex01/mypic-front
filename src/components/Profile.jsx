@@ -47,13 +47,13 @@ const Profile = () => {
     setShowSettings(false); // Opcional: cerrar menú tras cambiar la configuración
   };
   
-console.log(userImages)
+
   return (
     <div className="pt-16 flex-1 flex flex-col overflow-auto">
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="flex flex-col items-center md:flex-row md:items-start">
           <img
-            src={user?.profile_picture || "https://via.placeholder.com/150"}
+            src={user?.data.profile_picture || "https://via.placeholder.com/150"}
             alt="Profile"
             className="rounded-full w-20 h-20 md:w-40 md:h-40"
           />

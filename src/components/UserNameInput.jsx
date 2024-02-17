@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { useUserContext } from '../context/UserContext'; // Verifica la ruta.
+import useAuthContext from '../context/AuthContext'; // Verifica la ruta.
 
 const UserNameInput = ({ onNext, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { fetchUserByUsername } = useUserContext(); // Asegúrate de que esta función esté implementada.
+  const { fetchUserByUsername } = useAuthContext(); // Asegúrate de que esta función esté implementada.
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(value !== '');

@@ -1,13 +1,8 @@
 // src/services/postServices.js
 import axios from '../api/axios';
 
-const csrf = async () => {
-  await axios.get('/sanctum/csrf-cookie');
-};
-
 export const postService = {
   uploadPost: async (formData) => {
-    await csrf();
     const response = await axios.post("/api/post", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -16,7 +11,7 @@ export const postService = {
   },
 
   likePost: async (postId) => {
-    await csrf();
+  
     const response = await axios.post(`/api/post/${postId}/reactions`, {
       reactable_id: postId,
       reactable_type: 'Post',
@@ -24,35 +19,29 @@ export const postService = {
     return response.data;
   },
 
-  fetchAllPosts: async () => {
-    await csrf();
-    const response = await axios.get('/api/post');
-    return response.data.data;
+  fetchAllPosts: async (page = 1) => {
+    const response = await axios.get(`/api/post?page=${page}`);
+    return response.data; // Asegúrate de ajustar esto según la estructura de tu respuesta
   },
 
   commentOnPost: async (postId, text) => {
-    await csrf();
-    const response = await axios.post(`/api/post/${postId}/comments`, {
-      text,
-      comment_date: new Date().toISOString(),
-    });
-    return response.data;
-  },
+  const response = await axios.post(`/api/post/${postId}/comments`, { text });
+  return response.data;
+},
 
-  fetchAllPublicPosts: async () => {
-    await csrf();
-    const response = await axios.get('/api/explore');
-    return response.data; // Asumiendo que esto devuelve el objeto completo, incluyendo data, links, y meta
+  fetchAllPublicPosts: async (page = 1) => { // Añade un parámetro de página con un valor por defecto
+    const response = await axios.get(`/api/explore?page=${page}`);
+    return response.data; // Este objeto debería incluir tanto los posts como la información de paginación
   },
 
   likeComment: async (postId, commentId) => {
-    await csrf();
+
     const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
     return response.data; // La respuesta del backend tras dar "me gusta" a un comentario
   },
 
   deleteComment: async (commentId) => {
-    await csrf();
+
     await axios.delete(`/api/comments/${commentId}`);
   },
 };

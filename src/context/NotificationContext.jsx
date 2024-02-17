@@ -1,50 +1,67 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState, useEffect } from 'react';
+import{ createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { notificationService } from '../services/notificationServices';
+import useAuthContext from './AuthContext'; // Verifica que esta ruta sea correcta
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const [allNotifications, setAllNotifications] = useState([]);
-  const [unreadNotifications, setUnreadNotifications] = useState([]);
-  const [readNotifications, setReadNotifications] = useState([]);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const { user } = useAuthContext();
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await notificationService.getNotifications();
+      const fetchedNotifications = response.data || [];
+      setAllNotifications(fetchedNotifications);
+      // Actualiza si hay notificaciones no leídas
+      const unreadExists = fetchedNotifications.some(notification => !notification.read);
+      setHasUnreadNotifications(unreadExists);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [fetchNotifications]); // Dependencia fetchNotifications para ejecutar en montaje/componentDidMount
 
-  const fetchNotifications = async () => {
-    const response = await notificationService.getNotifications();
-    if (response.data) {
-      setAllNotifications(response.data);
-      // Filtra y establece notificaciones no leídas y leídas
-      const unread = response.data.filter(notification => !notification.read);
-      const read = response.data.filter(notification => notification.read);
-      setUnreadNotifications(unread);
-      setReadNotifications(read);
-    } else {
-      console.error('Unexpected response structure:', response);
+  const markNotificationAsRead = useCallback(async (notificationId) => {
+    if (!user) return;
+    try {
+      await notificationService.markNotificationAsRead(notificationId);
+      await fetchNotifications(); // Refresca las notificaciones después de actualizar
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
     }
-  };
+  }, [fetchNotifications, user]); // Dependencias actualizadas
+// Dentro de NotificationContext
 
-  const markNotificationAsRead = async (notificationId) => {
-    await notificationService.markNotificationAsRead(notificationId);
-    // Actualiza las notificaciones después de marcar una como leída
-    await fetchNotifications();
-  };
+const removeNotificationById = (notificationId) => {
+  setAllNotifications(prevNotifications =>
+    prevNotifications.filter(notification => notification.id !== notificationId)
+  );
+};
 
-  const markAllNotificationsAsRead = async () => {
-    await notificationService.markAllNotificationsAsRead();
-    // Recarga las notificaciones después de marcar todas como leídas
-    await fetchNotifications();
-  };
+  const markAllNotificationsAsRead = useCallback(async () => {
+    if (!user) return;
+    try {
+      await notificationService.markAllNotificationsAsRead();
+      await fetchNotifications(); // Refresca las notificaciones después de actualizar
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+    }
+  }, [fetchNotifications, user]); // Dependencias actualizadas
 
   return (
     <NotificationContext.Provider value={{
       allNotifications,
-      unreadNotifications,
-      readNotifications,
+      hasUnreadNotifications,
       fetchNotifications,
+      removeNotificationById,
       markNotificationAsRead,
       markAllNotificationsAsRead,
     }}>
