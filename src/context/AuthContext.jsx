@@ -84,6 +84,17 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    const checkUsernameAvailability = useCallback(async (username) => {
+        try {
+            const response = await axios.get(`api/check-username/${username}`);
+            console.log(response)
+            return response.data; // La respuesta debe indicar si el nombre de usuario está disponible
+        } catch (error) {
+            console.error("Error checking username availability:", error.message);
+            throw error; // Puedes optar por manejar el error de manera diferente si lo prefieres
+        }
+    }, []);
+
     const resetPassword = useCallback(async (data) => {
         try {
             await authService.resetPassword(data);
@@ -140,6 +151,7 @@ export const AuthProvider = ({ children }) => {
             forgotPassword,
             resetPassword,
             fetchUserByUsername,
+            checkUsernameAvailability,
             verifyEmail,
             isLoading
         }}>

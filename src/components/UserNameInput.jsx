@@ -5,7 +5,7 @@ import useAuthContext from '../context/AuthContext'; // Verifica la ruta.
 const UserNameInput = ({ onNext, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { fetchUserByUsername } = useAuthContext(); // Asegúrate de que esta función esté implementada.
+  const { checkUsernameAvailability } = useAuthContext(); // Asegúrate de que esta función esté implementada.
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(value !== '');
@@ -14,21 +14,28 @@ const UserNameInput = ({ onNext, value, onChange }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Intenta buscar el nombre de usuario.
-      const userExists = await fetchUserByUsername(value);
-      setLoading(false);
-      if (userExists) {
-        alert('El nombre de usuario ya existe.');
-      } else {
-        // Si el usuario no existe, permite continuar.
-        onNext();
-      }
+        const response = await checkUsernameAvailability(value);
+        setLoading(false);
+        // Aquí manejas la respuesta dependiendo del mensaje o del código de estado
+        if (response.message === 'Username is available') {
+            // El nombre de usuario está disponible, permite continuar
+            onNext();
+        } else {
+            // Manejar otros casos o ignorar si no es necesario
+            alert('El nombre de usuario ya existe.');
+        }
     } catch (error) {
-      setLoading(false);
-      // Considera un manejo de errores más detallado según tu API.
-      alert('Error al verificar el nombre de usuario. Intente de nuevo.');
+        setLoading(false);
+        if (error.response && error.response.status === 409) {
+            // Aquí manejas específicamente el caso de conflicto
+            alert('El nombre de usuario ya existe.');
+        } else {
+            // Maneja otros errores no relacionados con la disponibilidad del nombre de usuario
+            alert('Error al verificar el nombre de usuario. Intente de nuevo.');
+        }
     }
-  };
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-7">
