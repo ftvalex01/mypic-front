@@ -7,12 +7,15 @@ import { usePostContext } from "../context/PostContext";
 import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
 
 const PostCard = ({ post }) => {
-  console.log(post)
+
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likesCount, setLikesCount] = useState(post.reactions ? post.reactions.length : 0);
-  const { likePost, commentOnPost, deleteComment, likeComment } = usePostContext();
+  const [likesCount, setLikesCount] = useState(
+    post.reactions ? post.reactions.length : 0
+  );
+  const { likePost, commentOnPost, deleteComment, likeComment } =
+    usePostContext();
   const { user } = useUserContext(); // Acceso a datos del usuario autenticado
   const baseUrl = import.meta.REACT_APP_API_URL || "http://localhost:8000"; // Utiliza variables de entorno para definir URLs base
   const [remainingHours, setRemainingHours] = useState(null);
@@ -41,7 +44,9 @@ const PostCard = ({ post }) => {
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
-      setComments((currentComments) => currentComments.filter((comment) => comment.id !== commentId));
+      setComments((currentComments) =>
+        currentComments.filter((comment) => comment.id !== commentId)
+      );
     } catch (error) {
       console.error("Error al intentar borrar el comentario:", error);
     }
@@ -52,19 +57,27 @@ const PostCard = ({ post }) => {
       await likeComment(post.id, commentId);
       setComments((comments) =>
         comments.map((comment) =>
-          comment.id === commentId ? { ...comment, isLiked: !comment.isLiked, likesCount: comment.isLiked ? comment.likesCount - 1 : comment.likesCount + 1 } : comment
+          comment.id === commentId
+            ? {
+                ...comment,
+                isLiked: !comment.isLiked,
+                likesCount: comment.isLiked
+                  ? comment.likesCount - 1
+                  : comment.likesCount + 1,
+              }
+            : comment
         )
       );
     } catch (error) {
-      console.error('Error al intentar dar like al comentario:', error);
+      console.error("Error al intentar dar like al comentario:", error);
     }
   };
-  
+
   function calculateTimeAgo(date) {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-  
+
     let interval = seconds / 31536000;
-  
+
     if (interval > 1) {
       return Math.floor(interval) + " años";
     }
@@ -86,26 +99,22 @@ const PostCard = ({ post }) => {
     }
     return Math.floor(seconds) + " segundos";
   }
-
   const handleSubmitComment = async (e) => {
     e.preventDefault();
-    if (!commentText.trim()) return;
+    if (!commentText.trim()) return; // Evita enviar comentarios vacíos
+  
     try {
       const newComment = await commentOnPost(post.id, commentText);
-
-      console.log(newComment); // Deberías ver aquí los datos del comentario, incluido el usuario.
-  
-      if (newComment && newComment.user) {
-        setComments(prevComments => [...prevComments, { ...newComment, user_id: newComment.user.id }]);
-        setCommentText("");
+      if (newComment && newComment.data) {
+        setComments((prevComments) => [...prevComments, newComment.data]); // Actualiza el estado de comentarios con el nuevo comentario
+        setCommentText(""); // Limpia el campo de entrada después de enviar
       } else {
-        console.error("No se recibieron los datos del comentario correctamente.");
+        console.error("No se pudo obtener una respuesta válida del servidor.");
       }
     } catch (error) {
       console.error("Error al enviar comentario:", error);
     }
   };
-  
   
 
   return (
@@ -113,7 +122,10 @@ const PostCard = ({ post }) => {
       {/* Post Header */}
       <div className="flex items-center space-x-3 p-4 border-b">
         <img
-          src={post.user.profile_picture || "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"}
+          src={
+            post.user.profile_picture ||
+            "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+          }
           alt={post.user.name}
           className="w-10 h-10 rounded-full"
         />
@@ -152,14 +164,14 @@ const PostCard = ({ post }) => {
 
       {/* Post Comments & Comment Input */}
       <div className="px-4 pb-2">
-      {comments.map((comment) => (
-  <div key={comment.id} className="comment my-2">
-    <p>
-      {comment.text} - <span>by {comment.user_id}</span> {" "}
-      <span className="text-gray-400">
-        {calculateTimeAgo(new Date(comment.comment_date * 1000))} 
-      </span>
-    </p>
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment my-2">
+            <p>
+              {comment.text} - <span>por {comment.user.username}</span>{" "}
+              <span className="text-gray-400">
+                {calculateTimeAgo(new Date(comment.comment_date * 1000))}
+              </span>
+            </p>
             <div className="comment-actions">
               <button onClick={() => handleLikeComment(comment.id)}>
                 {comment.isLiked ? (
@@ -168,7 +180,7 @@ const PostCard = ({ post }) => {
                   <FiHeart className="w-6 h-6 text-gray-500" />
                 )}
               </button>
-              
+
               {user && user.data.id === comment.user_id && (
                 <button onClick={() => handleDelete(comment.id)}>
                   <FiTrash2 className="icon" />
@@ -191,7 +203,7 @@ const PostCard = ({ post }) => {
           type="submit"
           className="text-blue-500 text-sm font-semibold mt-2"
         >
-          Post
+          Enviar comentario
         </button>
       </form>
     </div>

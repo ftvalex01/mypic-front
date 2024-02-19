@@ -10,7 +10,9 @@ export const PostProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const { user } = useAuthContext(); // Extrae el estado del usuario
   const [page, setPage] = useState(1);
+
   const [hasMore, setHasMore] = useState(true);
+
   const fetchAllPosts = useCallback(async () => {
     if (!user || !hasMore) return; // No realiza llamadas si no hay usuario o no hay más posts por cargar
     try {
@@ -32,9 +34,27 @@ export const PostProvider = ({ children }) => {
       console.error('Error fetching posts:', error);
     }
   }, [user, page]);
+
   useEffect(() => {
     fetchAllPosts();
   }, [fetchAllPosts]);
+
+  const fetchAllRecommendedPosts = useCallback(async (pageParam = 1) => {
+    if (!user || !hasMore) return;
+    try {
+      const response = await postService.fetchAllRecommendedPosts(pageParam);
+      const newPosts = response.data;
+      if (newPosts.length === 0) {
+        setHasMore(false);
+      } else {
+        setPosts(prevPosts => [...prevPosts, ...newPosts]);
+        setPage(prevPage => prevPage + 1);
+      }
+    } catch (error) {
+      console.error("Error fetching recommended posts:", error.message);
+    }
+  }, [user, page, hasMore]);
+
 
   const uploadPost = useCallback(async (formData) => {
     if (!user) return;
@@ -59,14 +79,15 @@ export const PostProvider = ({ children }) => {
   }, [fetchAllPosts, user]);
 
   const commentOnPost = useCallback(async (postId, text) => {
-    if (!user) return;
+    if (!user) return null; // Cambia para devolver null en caso de que no haya usuario
     try {
-      await postService.commentOnPost(postId, text);
-      await fetchAllPosts();
+      const response = await postService.commentOnPost(postId, text);
+      return response; // Devuelve la respuesta que contiene el comentario creado
     } catch (error) {
       console.error('Error commenting on post:', error);
+      return null; // Devuelve null en caso de error para manejar este caso en el componente
     }
-  }, [fetchAllPosts, user]);
+  }, [user]);
 
   const deleteComment = useCallback(async (commentId) => {
     if (!user) return;
@@ -106,6 +127,7 @@ const fetchAllPublicPosts = async (page) => {
     likePost,
     fetchAllPosts,
     fetchAllPublicPosts,
+    fetchAllRecommendedPosts,
     commentOnPost,
     deleteComment,
     likeComment,
