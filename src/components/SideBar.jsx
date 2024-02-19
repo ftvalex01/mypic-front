@@ -31,6 +31,7 @@ const SideBar = () => {
   if (!user) {
     return <div>No se encontró el usuario.</div>;
   }
+  console.log(user)
   return (
     <>
       <aside className="hidden lg:flex flex-col bg-gray-700 fixed inset-y-0 left-0 z-30 w-64">

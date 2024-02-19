@@ -5,7 +5,7 @@ const TwoFactorVerification = ({ onVerify }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onVerify(code);
+        onVerify(code); // Llama a la función onVerify con el código 2FA
     };
 
     return (

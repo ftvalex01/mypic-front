@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
         try {
             const userData = await authService.login(credentials);
+            console.log(userData)
             setUser(userData); // Asegúrate de que tu backend está devolviendo un objeto con una propiedad 'user'
         } catch (error) {
             console.error("Login error:", error);
