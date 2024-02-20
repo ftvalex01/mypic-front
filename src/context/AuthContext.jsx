@@ -9,25 +9,26 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+
     const [errors, setErrors] = useState([]);
     const [attemptedFetch, setAttemptedFetch] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
     const navigate = useNavigate();
 
     const login = useCallback(async (credentials) => {
-        setIsLoading(true);
         try {
-            const userData = await authService.login(credentials);
-            console.log(userData)
-            setUser(userData); // Asegúrate de que tu backend está devolviendo un objeto con una propiedad 'user'
+          const response = await axios.post('/api/login', credentials);
+          if (!response.data.requires_2fa_verification) {
+            setUser(response.data.user);
+          }
+          return response.data; // Retorna la respuesta para manejo de 2FA
         } catch (error) {
-            console.error("Login error:", error);
-            setErrors(error.response?.data?.errors || ['Login failed']);
-        } finally {
-            setIsLoading(false);
-            setAttemptedFetch(true);
+          setErrors(error.response.data.message);
+          throw error;
         }
-    }, [navigate]);
+      }, []);
+      
 
     const register = useCallback(async (credentials) => {
         setIsLoading(true);
@@ -106,6 +107,20 @@ export const AuthProvider = ({ children }) => {
             handleErrors(error);
         }
     }, []);
+    const verify2FA = useCallback(async (code, email) => {
+        try {
+          const response = await axios.post('/api/verify-2fa', { code, email });
+          console.log(response.data);
+          setUser(response.data); // Asume que la respuesta incluye los datos del usuario actualizados
+          // Navegar al dashboard o a la página principal después de la verificación exitosa
+          navigate("/");
+        } catch (error) {
+          console.error("Error verificando 2FA:", error.response?.data);
+          // Mostrar mensajes de error de validación del backend
+          setErrors(error.response?.data?.errors || ['La verificación 2FA falló.']);
+        }
+      }, [navigate]);
+      
 
     const verifyEmail = useCallback(async (email) => {
         try {
@@ -150,6 +165,7 @@ export const AuthProvider = ({ children }) => {
             login,
             register,
             logout,
+            verify2FA,
             fetchAllUsers,
             forgotPassword,
             resetPassword,

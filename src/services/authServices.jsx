@@ -7,12 +7,13 @@ export const authService = {
         return response.data;
     },
 
-    login: async (data) => {
-        
-        const response = await axios.post("/api/login", data);
-
-        return response.data; // Asume que el backend devuelve los detalles del usuario tras el login
-    },
+   // authService.js (o donde tengas definido este servicio)
+login: async (credentials) => {
+    const response = await axios.post("/api/login", credentials);
+    // Asegúrate de devolver directamente la respuesta del backend
+    return response.data; // Esto incluye { requires_2fa_verification: true/false, ... }
+  },
+  
 
     register: async (data) => {
         const response = await axios.post("/api/register", data);
