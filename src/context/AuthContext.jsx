@@ -144,7 +144,6 @@ export const AuthProvider = ({ children }) => {
             const initializeUser = async () => {
                 try {
                     const userData = await authService.getUser();
-                    console.log(userData)
                     setUser(userData);
                     navigate('/')
                 } catch (error) {

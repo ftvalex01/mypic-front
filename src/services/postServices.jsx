@@ -35,15 +35,16 @@ export const postService = {
     }
   },
 
-  fetchAllPublicPosts: async (page = 1) => { // Añade un parámetro de página con un valor por defecto
+  fetchAllPublicPosts: async (page = 1) => {
     const response = await axios.get(`/api/explore?page=${page}`);
-    return response.data; // Este objeto debería incluir tanto los posts como la información de paginación
+    return response.data; // Asume que tu API devuelve los datos en este formato
   },
 
- fetchAllRecommendedPosts: async (page = 1) => {
+  fetchAllRecommendedPosts: async (page = 1) => {
     const response = await axios.get(`/api/explore/recommended?page=${page}`);
-    return response.data; // Ajusta según la estructura de tu respuesta
+    return response.data; // Asume que tu API devuelve los datos en este formato
   },
+  
 
   likeComment: async (postId, commentId) => {
 
