@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
@@ -9,19 +9,16 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [is2FAEnabled, setIs2FAEnabled] = useState(false); 
-
+  const navigate = useNavigate();
   const { login, verify2FA, errors } = useAuthContext();
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const response = await login({ email, password });
       if (response.requires_2fa_verification) {
-        // Actualiza el estado para indicar que se requiere verificación 2FA
         setIs2FAEnabled(true);
       } else {
-        // Si no se requiere 2FA, puedes redirigir al usuario o manejar el inicio de sesión exitoso
-        console.log("Login exitoso sin necesidad de 2FA");
-        // Redirige o actualiza el estado según sea necesario
+        navigate('/');
       }
     } catch (error) {
       console.error("Error en el inicio de sesión", error);
@@ -51,7 +48,7 @@ const Login = () => {
             <div>
               <input
                 type="email"
-                placeholder="Usuario, correo electrónico o móvil"
+                placeholder="Correo electrónico"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

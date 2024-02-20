@@ -39,17 +39,12 @@ export const PostProvider = ({ children }) => {
     fetchAllPosts();
   }, [fetchAllPosts]);
 
-  const fetchAllRecommendedPosts = useCallback(async (pageParam = 1) => {
-    if (!user || !hasMore) return;
+  const fetchAllRecommendedPosts = useCallback(async (page) => {
+    if (!user) return;
     try {
-      const response = await postService.fetchAllRecommendedPosts(pageParam);
-      const newPosts = response.data;
-      if (newPosts.length === 0) {
-        setHasMore(false);
-      } else {
-        setPosts(prevPosts => [...prevPosts, ...newPosts]);
-        setPage(prevPage => prevPage + 1);
-      }
+      const response = await postService.fetchAllRecommendedPosts(page);
+      
+      return response.data
     } catch (error) {
       console.error("Error fetching recommended posts:", error.message);
     }

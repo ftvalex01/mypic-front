@@ -13,56 +13,60 @@ const ExploreView = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    setPosts([]);
-    setPage(1);
-    setHasMore(true);
-    // Decidir qué función llamar basado en el modo de vista actual
-    const fetchPosts =
-      viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
-    fetchPosts(page);
-  }, [viewMode, fetchAllPublicPosts, fetchAllRecommendedPosts, page]);
+    loadInitialPosts();
+  }, [viewMode]);
 
-  const fetchMorePosts = async () => {
-    if (isLoading || !hasMore) return;
+  const loadInitialPosts = async () => {
     setIsLoading(true);
-
+    const apiFunc = viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
     try {
-      const apiFunc =
-        viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
-      const newPosts = await apiFunc(page); // Pasar la página actual
-      const uniqueNewPosts = newPosts.filter(
-        (newPost) => !posts.find((post) => post.id === newPost.id)
-      );
-
-      if (uniqueNewPosts.length === 0) {
-        setHasMore(false);
-      } else {
-        setPosts((prevPosts) => [...prevPosts, ...uniqueNewPosts]);
-        setPage((prevPage) => prevPage + 1);
-      }
+      const fetchedPosts = await apiFunc(1);
+      console.log(fetchedPosts)
+      setPosts(fetchedPosts);
+      setHasMore(fetchedPosts.length > 0); // Solo habilitar la paginación si hay más posts disponibles
     } catch (error) {
-      console.error(
-        `Error fetching ${
-          viewMode === "forYou" ? "recommended" : "public"
-        } posts:`,
-        error
-      );
+      console.error(`Error fetching ${viewMode} posts:`, error);
+      setPosts([]);
+      setHasMore(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Aquí incluimos la función determineGridItemSize
+  const fetchMorePosts = async () => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+    const apiFunc = viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
+    try {
+      const newPosts = await apiFunc(page + 1); // Incrementar la página para cargar más posts
+      if (newPosts && newPosts.length > 0) {
+        setPosts(prevPosts => [...prevPosts, ...newPosts]);
+        setPage(prevPage => prevPage + 1);
+      } else {
+        setHasMore(false); // Deshabilitar la paginación si no hay más posts disponibles
+      }
+    } catch (error) {
+      console.error(`Error fetching more ${viewMode} posts:`, error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleModeChange = (mode) => {
+    setViewMode(mode);
+    setPage(1); // Resetear la página al cambiar el modo de vista
+  };
+
   const determineGridItemSize = (index) => {
-    const sizes = ["large", "medium", "small"]; // Asegúrate de tener estas clases en tu CSS
+    const sizes = ["large", "medium", "small"];
     return sizes[index % sizes.length];
   };
 
   return (
     <div>
       <div className="tabs">
-        <button onClick={() => setViewMode("random")}>Aleatorio</button>
-        <button onClick={() => setViewMode("forYou")}>Para Ti</button>
+        <button onClick={() => handleModeChange("random")}>Aleatorio</button>
+        <button onClick={() => handleModeChange("forYou")}>Para Ti</button>
       </div>
       <InfiniteScroll
         dataLength={posts.length}

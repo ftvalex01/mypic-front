@@ -18,18 +18,19 @@ export const AuthProvider = ({ children }) => {
 
     const login = useCallback(async (credentials) => {
         try {
-          const response = await axios.post('/api/login', credentials);
-          if (!response.data.requires_2fa_verification) {
-            setUser(response.data.user);
-          }
-          return response.data; // Retorna la respuesta para manejo de 2FA
+            const response = await axios.post('/api/login', credentials);
+            if (!response.data.requires_2fa_verification) {
+                setUser(response.data);
+                navigate('/'); // Asegúrate de que esta línea se ejecuta
+            }
+            return response.data;
         } catch (error) {
-          setErrors(error.response.data.message);
-          throw error;
+            setErrors(error.response.data.message);
+            throw error;
         }
-      }, []);
+    }, [navigate]);
       
-
+    
     const register = useCallback(async (credentials) => {
         setIsLoading(true);
         try {
