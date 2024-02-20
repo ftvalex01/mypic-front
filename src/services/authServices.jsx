@@ -7,16 +7,13 @@ export const authService = {
         return response.data;
     },
 
-    login: async (data) => {
-        const response = await axios.post("/api/login", data);
-        // Verifica si la respuesta indica que se requiere 2FA
-        console.log(response)
-        if (response.data.is_2fa_enabled) {
-            // Puedes elegir manejar esto de diferentes maneras, por ejemplo, devolviendo un estado especial
-            return { requires2FA: true, user: response.data.user };
-        }
-        return response.data; // Detalles del usuario o información de la sesión
-    },
+   // authService.js (o donde tengas definido este servicio)
+login: async (credentials) => {
+    const response = await axios.post("/api/login", credentials);
+    // Asegúrate de devolver directamente la respuesta del backend
+    return response.data; // Esto incluye { requires_2fa_verification: true/false, ... }
+  },
+  
 
     register: async (data) => {
         const response = await axios.post("/api/register", data);

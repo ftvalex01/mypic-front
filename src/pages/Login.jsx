@@ -13,21 +13,27 @@ const Login = () => {
   const { login, verify2FA, errors } = useAuthContext();
   const handleLogin = async (event) => {
     event.preventDefault();
-    const response = await login({ email, password });
-    
-    if (response.is2FAEnabled) {
-      setIs2FAEnabled(true);
-    } else {
-      // Procede con el flujo normal si 2FA no está habilitado
+    try {
+      const response = await login({ email, password });
+      if (response.requires_2fa_verification) {
+        // Actualiza el estado para indicar que se requiere verificación 2FA
+        setIs2FAEnabled(true);
+      } else {
+        // Si no se requiere 2FA, puedes redirigir al usuario o manejar el inicio de sesión exitoso
+        console.log("Login exitoso sin necesidad de 2FA");
+        // Redirige o actualiza el estado según sea necesario
+      }
+    } catch (error) {
+      console.error("Error en el inicio de sesión", error);
+      // Manejar errores de inicio de sesión aquí
     }
   };
   
+  
   const handleVerify2FA = async (code) => {
-    console.log("entro al handleverify");
-    // Aquí debes llamar a la función para verificar el código 2FA en el backend
-    const response = await verify2FA(code);
-    // Manejar la respuesta del backend, por ejemplo, redireccionar si la verificación es exitosa
+    await verify2FA(code, email); // Aquí pasas email junto con code
   };
+  
   
   
   return (
