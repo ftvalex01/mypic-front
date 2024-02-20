@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import { useSocialInteractions } from "../context/SocialInteractionContext";
 import { useUserContext } from "../context/UserContext";
+import { FaCog, FaPlusCircle } from "react-icons/fa";
 
 const ProfileByUsername = () => {
   const { username } = useParams();
@@ -17,6 +18,11 @@ const ProfileByUsername = () => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowRequestPending, setIsFollowRequestPending] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const { blockUser, unblockUser } = useSocialInteractions();
+  const { checkIfBlocked } = useSocialInteractions();
+  const [isBlocked, setIsBlocked] = useState(false);
+
   const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
 
   const loadUserProfile = useCallback(async () => {
@@ -27,11 +33,14 @@ const ProfileByUsername = () => {
         setProfile(userData);
 
         const followInfo = await getFollowData(userData.id);
+        const blockedStatus = await checkIfBlocked(userData.id);
+
         setIsFollowing(followInfo.isFollowing);
         setFollowersCount(followInfo.followersCount);
         setFollowingCount(followInfo.followingCount);
         setFollowRequestSent(followInfo.isRequested);
         setIsFollowRequestPending(followInfo.isRequested);
+        setIsBlocked(blockedStatus.isBlocked);
 
         if (!userData.is_private || followInfo.isFollowing) {
           const imagesResponse = await getUserImages(userData.id);
@@ -44,38 +53,70 @@ const ProfileByUsername = () => {
       console.error("Error fetching user profile:", error);
     }
     setIsLoading(false);
-  }, [username, fetchUserByUsername, getUserImages, getFollowData]);
+  }, [username, fetchUserByUsername, getUserImages, getFollowData, checkIfBlocked]);
 
   useEffect(() => {
     loadUserProfile();
-  }, [loadUserProfile]);
+    const fetchBlockStatus = async () => {
+      try {
+        const result = await checkIfBlocked(profile.id);
+        setIsBlocked(result); // Asume que checkIfBlocked devuelve un booleano
+      } catch (error) {
+        console.error("Error al verificar el estado de bloqueo:", error);
+      }
+    };
+
+    if (profile) {
+      fetchBlockStatus();
+    }
+  }, [loadUserProfile,checkIfBlocked]);
 
   const handleFollowClick = async () => {
     try {
-        const result = await followUser(profile.id);
-      
+      const result = await followUser(profile.id);
 
-        // Manejo de la respuesta del backend
-        if (result.message === 'Follow request cancelled') {
-            // Si la solicitud de seguimiento se cancela
-            setFollowRequestSent(false);
-            setIsFollowRequestPending(false);
-        } else if (result.message === 'Follow request sent') {
-            // Si se envía una solicitud de seguimiento
-            setFollowRequestSent(true);
-            setIsFollowRequestPending(true);
-            setIsFollowing(false); // Asegúrate de que no se marque como siguiendo
-        } else if (result.isFollowing !== undefined) {
-            // Actualización directa de seguir/dejar de seguir
-            setIsFollowing(result.isFollowing);
-            setFollowRequestSent(false);
-            setIsFollowRequestPending(false);
-        }
+
+      // Manejo de la respuesta del backend
+      if (result.message === 'Follow request cancelled') {
+        // Si la solicitud de seguimiento se cancela
+        setFollowRequestSent(false);
+        setIsFollowRequestPending(false);
+      } else if (result.message === 'Follow request sent') {
+        // Si se envía una solicitud de seguimiento
+        setFollowRequestSent(true);
+        setIsFollowRequestPending(true);
+        setIsFollowing(false); // Asegúrate de que no se marque como siguiendo
+      } else if (result.isFollowing !== undefined) {
+        // Actualización directa de seguir/dejar de seguir
+        setIsFollowing(result.isFollowing);
+        setFollowRequestSent(false);
+        setIsFollowRequestPending(false);
+      }
     } catch (error) {
-        console.error("Error trying to follow/unfollow:", error);
+      console.error("Error trying to follow/unfollow:", error);
     }
-};
+  };
 
+  const handleBlockClick = async () => {
+    try {
+      if (isBlocked) {
+        // Intenta desbloquear el usuario
+        const result = await unblockUser(profile.id);
+        setIsBlocked(false); // Asume desbloqueo exitoso
+        // Maneja cualquier lógica adicional aquí, por ejemplo, mostrar un mensaje
+        alert('Usuario desbloqueado exitosamente');
+      } else {
+        // Intenta bloquear el usuario
+        const result = await blockUser(profile.id);
+        setIsBlocked(true); // Asume bloqueo exitoso
+        // Maneja cualquier lógica adicional aquí
+        alert('Usuario bloqueado exitosamente');
+      }
+    } catch (error) {
+      console.error("Error al cambiar estado de bloqueo:", error);
+      alert('No se pudo cambiar el estado de bloqueo del usuario');
+    }
+  };
 
   const profileImageUrl = profile && profile.profile_picture
     ? `${baseUrl}${profile.profile_picture}`
@@ -98,6 +139,16 @@ const ProfileByUsername = () => {
                   {isFollowing ? "Dejar de seguir" : followRequestSent ? "Solicitud enviada" : isFollowRequestPending ? "Pendiente" : "Seguir"}
                 </button>
               </div>
+              <button className="btn" onClick={() => setShowSettings(!showSettings)}>
+                <FaCog />
+              </button>
+              {showSettings && (
+                <div className="settings-dropdown">
+                  {/* Cambia esta parte para incluir la funcionalidad de bloqueo */}
+                  <button onClick={handleBlockClick} className={`px-4 py-2 rounded text-white ${isBlocked ? "bg-green-500" : "bg-red-500"}`}>
+                    {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
+                  </button>                </div>
+              )}
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
