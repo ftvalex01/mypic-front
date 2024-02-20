@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePostContext } from "../../context/PostContext";
 import "./uploadmodal.css";
 import Swal from "sweetalert2";
@@ -13,6 +13,17 @@ const UploadModal = ({ isOpen, onClose }) => {
   const { uploadPost } = usePostContext();
 
   const fileInputRef = useRef();
+
+  useEffect(() => {
+    if (!isOpen) {
+      // Limpieza cuando el modal se cierra
+      setFile(null);
+      setPreviewUrl("");
+      setDescription("");
+      setUploading(false);
+      setStep(1);
+    }
+  }, [isOpen]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -72,8 +83,13 @@ const UploadModal = ({ isOpen, onClose }) => {
     try {
       await uploadPost(formData);
       Swal.fire("Uploaded!", "Your post has been uploaded.", "success");
+      // Reset states after successful upload
+      setFile(null);
+      setDescription("");
+      setPreviewUrl("");
+      setStep(1);
       setUploading(false);
-      onClose(); // Cerrar el modal
+      onClose(); // Close modal
     } catch (error) {
       console.error("Error uploading file:", error);
       Swal.fire("Oops...", "Error uploading file.", "error");
@@ -88,11 +104,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       <div className={`modal-content ${isOpen ? "show" : ""}`}>
         <div className="modal-header">
           <span className="modal-title">
-            {step === 1
-              ? "Select Photo"
-              : step === 2
-              ? "Add Details"
-              : "Confirm Upload"}
+            {step === 1 ? "Select Photo" : step === 2 ? "Add Details" : "Confirm Upload"}
           </span>
           <button onClick={onClose} className="close-button">
             &times;
