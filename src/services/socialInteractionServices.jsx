@@ -42,4 +42,8 @@ export const socialInteractionService = {
     const response = await axios.get(`/api/users/${userId}/is-blocked`);
     return response.data.isBlocked; // Asume que tu API devuelve { isBlocked: true/false }
   },
+  getBlockedUsers: async () => {
+    const response = await axios.get(`/api/blocked-users`);
+    return response.data; // Devuelve la lista completa de usuarios bloqueados
+  },
 };
