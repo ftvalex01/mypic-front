@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import NameInput from "../components/NameInput.jsx";
-import UserNameInput from "../components/UsernameInput";
+import UserNameInput from "../components/UserNameInput";
 import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import BirthDateInput from "../components/BirthDateInput";
