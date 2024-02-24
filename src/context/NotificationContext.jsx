@@ -16,15 +16,21 @@ export const NotificationProvider = ({ children }) => {
     try {
       const response = await notificationService.getNotifications();
       const fetchedNotifications = response.data || [];
-      setAllNotifications(fetchedNotifications);
+
+
+      // Filtrar las notificaciones para obtener solo las que pertenecen al usuario logeado
+      const userNotifications = fetchedNotifications.filter(notification => notification.user_id === user.id);
+  
+      setAllNotifications(userNotifications);
+      
       // Actualiza si hay notificaciones no leídas
-      const unreadExists = fetchedNotifications.some(notification => !notification.read);
+      const unreadExists = userNotifications.some(notification => !notification.read);
       setHasUnreadNotifications(unreadExists);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   }, [user]);
-
+ 
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]); // Dependencia fetchNotifications para ejecutar en montaje/componentDidMount

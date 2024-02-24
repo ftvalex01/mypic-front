@@ -7,33 +7,34 @@ const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const { forgotPassword } = useAuthContext();
     const [error, setError] = useState(''); // Usar un estado simple para el error
-
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+      }
+      
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); // Reiniciar el estado de error
-
-        // Utilizar validator para comprobar si el email es válido
+        setError('');
+    
         if (!validator.isEmail(email)) {
             setError("Por favor ingresa un email válido.");
             return;
         }
-
+    
         try {
-            const response = await forgotPassword(email);
-            // Utilizar la respuesta (data) del servidor para mostrar un mensaje específico
-            // Asumiendo que la respuesta incluye un campo 'message'
+            const data = await forgotPassword(email);
+            await delay(1000); 
+         
             Swal.fire({
                 icon: 'success',
                 title: '¡Correo enviado!',
-                text: response.message || 'Por favor, revisa tu correo electrónico para restablecer tu contraseña.',
+                text: data.status,
             });
         } catch (error) {
             console.error("Error al enviar solicitud de restablecimiento de contraseña", error);
-            // Utilizar error.response.data.message para mostrar errores específicos del backend, si están disponibles
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: error.response?.data?.message || "Ocurrió un error al intentar recuperar la contraseña.",
+                text: error.response?.data?.status || "Ocurrió un error al intentar recuperar la contraseña.",
             });
         }
     };

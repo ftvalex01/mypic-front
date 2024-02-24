@@ -14,6 +14,7 @@ import Feed from "./components/Feed";
 import ExploreView from "./pages/ExploreView";
 import Notificaciones from './components/Notificaciones'
 
+
 function App() {
   return (
     <div className="bg-slate-100 ">
@@ -26,6 +27,8 @@ function App() {
             <Route path="search" element={<BuscarPerfil/>}/>
             <Route path="/explore" element={<ExploreView/>}/>
             <Route path="/notifications" element={<Notificaciones />} />
+            
+
             <Route index element={<Feed />}/>
           </Route>
         </Route>

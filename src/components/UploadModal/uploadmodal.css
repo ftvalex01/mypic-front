@@ -1,17 +1,14 @@
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background-color: rgba(33, 37, 41, 0.6); /* Sombra más suave */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1050;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
 .modal-backdrop.show {
@@ -21,47 +18,60 @@
 
 .modal-content {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem; /* 24px */
+  border-radius: 0.5rem; /* 8px */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 500px;
   transition: transform 0.3s ease-in-out;
+  transform: scale(0.9); /* Efecto de zoom inicial */
+}
+
+.modal-content.show {
+  transform: scale(1); /* Efecto de zoom al entrar */
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem; /* 20px */
+  border-bottom: 1px solid #e9ecef; /* Línea divisoria sutil */
+  padding-bottom: 0.75rem; /* 12px */
 }
 
 .modal-title {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: #495057; /* Color más suave para el texto */
 }
 
 .close-button {
-  font-size: 24px;
-  border: none;
-  background: none;
+  font-size: 1.5rem; /* 24px */
+  color: #6c757d; /* Color suave para el botón de cierre */
   cursor: pointer;
 }
 
 .description-input, .next-button, .back-button, .confirm-button {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: 0.75rem 1rem; /* 12px 16px */
+  margin: 0.5rem 0; /* 8px 0 */
+  border-radius: 0.375rem; /* 6px */
+  border: 1px solid #ced4da; /* Borde más suave */
   box-sizing: border-box;
 }
 
+.description-input {
+  font-size: 0.875rem; /* 14px */
+}
+
 .next-button, .back-button, .confirm-button {
+  font-size: 0.875rem; /* 14px */
   background-color: #007bff;
   color: white;
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .next-button:hover, .back-button:hover, .confirm-button:hover {
@@ -70,12 +80,14 @@
 
 .preview-image {
   width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  max-height: 300px; /* Altura más grande para mejor visualización */
+  object-fit: contain; /* Cambiado a contain para evitar recortes */
+  border-radius: 0.375rem; /* 6px */
+  margin-bottom: 1rem; /* 16px */
 }
 
 .confirmation p {
-  word-wrap: break-word;
+  font-size: 0.875rem; /* 14px */
+  color: #495057; /* Color de texto suave */
+  margin-bottom: 1rem; /* 16px */
 }

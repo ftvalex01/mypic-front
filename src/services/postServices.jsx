@@ -6,7 +6,7 @@ export const postService = {
     const response = await axios.post("/api/post", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    // Asegúrate de que devuelves un indicador de éxito o el post creado
+    console.log(response)
     return response.data; // { success: true, post: { ... } }
   },
 
@@ -28,7 +28,6 @@ export const postService = {
   commentOnPost: async (postId, text) => {
     const response = await axios.post(`/api/post/${postId}/comments`, { text });
     if (response.data && (response.status === 200 || response.status === 201)) {
-      console.log(response.data)
       return response.data; // Asegúrate de devolver la parte correcta de la respuesta
     } else {
       throw new Error('Error al enviar comentario');
@@ -49,11 +48,22 @@ export const postService = {
   likeComment: async (postId, commentId) => {
 
     const response = await axios.post(`/api/posts/${postId}/comments/${commentId}/likes`);
-    return response.data; // La respuesta del backend tras dar "me gusta" a un comentario
+    console.log(response)
+    return response.data; // L  a respuesta del backend tras dar "me gusta" a un comentario
   },
 
   deleteComment: async (commentId) => {
 
     await axios.delete(`/api/comments/${commentId}`);
+  },
+  deletePost: async (postId) => {
+    const response = await axios.delete(`/api/post/${postId}`);
+   
+    return response.data; // O maneja la respuesta como sea apropiado
+  },
+  
+  pinPost: async (postId) => {
+    const response = await axios.patch(`/api/post/${postId}/pin`);
+    return response.data;
   },
 };

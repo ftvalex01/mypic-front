@@ -25,11 +25,13 @@ login: async (credentials) => {
 
     forgotPassword: async (email) => {
         const response = await axios.post("/api/forgot-password", { email });
+    
         return response.data; // Asume que el backend devuelve alguna confirmación
     },
 
     resetPassword: async (data) => {
         const response = await axios.post("/api/reset-password", data);
+        
         return response.data; // Asume que el backend devuelve alguna confirmación
     },
 

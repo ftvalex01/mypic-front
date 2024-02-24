@@ -1,9 +1,8 @@
 import { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Transition } from "@headlessui/react";
-import { MdMessage, MdOutlineMoreHoriz } from "react-icons/md";
+import { MdOutlineMoreHoriz } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { RiLiveLine } from "react-icons/ri";
 import UploadModal from "./UploadModal/UploadModal";
 import BuscarPerfil from "./BuscarPerfil";
 import useAuthContext from "../context/AuthContext";
@@ -56,20 +55,8 @@ const SideBar = () => {
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
             </Link>
-            <Link
-              to="/reels"
-              className="flex items-center space-x-2 text-white"
-            >
-              <RiLiveLine className="text-lg" />
-              <span>Reels</span>
-            </Link>
-            <Link
-              to="/messages"
-              className="flex items-center space-x-2 text-white"
-            >
-              <MdMessage className="text-lg" />
-              <span>Mensajes</span>
-            </Link>
+            
+            
             <Link
               to="/notifications"
               className="flex items-center space-x-2 text-white relative"

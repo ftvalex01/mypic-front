@@ -5,12 +5,14 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { authService } from '../services/authServices';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import Swal from 'sweetalert2';
+
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState({});
     const [attemptedFetch, setAttemptedFetch] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -47,23 +49,36 @@ export const AuthProvider = ({ children }) => {
     }, [navigate]);
 
     const logout = useCallback(async () => {
-        setIsLoading(true);
+        const despedida = `¡Gracias por visitarnos! Esperamos verte pronto.`;
+        
         try {
             await authService.logout();
+            await Swal.fire({
+                title: `¡Hasta pronto, ${user.data.username}!`,
+                text: despedida,
+                icon: 'success',
+                confirmButtonText: 'Adiós',
+                timer: 2000, 
+                didOpen: () => {
+                    Swal.showLoading() 
+                }
+            });
             setUser(null);
             navigate("/login");
         } catch (error) {
             console.error("Error during logout:", error);
         } finally {
-            setIsLoading(false);
+            setIsLoading(false); // Asegúrate de que esta línea esté en tu código original
             setAttemptedFetch(false);
         }
     }, [navigate]);
+    
 
     const forgotPassword = useCallback(async (email) => {
         try {
-            await authService.forgotPassword(email);
-            // Handle post forgot password logic here
+            const response = await authService.forgotPassword(email);
+          
+            return response;
         } catch (error) {
             handleErrors(error);
         }
@@ -92,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     const checkUsernameAvailability = useCallback(async (username) => {
         try {
             const response = await axios.get(`api/check-username/${username}`);
-            console.log(response)
+            
             return response.data; // La respuesta debe indicar si el nombre de usuario está disponible
         } catch (error) {
             console.error("Error checking username availability:", error.message);
@@ -102,8 +117,8 @@ export const AuthProvider = ({ children }) => {
 
     const resetPassword = useCallback(async (data) => {
         try {
-            await authService.resetPassword(data);
-            // Handle post reset password logic here
+           const response =  await authService.resetPassword(data);
+            return response.data
         } catch (error) {
             handleErrors(error);
         }
@@ -111,7 +126,7 @@ export const AuthProvider = ({ children }) => {
     const verify2FA = useCallback(async (code, email) => {
         try {
           const response = await axios.post('/api/verify-2fa', { code, email });
-          console.log(response.data);
+        
           setUser(response.data); // Asume que la respuesta incluye los datos del usuario actualizados
           // Navegar al dashboard o a la página principal después de la verificación exitosa
           navigate("/");

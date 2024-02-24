@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNotificationContext } from "../context/NotificationContext";
 import NotificationItem from "./NotificationItem";
 import { FaCheckCircle } from "react-icons/fa";
+import FilterButton from "./FilterButton";
 
 const Notifications = () => {
   const { allNotifications, fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead } = useNotificationContext();
@@ -24,19 +25,19 @@ const Notifications = () => {
   const readNotifications = filteredNotifications.filter(notification => notification.read);
 
   return (
-    <div className="notifications-container max-w-lg mx-auto mt-4 bg-white shadow rounded-lg">
-      <div className="flex justify-between items-center border-b p-4">
-        <h2 className="text-xl font-semibold text-gray-800">Notificaciones</h2>
-        <button onClick={markAllNotificationsAsRead} className="text-blue-600 hover:text-blue-800 flex items-center">
-          <FaCheckCircle className="mr-1" /> Marcar todas como leídas
-        </button>
-      </div>
-      <div className="flex space-x-2 p-4 justify-center">
-        <button onClick={() => handleFilterChange('all')} className="btn">Todas</button>
-        <button onClick={() => handleFilterChange('reaction')} className="btn">Reacciones</button>
-        <button onClick={() => handleFilterChange('comment')} className="btn">Comentarios</button>
-        <button onClick={() => handleFilterChange('follow')} className="btn">Seguimientos</button>
-      </div>
+    <div className="max-w-lg mx-auto mt-4 bg-white shadow rounded-lg overflow-hidden">
+  <div className="flex justify-between items-center border-b p-4 bg-gray-50">
+    <h2 className="text-xl font-semibold text-gray-800">Notificaciones</h2>
+    <button onClick={markAllNotificationsAsRead} className="text-blue-600 hover:text-blue-800 flex items-center">
+      <FaCheckCircle className="mr-1" /> Marcar todas como leídas
+    </button>
+  </div>
+  <div className="flex space-x-1 p-4 justify-center bg-gray-50">
+    <FilterButton label="Todas" active={filterType === 'all'} onClick={() => handleFilterChange('all')} />
+    <FilterButton label="Reacciones" active={filterType === 'reaction'} onClick={() => handleFilterChange('reaction')} />
+    <FilterButton label="Comentarios" active={filterType === 'comment'} onClick={() => handleFilterChange('comment')} />
+    <FilterButton label="Seguimientos" active={filterType === 'follow'} onClick={() => handleFilterChange('follow')} />
+  </div>
       {unreadNotifications.length > 0 ? (
         <div>
           <h3 className="px-4 font-semibold">Nuevas</h3>

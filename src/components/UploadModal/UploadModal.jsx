@@ -11,7 +11,6 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [uploading, setUploading] = useState(false);
   const [step, setStep] = useState(1);
   const { uploadPost } = usePostContext();
-
   const fileInputRef = useRef();
 
   useEffect(() => {
@@ -82,6 +81,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
     try {
       await uploadPost(formData);
+      
       Swal.fire("Uploaded!", "Your post has been uploaded.", "success");
       // Reset states after successful upload
       setFile(null);
@@ -128,6 +128,13 @@ const UploadModal = ({ isOpen, onClose }) => {
                 placeholder="Add a description... #hashtags (max 5)"
                 className="description-input"
               />
+              <button
+                className="back-button"
+                onClick={() => setStep(1)}
+                disabled={uploading}
+              >
+                Back
+              </button>
               <button className="next-button" onClick={() => setStep(3)}>
                 Next
               </button>
@@ -160,3 +167,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 };
 
 export default UploadModal;
+
+
+
+
