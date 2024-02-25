@@ -42,6 +42,7 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+    <h3 className="text-2xl my-3 font-bold text-center text-fireEngineRed">Pon tu contraseña</h3>
       <div className="form-field relative">
         <input
           id="password"
@@ -49,7 +50,7 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
           required
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
-          className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-bittersweet"
+          className="input-field w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
           aria-label="Password"
         />
         <button
@@ -66,7 +67,7 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
           required
           value={confirmPassword}
           onChange={(e) => onConfirmPasswordChange(e.target.value)}
-          className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-bittersweet"
+          className="input-field w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
           aria-label="Confirm Password"
         />
         <button
@@ -79,7 +80,7 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
       {formError && <div className="text-red-500 text-xs mt-2">{formError}</div>}
       <ul className="list-disc pl-5 space-y-1">
         {Object.entries(passwordCriteria).map(([key, isMet]) => (
-          <li key={key} className={`${isMet ? 'text-dark-green' : 'text-misty-rose'}`}>
+          <li key={key} className={`${isMet ? 'text-dark-green' : 'text-red-500'}`}>
             {isMet ? "✅" : "🔴"} {criteriaText(key)}
           </li>
         ))}
@@ -89,8 +90,8 @@ const PasswordInput = ({ onNext, password, confirmPassword, onPasswordChange, on
           style={{ width: `${passwordStrength * 25}%` }}></div>
       </div>
       <button
-        type="submit"
-        className="bg-burgundy w-full py-2 text-white rounded-md hover:bg-rose focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+       
+       className="button-primary w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
       >
         Siguiente
       </button>

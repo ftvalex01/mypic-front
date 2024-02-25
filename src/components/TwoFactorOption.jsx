@@ -54,6 +54,7 @@ const TwoFactorOption = ({ onNext, onToggle2FA, isChecked }) => {
 
     return (
         <div>
+        <h3 className="text-2xl my-3 font-bold text-center text-fireEngineRed">Verificacion en 2 pasos</h3>
             <label>
                 <input
                     type="checkbox"
@@ -62,7 +63,14 @@ const TwoFactorOption = ({ onNext, onToggle2FA, isChecked }) => {
                 />
                 Habilitar Verificación en Dos Pasos (2FA)
             </label>
-            <button onClick={handleContinue}>Continuar</button>
+
+            <button
+        onClick={handleContinue}
+        className="button-primary w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
+        style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+      >
+        Continuar
+      </button>
         </div>
     );
 };

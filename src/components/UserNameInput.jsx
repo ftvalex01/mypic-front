@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import useAuthContext from '../context/AuthContext'; // Verifica la ruta.
-
+import Swal from 'sweetalert2';
 const UserNameInput = ({ onNext, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,16 +22,28 @@ const UserNameInput = ({ onNext, value, onChange }) => {
         onNext();
       } else {
         // Manejar otros casos o ignorar si no es necesario
-        alert('El nombre de usuario ya existe.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Nombre de usuario existente',
+          text: 'El nombre de usuario ya está en uso. Por favor, elige otro.',
+        });
       }
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.status === 409) {
         // Aquí manejas específicamente el caso de conflicto
-        alert('El nombre de usuario ya existe.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Nombre de usuario existente',
+          text: 'El nombre de usuario ya está en uso. Por favor, elige otro.',
+        });
       } else {
         // Maneja otros errores no relacionados con la disponibilidad del nombre de usuario
-        alert('Error al verificar el nombre de usuario. Intente de nuevo.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un error al verificar el nombre de usuario. Por favor, inténtalo de nuevo.',
+        });
       }
     }
   };
@@ -39,7 +51,7 @@ const UserNameInput = ({ onNext, value, onChange }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-7">
-      <h3 className="text-2xl font-bold text-center text-misty-rose mb-6">Crea un nombre de usuario</h3>
+      <h3 className="text-2xl my-3 font-bold text-center text-fireEngineRed">Crea un nombre de usuario</h3>
       <div className="form-field">
         <label htmlFor="username" className={`label ${isFocused || value ? 'focused' : ''}`}>
           Nombre de usuario
@@ -54,13 +66,11 @@ const UserNameInput = ({ onNext, value, onChange }) => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-bittersweet input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange"
-          disabled={loading}
+          className="input-field w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-darkSienna focus:outline-none"
         />
       </div>
       <button
-        type="submit"
-        className="bg-burgundy w-full py-2 text-white rounded-md hover:bg-rose focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+        className="button-primary w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
         disabled={loading}
       >
         {loading ? 'Comprobando...' : 'Siguiente'}

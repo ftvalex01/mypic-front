@@ -155,7 +155,15 @@ export const AuthProvider = ({ children }) => {
             throw error;
         }
     }, []);
-
+    const checkEmailUnique = useCallback(async (email) => {
+        try {
+            const result = await authService.checkEmailUnique(email);
+            return result; // Retorna el resultado para manejarlo en el componente
+        } catch (error) {
+            handleErrors(error); // Usa la función existente para manejar errores si ya tienes una
+            throw error; // Lanza el error para permitir al componente manejar mensajes específicos
+        }
+    }, []);
     const handleErrors = useCallback((error) => {
         console.error("An error occurred:", error);
         setErrors(error.response?.data.errors || { general: ["An unexpected error occurred."] });
@@ -195,6 +203,7 @@ export const AuthProvider = ({ children }) => {
             forgotPassword,
             resetPassword,
             fetchUserByUsername,
+            checkEmailUnique,
             checkUsernameAvailability,
             verifyEmail,
             isLoading

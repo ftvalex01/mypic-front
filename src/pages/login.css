@@ -52,7 +52,14 @@
     padding: 10px; /* Espacio interno */
     margin-bottom: 10px; /* Margen inferior */
 }
-
+.submit-button{
+    background-color: #d3d3d3; /* Color de fondo */
+    border: 1px solid #660708; /* Color del borde */
+    color: #0b090a; /* Color del texto */
+    border-radius: 5px; /* Borde redondeado */
+    padding: 10px; /* Espacio interno */
+    margin-bottom: 10px; /* Margen inferior */
+}
 /* Estilos para el botón primario */
 .button-primary {
     background-color: #e5383b; /* Color de fondo */

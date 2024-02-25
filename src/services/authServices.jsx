@@ -28,7 +28,14 @@ login: async (credentials) => {
     
         return response.data; // Asume que el backend devuelve alguna confirmación
     },
-
+    checkEmailUnique: async (email) => {
+// Asegúrate de que esto esté correctamente tipografiado
+        const response = await axios.get("/api/check-email", {
+          params: { email } // Envía el correo electrónico como un parámetro de consulta
+        });
+        console.log(response.data)
+        return response.data; // Retorna los datos de la respuesta
+      },
     resetPassword: async (data) => {
         const response = await axios.post("/api/reset-password", data);
         

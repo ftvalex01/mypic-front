@@ -43,8 +43,9 @@ const NameInput = ({ onNext, value, onChange, error }) => {
   };
 
   return (
+    
     <form onSubmit={handleSubmit} className="space-y-7 relative ">
-      <h3 className="text-2xl font-bold text-center text-misty-rose mb-6">Pon tu nombre</h3>
+     <h3 className="text-2xl my-3 font-bold text-center text-fireEngineRed">Pon tu nombre</h3>
       <div className="form-field">
         <label htmlFor="name" className={`label ${isFocused || value ? 'focused' : ''}`}>
           Tu nombre completo
@@ -59,13 +60,12 @@ const NameInput = ({ onNext, value, onChange, error }) => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleInputChange}
-          className="bg-bittersweet input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange"
+          className="input-field w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-darkSienna focus:outline-none"
         />
         {(validationError || error) && <p className="text-white-500 text-xs">{validationError || error}</p>}
       </div>
       <button
-        type="submit"
-        className="bg-burgundy w-full py-2 text-white rounded-md hover:bg-rose focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+        className="button-primary w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
         style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
       >
         Continuar

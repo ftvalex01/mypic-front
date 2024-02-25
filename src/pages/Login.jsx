@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import validator from 'validator';
-
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
 import TwoFactorVerification from "../components/TwoFactorVerification";

@@ -135,7 +135,7 @@ const ResetPassword = () => {
             <div className={`h-full ${passwordStrengthColor(passwordStrength)}`} style={{ width: `${passwordStrength * 25}%` }}></div>
           </div>
           <button
-                                   className="w-full py-2 text-white rounded-md bg-burgundy hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600-hover focus:ring-opacity-50"
+        className="button-primary w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
           >
             Recuperar contraseña
           </button>

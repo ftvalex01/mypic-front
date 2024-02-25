@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 
 /* eslint-disable react/jsx-key */
@@ -11,7 +10,8 @@ import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import BirthDateInput from "../components/BirthDateInput";
 import TwoFactorOption from "../components/TwoFactorOption.jsx";
-import Swal from 'sweetalert2'; // Asumiendo que quieres usar Swal para la retroalimentación
+import Swal from "sweetalert2"; // Asumiendo que quieres usar Swal para la retroalimentación
+import Logo from "../components/Logo.jsx";
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -32,15 +32,16 @@ const Register = () => {
     if (Object.keys(errors).length > 0) {
       // Mostrar un mensaje de error si hay errores
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Por favor, corrige los errores antes de continuar.',
+        icon: "error",
+        title: "Oops...",
+        text: "Por favor, corrige los errores antes de continuar.",
       });
     }
   }, [errors, step]);
 
   const nextStep = () => {
-    if (step < 6) { // Ajustar el número máximo de pasos
+    if (step < 6) {
+      // Ajustar el número máximo de pasos
       setStep((prevStep) => prevStep + 1);
     } else {
       handleRegister();
@@ -48,52 +49,90 @@ const Register = () => {
   };
 
   const updateField = (field, value) => {
-    setUserData(prev => ({ ...prev, [field]: value }));
+    setUserData((prev) => ({ ...prev, [field]: value }));
   };
 
-
-   const handleRegister = async () => {
+  const handleRegister = async () => {
     // Verificar si las contraseñas coinciden
     if (userData.password !== userData.confirmPassword) {
-      Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+      Swal.fire("Error", "Las contraseñas no coinciden.", "error");
       return; // Detener la ejecución si las contraseñas no coinciden
     }
-  
-    const { confirmPassword, birth_date, ...formData } = userData; 
+
+    const { confirmPassword, birth_date, ...formData } = userData;
     formData.birth_date = new Date(birth_date).toISOString(); // Convertir la fecha de nacimiento al formato ISO
     formData.password_confirmation = confirmPassword; // Asegurarte de incluir esto
-  
+
     try {
       await register(formData);
-      Swal.fire('Registro exitoso', 'Bienvenido a la plataforma.', 'success');
+      Swal.fire("Registro exitoso", "Bienvenido a la plataforma.", "success");
       navigate("/");
     } catch (error) {
       console.error("Error durante el registro:", error);
-      Swal.fire('Error en el registro', 'No se pudo completar tu registro.', 'error');
+      Swal.fire(
+        "Error en el registro",
+        "No se pudo completar tu registro.",
+        "error"
+      );
     }
   };
 
   const stepComponents = [
-      <NameInput onNext={nextStep} value={userData.name} onChange={(value) => updateField("name", value)} error={errors.name} />,
-      <UserNameInput onNext={nextStep} value={userData.username} onChange={(value) => updateField("username", value)} error={errors.username} />,
-      <EmailInput onNext={nextStep} value={userData.email} onChange={(value) => updateField("email", value)} error={errors.email} />,
-      <PasswordInput onNext={nextStep} password={userData.password} confirmPassword={userData.confirmPassword} onPasswordChange={(value) => updateField("password", value)} onConfirmPasswordChange={(value) => updateField("confirmPassword", value)} error={errors.password} />,
-      <BirthDateInput onNext={nextStep} birthDate={userData.birth_date} onChange={(value) => updateField("birth_date", value)} error={errors.birth_date} />,
-      <TwoFactorOption onNext={nextStep} onToggle2FA={(isChecked) => updateField("enable2FA", isChecked)} isChecked={userData.enable2FA} />
+    <NameInput
+      onNext={nextStep}
+      value={userData.name}
+      onChange={(value) => updateField("name", value)}
+      error={errors.name}
+    />,
+    <UserNameInput
+      onNext={nextStep}
+      value={userData.username}
+      onChange={(value) => updateField("username", value)}
+      error={errors.username}
+    />,
+    <EmailInput
+      onNext={nextStep}
+      value={userData.email}
+      onChange={(value) => updateField("email", value)}
+      error={errors.email}
+    />,
+    <PasswordInput
+      onNext={nextStep}
+      password={userData.password}
+      confirmPassword={userData.confirmPassword}
+      onPasswordChange={(value) => updateField("password", value)}
+      onConfirmPasswordChange={(value) => updateField("confirmPassword", value)}
+      error={errors.password}
+    />,
+    <BirthDateInput
+      onNext={nextStep}
+      birthDate={userData.birth_date}
+      onChange={(value) => updateField("birth_date", value)}
+      error={errors.birth_date}
+    />,
+    <TwoFactorOption
+      onNext={nextStep}
+      onToggle2FA={(isChecked) => updateField("enable2FA", isChecked)}
+      isChecked={userData.enable2FA}
+    />,
   ];
 
-
-
-
-
   return (
-    <section className="flex items-center justify-center w-full h-screen bg-burgundy">
-      <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
-        <h3 className="text-2xl my-3 font-bold text-center text-misty-rose">Registrarse</h3>
+    <section className="flex items-center justify-center w-full h-screen bg-eerieBlack">
+      <div className="login-box w-full max-w-xs mx-auto p-6 rounded-lg shadow-lg">
+        <div className="flex flex-col items-center">
+          <Logo />
+        </div>
         {stepComponents[step - 1]}
-        <div className="mt-6 text-center text-misty-rose">
-          ¿Ya tienes una cuenta?
-          <Link to="/login" className="text-peach-pink-600 hover:underline"> Inicia sesión</Link>
+        <div className="mt-6 text-center text-black">
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            to="/login"
+            className=" hover:underline"
+            style={{ textDecoration: "underline" }}
+          >
+            Haz clic aquí
+          </Link>
         </div>
       </div>
     </section>
