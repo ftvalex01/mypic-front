@@ -12,7 +12,7 @@ const Layout = () => {
         <TopBar />
       </div>
       <Sidebar />
-      <main className="pt-16 lg:pl-64 flex flex-col flex-1 overflow-auto">
+      <main className="pt-16 lg:pl-64 flex flex-col flex-1 overflow-auto ">
         <Outlet />
       </main>
       <MobileNav />

@@ -27,9 +27,7 @@
   transform: scale(0.9); /* Efecto de zoom inicial */
 }
 
-.modal-content.show {
-  transform: scale(1); /* Efecto de zoom al entrar */
-}
+
 
 .modal-header {
   display: flex;

@@ -7,6 +7,7 @@ import { usePostContext } from "../../context/PostContext";
 import { useUserContext } from "../../context/UserContext"; // Importa el contexto del usuario
 
 const PostModal = ({ isOpen, onClose, post }) => {
+
     const { commentOnPost, deleteComment, likePost, likeComment } = usePostContext();
     const { user } = useUserContext(); // Usa el contexto del usuario para acceder al usuario actual
     const [newCommentText, setNewCommentText] = useState("");
@@ -54,7 +55,8 @@ const PostModal = ({ isOpen, onClose, post }) => {
                 <div className="flex">
                     {/* Contenedor de la imagen */}
                     <div className="flex-none">
-                        <img src={`${baseUrl}` + post.url} alt="Post" className="object-cover" />
+                    <img src={`${baseUrl}` + post.url} alt="Post" className="object-cover modal-image" />
+
                     </div>
 
                     {/* Contenedor de los comentarios */}

@@ -48,8 +48,7 @@ const ProfileByUsername = () => {
           const imagesResponse = await getUserImages(userData.id);
 
           setUserImages(imagesResponse.data || []);
-          const postsResponse = await getUserPosts(userData.id); // Suponiendo que exista esta función
-          setUserPosts(postsResponse.data || []);
+          
 
           setLivePosts(imagesResponse.liveImages || []);
           setPermanentPosts(imagesResponse.permanentImages || []);
@@ -196,26 +195,8 @@ const ProfileByUsername = () => {
                   </div>
                 )}
               </div>
+             
 
-              <button
-                className="btn"
-                onClick={() => setShowSettings(!showSettings)}
-              >
-                <FaCog />
-              </button>
-              {showSettings && (
-                <div className="settings-dropdown">
-                  {/* Cambia esta parte para incluir la funcionalidad de bloqueo */}
-                  <button
-                    onClick={handleBlockClick}
-                    className={`px-4 py-2 rounded text-white ${
-                      isBlocked ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
-                    {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
-                  </button>{" "}
-                </div>
-              )}
 
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
@@ -236,8 +217,7 @@ const ProfileByUsername = () => {
                   <img src={`${baseUrl}${post.url}`} alt={`Publicación ${index + 1}`} className="w-full h-auto" />
                 </div>
               ))}
-
-              <div className="flex mt-4 justify-center md:justify-start">
+<div className="flex mt-4 justify-center md:justify-start">
                 <button
                   className={`btn ${
                     activeTab === "postVivos" ? "btn-active" : ""

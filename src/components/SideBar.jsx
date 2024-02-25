@@ -55,8 +55,7 @@ const SideBar = () => {
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
             </Link>
-            
-            
+
             <Link
               to="/notifications"
               className="flex items-center space-x-2 text-white relative"
@@ -78,7 +77,15 @@ const SideBar = () => {
               to="/profile"
               className="flex items-center space-x-2 text-white"
             >
-              <CgProfile className="text-lg" />
+              {user?.data.profile_picture ? (
+                <img
+                  src={user.data.profile_picture}
+                  alt="Profile"
+                  className="w-5 h-5 rounded-full"
+                />
+              ) : (
+                <CgProfile className="text-lg" />
+              )}
               <span>{user?.data.username}</span>
             </Link>
             <button

@@ -19,12 +19,14 @@ export const NotificationProvider = ({ children }) => {
 
 
       // Filtrar las notificaciones para obtener solo las que pertenecen al usuario logeado
-      const userNotifications = fetchedNotifications.filter(notification => notification.user_id === user.id);
-  
+      const userNotifications = fetchedNotifications.filter(notification => notification.user_id === notification.user.id);
+
       setAllNotifications(userNotifications);
-      
+
       // Actualiza si hay notificaciones no leídas
       const unreadExists = userNotifications.some(notification => !notification.read);
+
+      
       setHasUnreadNotifications(unreadExists);
     } catch (error) {
       console.error('Error fetching notifications:', error);
