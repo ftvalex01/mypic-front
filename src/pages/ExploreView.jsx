@@ -21,7 +21,7 @@ const ExploreView = () => {
     const apiFunc = viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
     try {
       const fetchedPosts = await apiFunc(1);
-      console.log(fetchedPosts)
+
       setPosts(fetchedPosts);
       setHasMore(fetchedPosts.length > 0); // Solo habilitar la paginación si hay más posts disponibles
     } catch (error) {
@@ -58,9 +58,11 @@ const ExploreView = () => {
   };
 
   const determineGridItemSize = (index) => {
-    const sizes = ["large", "medium", "small"];
-    return sizes[index % sizes.length];
+    // Define un patrón más complejo para los tamaños
+    const pattern = ["large", "medium", "medium", "small", "large", "small"];
+    return pattern[index % pattern.length]; // Utiliza el patrón para determinar el tamaño
   };
+
 
   return (
     <div>

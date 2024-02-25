@@ -1,48 +1,62 @@
 /* ExploreView.css */
 .item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .large {
-    width: 100%;
-    height: auto;
-  }
-  
-  .medium {
-    width: 75%;
-    height: auto;
-  }
-  
-  .small {
-    width: 50%;
-    height: auto;
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  
-  .tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .tabs button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .tabs button:hover {
-    background-color: #0056b3;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* Previene el desbordamiento y ayuda con el recorte para 'object-fit' */
+  height: 100%;
+  /* Asegúrate de que el contenedor tenga una altura definida para el centrado vertical */
+}
+
+.item img {
+  width: 100%;
+  /* Ajusta el ancho al contenedor */
+  height: 100%;
+  /* Ajusta el alto al contenedor, puede requerir ajuste dependiendo del layout */
+  object-fit: cover;
+  object-position: center;
+  /* Centra la imagen dentro de su contenedor */
+}
+
+
+.large {
+  width: 100%;
+  height: auto;
+}
+
+.medium {
+  width: 85%;
+  height: auto;
+}
+
+.small {
+  width: 70%;
+  height: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  /* Asegura un espacio uniforme entre los elementos del grid */
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  background-color: #0056b3;
+}

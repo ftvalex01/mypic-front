@@ -104,7 +104,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       <div className={`modal-content ${isOpen ? "show" : ""}`}>
         <div className="modal-header">
           <span className="modal-title">
-            {step === 1 ? "Select Photo" : step === 2 ? "Add Details" : "Confirm Upload"}
+            {step === 1 ? "Selecciona una foto" : step === 2 ? "Añade una descripción" : "Confirmar"}
           </span>
           <button onClick={onClose} className="close-button">
             &times;
@@ -125,7 +125,7 @@ const UploadModal = ({ isOpen, onClose }) => {
                 type="text"
                 value={description}
                 onChange={handleDescriptionChange}
-                placeholder="Add a description... #hashtags (max 5)"
+                placeholder="Añade una descripción... #hashtags (max 5)"
                 className="description-input"
               />
               <button
@@ -133,10 +133,10 @@ const UploadModal = ({ isOpen, onClose }) => {
                 onClick={() => setStep(1)}
                 disabled={uploading}
               >
-                Back
+                Atrás
               </button>
               <button className="next-button" onClick={() => setStep(3)}>
-                Next
+                Siguiente
               </button>
             </>
           )}
@@ -149,14 +149,14 @@ const UploadModal = ({ isOpen, onClose }) => {
                 onClick={() => setStep(2)}
                 disabled={uploading}
               >
-                Back
+                Atrás
               </button>
               <button
                 className="confirm-button"
                 onClick={handleConfirm}
                 disabled={uploading}
               >
-                {uploading ? "Uploading..." : "Confirm"}
+                {uploading ? "Subiendo..." : "Confirmar"}
               </button>
             </div>
           )}
