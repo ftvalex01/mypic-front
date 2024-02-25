@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import Swal from 'sweetalert2';
+import Logo from "../components/Logo"; // Importar el componente Logo
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -84,10 +85,10 @@ const ResetPassword = () => {
     return strength === 4 ? 'bg-green-500' : strength >= 2 ? 'bg-yellow-500' : 'bg-red-500';
   };
 
-  // El componente JSX
   return (
-    <section className="flex items-center justify-center w-full h-screen bg-teal-green">
-      <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
+    <section className="flex items-center justify-center w-full h-screen bg-eerieBlack">
+      <div className="login-box w-full max-w-md p-8 rounded-lg shadow-md">
+        <Logo /> {/* Incorpora el componente Logo */}
         {status && <div className="bg-green-700 m-2 p-2 rounded text-white">{status}</div>}
         <h3 className="text-2xl my-3 font-bold text-center text-burgundy">Escribe tu nueva contraseña</h3>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +98,7 @@ const ResetPassword = () => {
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+              className="input-field w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600"
             />
             <button
               type="button"
@@ -113,7 +114,7 @@ const ResetPassword = () => {
               placeholder="Confirmar contraseña"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+              className="input-field w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600 "
             />
             <button
               type="button"
@@ -134,7 +135,7 @@ const ResetPassword = () => {
             <div className={`h-full ${passwordStrengthColor(passwordStrength)}`} style={{ width: `${passwordStrength * 25}%` }}></div>
           </div>
           <button
-            className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+                                   className="w-full py-2 text-white rounded-md bg-burgundy hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600-hover focus:ring-opacity-50"
           >
             Recuperar contraseña
           </button>

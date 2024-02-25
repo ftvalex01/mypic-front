@@ -1,3 +1,97 @@
+/* Estilos para el texto de marcador de posición en los campos de entrada */
 .input-placeholder::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.7); /* Color semi-transparente para el marcador de posición */
+}
+
+/* Estilos para el fondo de la página de inicio de sesión */
+.bg-eerieBlack {
+    position: relative; /* Posición relativa para colocar los pseudoelementos */
+    overflow: hidden; /* Oculta el desbordamiento */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(255, 0, 0, 0.2)); /* Gradiente de fondo */
+    animation: animateBackground 10s linear infinite alternate; /* Animación para el fondo */
+}
+
+/* Pseudoelemento para crear un efecto de onda en el fondo */
+.bg-eerieBlack::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Coloca el fondo detrás del contenido */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(255, 0, 0, 0.2)); /* Gradiente de fondo */
+    animation: animate 10s linear infinite alternate; /* Animación para el efecto de onda */
+}
+
+/* Animación para el efecto de onda */
+@keyframes animate {
+    0% {
+        opacity: 0.5; /* Opacidad inicial */
+    }
+    100% {
+        opacity: 1; /* Opacidad final */
+    }
+}
+
+/* Estilos para el contenedor de inicio de sesión */
+.login-box {
+    background-color: #f5f3f4; /* Color de fondo */
+    border: 1px solid #a4161a; /* Color del borde */
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 20px; /* Espacio interno */
+}
+
+/* Estilos para los campos de entrada */
+.input-field {
+    background-color: #d3d3d3; /* Color de fondo */
+    border: 1px solid #660708; /* Color del borde */
+    color: #0b090a; /* Color del texto */
+    border-radius: 5px; /* Borde redondeado */
+    padding: 10px; /* Espacio interno */
+    margin-bottom: 10px; /* Margen inferior */
+}
+
+/* Estilos para el botón primario */
+.button-primary {
+    background-color: #e5383b; /* Color de fondo */
+    border: none; /* Sin borde */
+    color: #ffffff; /* Color del texto */
+    padding: 10px 20px; /* Espacio interno */
+    border-radius: 5px; /* Borde redondeado */
+    cursor: pointer; /* Cursor al pasar */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+/* Estilos hover para el botón primario */
+.button-primary:hover {
+    background-color: #a4161a; /* Color de fondo al pasar */
+}
+
+/* Estilos para el texto secundario */
+.text-secondary {
+    color: #b1a7a6; /* Color del texto */
+}
+
+/* Estilos para los mensajes de error */
+.error-message {
+    color: #ba181b; /* Color del texto */
+}
+
+/* Estilos para los botones sociales */
+.social-button {
+    background-color: #d3d3d3; /* Color de fondo */
+    color: #161a1d; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 10px; /* Espacio interno */
+    border-radius: 5px; /* Borde redondeado */
+    cursor: pointer; /* Cursor al pasar */
+    transition: background-color 0.3s ease; /* Transición suave */
+    margin-right: 10px; /* Margen derecho */
+}
+
+/* Estilos hover para los botones sociales */
+.social-button:hover {
+    background-color: #b1a7a6; /* Color de fondo al pasar */
 }

@@ -4,6 +4,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService } from '../services/authServices';
 import { useNavigate } from 'react-router-dom';
+
 import axios from '../api/axios';
 import Swal from 'sweetalert2';
 
@@ -27,7 +28,14 @@ export const AuthProvider = ({ children }) => {
             }
             return response.data;
         } catch (error) {
-            setErrors(error.response.data.message);
+            // Aquí manejas el error específico para correo electrónico no encontrado
+            {
+                // Para otros errores, podrías querer mostrar un mensaje genérico o basado en el error devuelto por el servidor
+                setErrors({ general: [error.response.data.message || "Error al iniciar sesión."] });
+            }
+            setTimeout(() => {
+                setErrors({});
+            }, 2000); // Limpiar errores después de 2 segundos
             throw error;
         }
     }, [navigate]);
@@ -154,6 +162,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        
         if (!attemptedFetch) {
             setIsLoading(true);
             const initializeUser = async () => {

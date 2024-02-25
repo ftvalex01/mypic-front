@@ -6,7 +6,6 @@ export default {
       colors: {
         'peach-pink': '#fd9491',
         'pink-red': '#ff496f',
-        'burgundy': '#642a36',
         'amber-orange': '#faa531',
         'peach-yellow': '#fcb452',
         'corn-yellow': '#fbc36e',
@@ -19,6 +18,15 @@ export default {
         'white': '#ffffff',
         'rose': '#ef476f',
         'dark-green':'#70e000',
+        'black': '#0B090A',
+        'eerieBlack': '#161A1D',
+        'darkSienna': '#660708',
+        'rosewood': '#A4161A',
+        'bulgarianRose': '#BA181B',
+        'fireEngineRed': '#E5383B',
+        'silverPink': '#B1A7A6',
+        'lightGray': '#D3D3D3',
+        'cultured': '#F5F3F4',        
       },
      /*  gridTemplateColumns:{
         'x': 'repeat(3, minmax(0, 0.50fr))'
