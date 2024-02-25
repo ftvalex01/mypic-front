@@ -146,9 +146,8 @@ const ProfileByUsername = () => {
 
   const profileImageUrl =
     profile && profile.profile_picture
-      ? `${baseUrl}${profile.profile_picture}`
+      ? `${baseUrl}/storage/${profile.profile_picture}`
       : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
-
   if (isLoading) {
     return <div>Cargando perfil...</div>;
   }
