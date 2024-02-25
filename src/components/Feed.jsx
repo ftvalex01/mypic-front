@@ -22,6 +22,7 @@ const Feed = () => {
           <b>Yay! You have seen it all</b>
         </p>
       }
+      className='bg-bittersweet'
     >
       {posts.map((post) => <PostCard key={post.id} post={post} />)}
     </InfiniteScroll>

@@ -57,6 +57,15 @@ export const SocialInteractionProvider = ({ children }) => {
       throw error; // Lanza el error para que el componente llamador pueda manejarlo
     }
   };
+  const getBlockedUsers = async () => {
+    try {
+      const users = await socialInteractionService.getBlockedUsers();
+      return users
+    } catch (error) {
+      console.error("Error fetching blocked users:", error);
+      throw error; // En caso de error, establece la lista de usuarios bloqueados como vacía
+    }
+  };
   // Asegúrate de proveer todas las funciones y estados necesarios aquí
   return (
     <SocialInteractionContext.Provider value={{
@@ -66,7 +75,8 @@ export const SocialInteractionProvider = ({ children }) => {
       rejectFollowRequest,
       unblockUser,
       blockUser,
-      checkIfBlocked
+      checkIfBlocked,
+      getBlockedUsers
 
     }}>
       {children}

@@ -6,7 +6,8 @@ import TopBar from '../components/TopBar'; // Componente de barra superior para 
 
 const Layout = () => {
   return (
-    <div className="bg-gray-100 min-h-screen overflow-hidden">
+
+     <div className="bg-bittersweet min-h-screen overflow-hidden">
       <div className='mt-3'>
         <TopBar />
       </div>

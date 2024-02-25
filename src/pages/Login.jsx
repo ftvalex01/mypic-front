@@ -4,6 +4,7 @@ import useAuthContext from "../context/AuthContext";
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
 import TwoFactorVerification from "../components/TwoFactorVerification";
+import './login.css';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ const Login = () => {
   
   
   return (
-    <section className="flex items-center justify-center min-h-screen bg-teal-green">
+    <section className="flex items-center justify-center min-h-screen bg-burgundy">
       <div className="w-full max-w-xs mx-auto bg-white/50 p-6 rounded-lg shadow-lg">
         <div className="flex flex-col items-center">
           <Logo />
@@ -52,8 +53,8 @@ const Login = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
-                style={{ backgroundColor: '#faa531' }}
+                className="input-placeholder w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
+                style={{ backgroundColor: '#fe5f55'}}
               />
               {errors.email && <div className="text-red-500 text-xs">{errors.email[0]}</div>}
             </div>
@@ -64,14 +65,14 @@ const Login = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
-                style={{ backgroundColor: '#faa531' }}
+                className="input-placeholder w-full px-4 py-2 rounded-md text-sm focus:ring-2 focus:ring-amber-orange focus:outline-none"
+                style={{ backgroundColor: '#fe5f55' }}
               />
               {errors.password && <div className="text-red-500 text-xs">{errors.password[0]}</div>}
             </div>
             <button
-              className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
-              style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+              className="w-full py-2 text-white rounded-md hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+              style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', backgroundColor:'#841c26' }}
             >
               Iniciar sesión
             </button>
@@ -81,8 +82,8 @@ const Login = () => {
         )}
 
         <div className="flex flex-col items-center mt-6">
-          <Link to="/forgot-password" className="text-xs text-amber-600 hover:underline">¿Olvidaste tu contraseña?</Link>
-          <Link to="/register" className="text-xs text-amber-600 hover:underline mt-4">Crear cuenta nueva</Link>
+          <Link to="/forgot-password" className="text-misty-rose text-xs hover:underline">¿Olvidaste tu contraseña?</Link>
+          <Link to="/register" className="text-misty-rose text-x hover:underline mt-4">Crear cuenta nueva</Link>
           <SocialLogin provider="github" />
           <SocialLogin provider="google" />
         </div>

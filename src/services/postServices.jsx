@@ -11,7 +11,7 @@ export const postService = {
   },
 
   likePost: async (postId) => {
-  
+
     const response = await axios.post(`/api/post/${postId}/reactions`, {
       reactable_id: postId,
       reactable_type: 'Post',
@@ -21,7 +21,7 @@ export const postService = {
 
   fetchAllPosts: async (page = 1) => {
     const response = await axios.get(`/api/post?page=${page}`);
-   
+
     return response.data; // Asegúrate de ajustar esto según la estructura de tu respuesta
   },
 
@@ -43,7 +43,7 @@ export const postService = {
     const response = await axios.get(`/api/explore/recommended?page=${page}`);
     return response.data; // Asume que tu API devuelve los datos en este formato
   },
-  
+
 
   likeComment: async (postId, commentId) => {
 
@@ -56,6 +56,13 @@ export const postService = {
 
     await axios.delete(`/api/comments/${commentId}`);
   },
+
+
+  fetchAllCommentsForPost: async (postId) => {
+    const response = await axios.get(`/api/profile/posts/${postId}/comments`);
+    return response.data; // Suponiendo que la API devuelve directamente un array de comentarios
+  },
+  
   deletePost: async (postId) => {
     const response = await axios.delete(`/api/post/${postId}`);
    
@@ -65,5 +72,6 @@ export const postService = {
   pinPost: async (postId) => {
     const response = await axios.patch(`/api/post/${postId}/pin`);
     return response.data;
+
   },
 };

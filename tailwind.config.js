@@ -12,6 +12,13 @@ export default {
         'corn-yellow': '#fbc36e',
         'teal-green': '#5a9889',
         'mint-green': '#9bc4b3',
+        'bittersweet': '#fe5f55',
+        'burgundy': '#841c26',
+        'misty-rose':'#ffebeb',
+        'magnolia':'#f7f1f9',
+        'white': '#ffffff',
+        'rose': '#ef476f',
+        'dark-green':'#70e000',
       },
      /*  gridTemplateColumns:{
         'x': 'repeat(3, minmax(0, 0.50fr))'

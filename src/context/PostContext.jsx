@@ -45,19 +45,20 @@ export const PostProvider = ({ children }) => {
     fetchAllPosts();
   }, [fetchAllPosts]);
 
-  const fetchAllRecommendedPosts = useCallback(
-    async (page) => {
-      if (!user) return;
-      try {
-        const response = await postService.fetchAllRecommendedPosts(page);
 
-        return response.data;
-      } catch (error) {
-        console.error("Error fetching recommended posts:", error.message);
-      }
-    },
-    [user, page, hasMore]
-  );
+  const fetchAllRecommendedPosts = useCallback(async (page) => {
+    if (!user) return;
+    try {
+      const response = await postService.fetchAllRecommendedPosts(page);
+
+      return response.data
+    } catch (error) {
+      console.error("Error fetching recommended posts:", error.message);
+    }
+  }, [user, page, hasMore]);
+
+
+     
 
   const uploadPost = useCallback(async (formData) => {
     if (!user) return;
@@ -116,6 +117,7 @@ export const PostProvider = ({ children }) => {
 
   // Dentro de tu contexto, ajusta la función para aceptar y pasar el número de página
   const fetchAllPublicPosts = async (page) => {
+
     try {
       const response = await postService.fetchAllPublicPosts(page);
       return response.data; // Asegúrate de que esto coincida con la estructura de tu respuesta
@@ -124,6 +126,8 @@ export const PostProvider = ({ children }) => {
       return []; // Devolvemos un arreglo vacío en caso de error
     }
   };
+
+
 
   const deletePost = useCallback(
     async (postId) => {
@@ -139,6 +143,7 @@ export const PostProvider = ({ children }) => {
     },
     [user, setPosts]
   );
+
   const pinPost = useCallback(
     async (postId) => {
       if (!user) return;
@@ -171,6 +176,17 @@ export const PostProvider = ({ children }) => {
     [user]
   );
 
+
+  const fetchCommentsForPost = useCallback(async (postId) => {
+    try {
+      const comments = await postService.fetchAllCommentsForPost(postId);
+      return comments;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      return []; // Devuelve un arreglo vacío en caso de error
+    }
+  }, []);
+
   const value = {
     posts,
     uploadPost,
@@ -183,6 +199,7 @@ export const PostProvider = ({ children }) => {
     commentOnPost,
     deleteComment,
     likeComment,
+    fetchCommentsForPost
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;

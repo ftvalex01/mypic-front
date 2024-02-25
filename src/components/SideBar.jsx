@@ -33,7 +33,7 @@ const SideBar = () => {
 
   return (
     <>
-      <aside className="hidden lg:flex flex-col bg-gray-700 fixed inset-y-0 left-0 z-30 w-64">
+      <aside className="hidden lg:flex flex-col bg-burgundy fixed inset-y-0 left-0 z-30 w-64">
         <div className="flex flex-col space-y-6 p-4">
           <h1 className="text-3xl font-bold mb-4 text-white">MyPic</h1>
           <nav className="flex flex-col space-y-6">
@@ -103,7 +103,7 @@ const SideBar = () => {
         leaveFrom="translate-x-0"
         leaveTo="translate-x-full"
       >
-        <div className="fixed inset-y-0 right-0 z-40 w-80 bg-white shadow-lg overflow-y-auto">
+        <div className="fixed inset-y-0 right-0 z-40 w-80 bg-misty-rose shadow-lg overflow-y-auto">
           <div className="p-4">
             <button
               onClick={toggleSearchSidebar}
