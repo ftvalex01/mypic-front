@@ -5,7 +5,6 @@ import {
   FiHeart,
   FiMessageCircle,
   FiTrash2,
-  FiMoreHorizontal,
 } from "react-icons/fi";
 import { IoHeartSharp } from "react-icons/io5";
 import { usePostContext } from "../context/PostContext";
@@ -14,7 +13,7 @@ import "./style.css";
 import { Link } from 'react-router-dom';
 
 const PostCard = ({ post }) => {
-  const [showMenu, setShowMenu] = useState(false);
+
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
@@ -44,19 +43,7 @@ const PostCard = ({ post }) => {
       console.error("Error al dar like al post:", error);
     }
   };
-  // Función para manejar la eliminación del post
-  const handleDeletePost = async () => {
-    // Lógica para eliminar el post
-    console.log("Eliminar post", post.id);
-    // Aquí debes llamar a la función del contexto que maneja la eliminación de posts
-  };
 
-  // Función para manejar el pinneo del post
-  const handlePinPost = async () => {
-    // Lógica para pinear el post
-    console.log("Pinear post", post.id);
-    // Aquí debes llamar a la función del contexto que maneja el pinneo de posts
-  };
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
@@ -151,7 +138,7 @@ const highlightHashtags = (text) => {
       console.error("Error al enviar comentario:", error);
     }
   };
-  console.log(post);
+
   return (
     <div className="bg-misty-rose rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -175,32 +162,6 @@ const highlightHashtags = (text) => {
           </div>
         </div>
 
-        {user && user.data.id === post.user_id && (
-          <FiMoreHorizontal
-            className="cursor-pointer"
-            onClick={() => setShowMenu(!showMenu)}
-          />
-        )}
-        {showMenu && (
-          <div className="absolute bg-white shadow-lg rounded-lg py-1 right-4 top-12 z-10">
-            <ul>
-              <li
-                className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                onClick={handleDeletePost}
-              >
-                Eliminar post
-              </li>
-              {user && user.data.available_pines > 0 && (
-                <li
-                  className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                  onClick={handlePinPost}
-                >
-                  Pinear post
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
       </div>
 
       {/* Post Image */}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import './PostModal.css';
@@ -7,7 +8,8 @@ import { usePostContext } from "../../context/PostContext";
 import { useUserContext } from "../../context/UserContext"; // Importa el contexto del usuario
 
 const PostModal = ({ isOpen, onClose, post }) => {
-
+console.log(post,'del profile');
+console.log(post,'del explore')
     const { commentOnPost, deleteComment, likePost, likeComment } = usePostContext();
     const { user } = useUserContext(); // Usa el contexto del usuario para acceder al usuario actual
     const [newCommentText, setNewCommentText] = useState("");
@@ -46,6 +48,20 @@ const PostModal = ({ isOpen, onClose, post }) => {
             console.error("Error al borrar comentario:", error);
         }
     };
+    const getPostImageUrl = (post) => {
+        // Verifica si 'post.media' existe y tiene una propiedad 'url' que comienza con '/storage/uploads'
+        if (post.media && post.media.url.startsWith('/storage/uploads')) {
+          return `${baseUrl}${post.media.url}`; // Usa la base URL si es necesario
+        } else if (post.url && post.url.startsWith('/storage/uploads')) {
+          return `${baseUrl}${post.url}`; // Usa la base URL si es necesario
+        } else {
+          // En caso de que 'post.media.url' no exista, intenta usar 'post.url' directamente
+          return post.media?.url || post.url;
+        }
+      };
+      
+      // Usar la función getPostImageUrl para obtener la URL de la imagen
+      const imageSrc = getPostImageUrl(post);
 
     if (!isOpen) return null;
 
@@ -55,7 +71,7 @@ const PostModal = ({ isOpen, onClose, post }) => {
                 <div className="flex">
                     {/* Contenedor de la imagen */}
                     <div className="flex-none">
-                    <img src={`${baseUrl}` + post.url} alt="Post" className="object-cover modal-image" />
+                    <img src={imageSrc} alt="Post" className="object-cover modal-image" />
 
                     </div>
 

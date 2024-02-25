@@ -3,15 +3,20 @@ import { usePostContext } from "../context/PostContext";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./ExploreView.css";
 import "../components/style.css"
+import PostModal from "../components/PostModal/PostModal";
+
 const ExploreView = () => {
-  const { fetchAllPublicPosts, fetchAllRecommendedPosts } = usePostContext();
+  const { fetchAllPublicPosts, fetchAllRecommendedPosts, fetchCommentsForPost } = usePostContext();
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState("random"); // 'random' o 'forYou'
   const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
   const [page, setPage] = useState(1);
-
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null); 
+ 
   useEffect(() => {
     loadInitialPosts();
   }, [viewMode]);
@@ -30,6 +35,32 @@ const ExploreView = () => {
       setHasMore(false);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  
+  const openPostModal = async (post) => {
+    try {
+      const comments = await fetchCommentsForPost(post.id);
+      setSelectedPost({ ...post, comments }); // Asume que `post` ya contiene la URL de la imagen y otros datos necesarios.
+      setIsPostModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const closePostModal = () => {
+    setIsPostModalOpen(false);
+    setSelectedPost(null);
+  };
+  const determineGridItemClass = (index) => {
+    // El primer elemento y cada sexto elemento después de eso serán grandes
+    if (index % 6 === 0) {
+      return 'item large first-large';
+    } else if (index % 6 === 5) {
+      return 'item large second-large';
+    } else {
+      return 'item';
     }
   };
 
@@ -57,15 +88,10 @@ const ExploreView = () => {
     setPage(1); // Resetear la página al cambiar el modo de vista
   };
 
-  const determineGridItemSize = (index) => {
-    // Define un patrón más complejo para los tamaños
-    const pattern = ["large"];
-    return pattern[index % pattern.length]; // Utiliza el patrón para determinar el tamaño
-  };
 
 
   return (
-    <div>
+    <div className="mt-8">
 
       <div className="tabs">
         <button onClick={() => handleModeChange("random")}  className="button-primary w-full mb-4 py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50">Aleatorio</button>
@@ -82,16 +108,25 @@ const ExploreView = () => {
           </p>
         }
       >
-        <div className="grid grid-cols-3 gap-4">
+          <div className="grid-container">
           {posts.map((post, index) => (
             <div
-              key={post.id}
-              className={`item ${determineGridItemSize(index)}`}
-            >
+            key={post.id}
+            className={determineGridItemClass(index)}
+            onClick={() => openPostModal(post)} // Modifica esta línea para llamar a openModal
+          >
               <img src={`${baseUrl}${post.media.url}`} alt="Post" />
             </div>
           ))}
         </div>
+        {isPostModalOpen && selectedPost && ( // Verifica que el modal esté abierto y haya un post seleccionado
+        <PostModal
+          isOpen={isPostModalOpen}
+          onClose={closePostModal}
+          post={selectedPost}
+        />
+      )}
+      <div id="modal-root"></div>
       </InfiniteScroll>
     </div>
   );
