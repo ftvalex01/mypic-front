@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { usePostContext } from "../context/PostContext";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./ExploreView.css";
-
+import "../components/style.css"
 const ExploreView = () => {
   const { fetchAllPublicPosts, fetchAllRecommendedPosts } = usePostContext();
   const [posts, setPosts] = useState([]);
@@ -66,9 +66,10 @@ const ExploreView = () => {
 
   return (
     <div>
-      <div className="">
-        <button className="button-primary bg-eerieBlack" onClick={() => handleModeChange("random")}>Aleatorio</button>
-        <button onClick={() => handleModeChange("forYou")}>Para Ti</button>
+
+      <div className="tabs">
+        <button onClick={() => handleModeChange("random")}  className="button-primary w-full mb-4 py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50">Aleatorio</button>
+        <button onClick={() => handleModeChange("forYou")}  className="button-primary w-full mb-4 py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50">Para Ti</button>
       </div>
       <InfiniteScroll
         dataLength={posts.length}

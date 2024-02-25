@@ -11,6 +11,7 @@ import { IoHeartSharp } from "react-icons/io5";
 import { usePostContext } from "../context/PostContext";
 import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
 import "./style.css";
+import { Link } from 'react-router-dom';
 
 const PostCard = ({ post }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -66,6 +67,26 @@ const PostCard = ({ post }) => {
       console.error("Error al intentar borrar el comentario:", error);
     }
   };
+  // Función para resaltar hashtags
+const highlightHashtags = (text) => {
+  // Expresión regular para encontrar hashtags
+  const hashtagRegex = /#(\w+)/g;
+  // Dividir el texto en partes y hashtags
+  const parts = text.split(hashtagRegex);
+
+  return parts.map((part, index) => {
+    // Si la parte es un hashtag, devolvemos un span con una clase especial
+    if (index % 2 === 1) {
+      return (
+        <span key={index} className="hashtag">
+          #{part}
+        </span>
+      );
+    }
+    // Si no, devolvemos la parte del texto tal como está
+    return part;
+  });
+};
 
   const handleLikeComment = async (commentId) => {
     try {
@@ -142,7 +163,9 @@ const PostCard = ({ post }) => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <h2 className="font-semibold">{post.user.username}</h2>
+          <Link to={`/profile/${post.user.username}`} className="font-semibold hover:underline">
+      {post.user.username}
+    </Link>
             {/* Condición para mostrar las horas restantes si el post no es permanente */}
             {!post.permanent && (
               <p className="text-sm text-gray-500">
@@ -189,6 +212,10 @@ const PostCard = ({ post }) => {
           style={{ maxHeight: "500px" }}
         />
       )}
+
+{post.description && (
+  <p className="post-description">{highlightHashtags(post.description)}</p>
+)}
 
       {/* Post Actions */}
       <div className="border-bottom flex justify-between items-center p-4">
