@@ -198,3 +198,96 @@
 .nav-link span {
   margin-left: 8px; /* Espacio entre el ícono y el texto */
 }
+
+.comments-container {
+  max-height: 150px; /* Altura máxima para el contenedor de comentarios */
+  overflow-y: auto; /* Desplazamiento vertical automático */
+  padding-right: 4px; /* Espacio para el scrollbar */
+}
+
+.comment {
+  word-break: break-word; /* Rompe las palabras largas para que pasen a la siguiente línea */
+  padding: 8px 0; /* Espacio superior e inferior para cada comentario */
+  border-bottom: 1px solid #b00b0b; /* Línea entre comentarios */
+  display: flex; /* Usa flexbox para alinear elementos */
+  align-items: center; /* Alinea los elementos verticalmente */
+  justify-content: space-between; /* Distribuye el espacio entre elementos */
+}
+
+.comment-text {
+  font-size: 0.875rem; /* Tamaño de la fuente para el texto del comentario */
+  margin-right: 12px; /* Espacio entre el texto del comentario y los botones */
+  color: #333; /* Color del texto para mejorar la legibilidad */
+}
+
+.comment-actions {
+  display: flex; /* Usa flexbox para alinear los botones de acción */
+  align-items: center; /* Alinea los botones verticalmente */
+}
+
+.comment button {
+  background: none; /* Elimina el fondo por defecto de los botones */
+  border: none; /* Elimina el borde por defecto de los botones */
+  cursor: pointer; /* Indica que es un elemento clickeable */
+  padding: 4px; /* Espacio alrededor del icono para hacer más fácil el clic */
+  margin-left: 4px; /* Espacio entre botones */
+  transition: transform 0.2s; /* Transición suave para el efecto de clic */
+}
+
+.comment button:hover {
+  transform: scale(1.1); /* Aumenta ligeramente el tamaño al pasar el cursor */
+}
+
+/* Estilos específicos para iconos de like y eliminar */
+.like-icon {
+  color: #ff0000; /* Color rojo para el icono de like */
+}
+
+.delete-icon {
+  color: #606060; /* Color gris para el icono de eliminar */
+}
+
+/* Estilos para el input de comentario */
+.comment-input {
+  width: 100%;
+  border-radius: 10px; /* Hace que el input sea completamente redondeado */
+  border: 1px solid #ccc;
+  padding: 8px 16px; /* Espacio interno */
+  margin-top: 10px; /* Espacio arriba del input */
+}
+
+.border-bottom{
+  border-bottom: 1px solid rgba(5, 1, 1, 0.742);
+}
+/* Estilos para el botón de envío de comentario */
+.comment-submit-button {
+  background-color: #3490dc; /* Color de fondo del botón */
+  color: rgb(185, 7, 7); /* Color del texto del botón */
+  padding: 8px 16px; /* Espacio interno del botón */
+  border: none; /* No hay borde */
+  border-radius: 9999px; /* Hace que el botón sea completamente redondeado */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  margin-top: 10px; /* Espacio arriba del botón */
+}
+/* Personalizar la scrollbar para todos los elementos y pseudo-elementos */
+*::-webkit-scrollbar {
+  width: 8px; /* Ancho de la scrollbar */
+}
+
+/* Estilo para la "track" (la parte que la barra de desplazamiento se mueve dentro) */
+*::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo */
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+/* Estilo para la "thumb" (la parte que se desplaza) */
+*::-webkit-scrollbar-thumb {
+  background: #888; /* Color de la barra de desplazamiento */
+  border-radius: 4px; /* Bordes redondeados */
+  border: 2px solid #f1f1f1; /* Borde de la thumb con el mismo color que el track para efecto de "espacio" */
+}
+
+/* Estilo para la "thumb" al pasar el cursor */
+*::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color más oscuro al pasar el cursor */
+}

@@ -1,15 +1,19 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { FiHeart, FiMessageCircle, FiTrash2, FiMoreHorizontal } from "react-icons/fi";
+import {
+  FiHeart,
+  FiMessageCircle,
+  FiTrash2,
+  FiMoreHorizontal,
+} from "react-icons/fi";
 import { IoHeartSharp } from "react-icons/io5";
 import { usePostContext } from "../context/PostContext";
 import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
-import '../pages/login.css';
+import "./style.css";
 
 const PostCard = ({ post }) => {
-
-  const [showMenu, setShowMenu] = useState(false); 
+  const [showMenu, setShowMenu] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isLiked, setIsLiked] = useState(post.isLiked);
@@ -18,7 +22,7 @@ const PostCard = ({ post }) => {
   );
   const { likePost, commentOnPost, deleteComment, likeComment } =
     usePostContext();
-    
+
   const { user } = useUserContext(); // Acceso a datos del usuario autenticado
   const baseUrl = import.meta.REACT_APP_API_URL || "http://localhost:8000"; // Utiliza variables de entorno para definir URLs base
   const [remainingHours, setRemainingHours] = useState(null);
@@ -43,8 +47,8 @@ const PostCard = ({ post }) => {
       console.error("Error al dar like al post:", error);
     }
   };
-   // Función para manejar la eliminación del post
-   const handleDeletePost = async () => {
+  // Función para manejar la eliminación del post
+  const handleDeletePost = async () => {
     // Lógica para eliminar el post
     console.log("Eliminar post", post.id);
     // Aquí debes llamar a la función del contexto que maneja la eliminación de posts
@@ -68,11 +72,10 @@ const PostCard = ({ post }) => {
   };
 
   const handleLikeComment = async (commentId) => {
-
     try {
       // Espera la respuesta de la función likeComment del contexto
       const { likesCount, isLiked } = await likeComment(post.id, commentId);
-  
+
       setComments((comments) =>
         comments.map((comment) =>
           comment.id === commentId
@@ -118,7 +121,7 @@ const PostCard = ({ post }) => {
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return; // Evita enviar comentarios vacíos
-  
+
     try {
       const newComment = await commentOnPost(post.id, commentText);
       if (newComment && newComment.data) {
@@ -133,9 +136,7 @@ const PostCard = ({ post }) => {
   };
 
   return (
-
-     <div className="bg-misty-rose rounded-lg shadow-lg max-w-md mx-auto my-5">
-
+    <div className="bg-misty-rose rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center space-x-3">
@@ -176,19 +177,19 @@ const PostCard = ({ post }) => {
           </div>
         )}
       </div>
-  
+
       {/* Post Image */}
       {post.media && (
         <img
           src={`${baseUrl}${post.media.url}`}
-          alt={post.description || 'imagen'}
+          alt={post.description || "imagen"}
           className="w-full object-cover"
           style={{ maxHeight: "500px" }}
         />
       )}
-  
+
       {/* Post Actions */}
-      <div className="flex justify-between items-center p-4">
+      <div className="border-bottom flex justify-between items-center p-4">
         <div className="flex space-x-4">
           <button onClick={toggleLike}>
             {isLiked ? (
@@ -204,58 +205,57 @@ const PostCard = ({ post }) => {
           <span>{comments.length} comentarios</span>
         </div>
       </div>
-  
+
       {/* Post Comments & Comment Input */}
-      <div className="px-4 pb-2">
-      {comments.map((comment) => (
-  <div key={comment.id} className="comment my-2 flex justify-between">
-    <div>
-      <p>
-        {comment.text} - <span>por {comment.user.username}</span>{" "}
-        <span className="text-gray-400">
-          {calculateTimeAgo(new Date(comment.comment_date * 1000))}
-        </span>
-      </p>
-      <div className="flex items-center">
-        <button onClick={() => handleLikeComment(comment.id)}>
-          {comment.isLiked ? (
-            <IoHeartSharp className="w-6 h-6 text-red-500" />
-          ) : (
-            <FiHeart className="w-6 h-6 text-gray-500" />
-          )}
-        </button>
-        {/* Coloca el contador de likes justo al lado del icono del corazón */}
-        <span className="ml-2">{comment.likesCount}</span>
+      <div className="px-4 pb-2 comments-container ">
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment my-2 flex justify-between">
+            <div>
+              <p className="comment-text">
+                {comment.text} - <span>por {comment.user.username}</span>{" "}
+                <span className="text-gray-400">
+                  {calculateTimeAgo(new Date(comment.comment_date * 1000))}
+                </span>
+              </p>
+              <div className="flex items-center">
+                <button onClick={() => handleLikeComment(comment.id)}>
+                  {comment.isLiked ? (
+                    <IoHeartSharp className="w-6 h-6 text-red-500" />
+                  ) : (
+                    <FiHeart className="w-6 h-6 text-gray-500" />
+                  )}
+                </button>
+                {/* Coloca el contador de likes justo al lado del icono del corazón */}
+                <span className="ml-2">{comment.likesCount}</span>
+              </div>
+            </div>
+            {/* Si el usuario es el autor del comentario, muestra el icono de basura a la derecha */}
+            {user && user.data.id === comment.user_id && (
+              <button onClick={() => handleDelete(comment.id)}>
+                <FiTrash2 className="w-6 h-6 text-gray-500" />
+              </button>
+            )}
+          </div>
+        ))}
       </div>
-    </div>
-    {/* Si el usuario es el autor del comentario, muestra el icono de basura a la derecha */}
-    {user && user.data.id === comment.user_id && (
-      <button onClick={() => handleDelete(comment.id)}>
-        <FiTrash2 className="w-6 h-6 text-gray-500" />
-      </button>
-    )}
-  </div>
-))}
-      </div>
-  
-      <form className="p-4" onSubmit={handleSubmitComment}>
+
+      <form className="p-4 border-top" onSubmit={handleSubmitComment}>
         <input
           type="text"
-          className="w-full rounded-full border p-2 text-sm"
+          className="comment-input w-full  border p-2 text-sm"
           placeholder="Add a comment..."
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
         />
         <button
           type="submit"
-          className="text-blue-500 text-sm font-semibold mt-2"
+          className="comment-submit-button text-sm font-semibold mt-2"
         >
           Enviar comentario
         </button>
       </form>
     </div>
   );
-  
 };
 
 export default PostCard;
