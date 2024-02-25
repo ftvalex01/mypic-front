@@ -59,15 +59,15 @@ const ExploreView = () => {
 
   const determineGridItemSize = (index) => {
     // Define un patrón más complejo para los tamaños
-    const pattern = ["large", "medium", "medium", "small", "large", "small"];
+    const pattern = ["large"];
     return pattern[index % pattern.length]; // Utiliza el patrón para determinar el tamaño
   };
 
 
   return (
     <div>
-      <div className="tabs">
-        <button onClick={() => handleModeChange("random")}>Aleatorio</button>
+      <div className="">
+        <button className="button-primary bg-eerieBlack" onClick={() => handleModeChange("random")}>Aleatorio</button>
         <button onClick={() => handleModeChange("forYou")}>Para Ti</button>
       </div>
       <InfiniteScroll
