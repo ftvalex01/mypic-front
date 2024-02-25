@@ -39,8 +39,8 @@ const UploadModal = ({ isOpen, onClose }) => {
       setStep(2); // Avanza a la etapa de descripción
     } else {
       Swal.fire(
-        "Invalid file type",
-        "Please select a PNG, JPG, or JPEG image.",
+        "Archivo inválido",
+        "Por favor selecciona un archivo PNG, JPG o JPEG.",
         "error"
       );
       fileInputRef.current.value = ""; // Limpiar el input
@@ -53,13 +53,13 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   const handleConfirm = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to upload this post?",
+      title: "¿Estás seguro?",
+      text: "¿Quiéres subir este post?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, upload it!",
+      confirmButtonText: "Sí, ¡súbelo!",
     }).then((result) => {
       if (result.isConfirmed) {
         handleUpload();
@@ -69,7 +69,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   const handleUpload = async () => {
     if (!file) {
-      Swal.fire("Wait...", "Please select a file to upload.", "warning");
+      Swal.fire("Espera...", "Por favor selecciona un archivo a subir.", "warning");
       return;
     }
 
@@ -82,7 +82,7 @@ const UploadModal = ({ isOpen, onClose }) => {
     try {
       await uploadPost(formData);
       
-      Swal.fire("Uploaded!", "Your post has been uploaded.", "success");
+      Swal.fire("¡Subido!", "Tu post ha sido subido con éxito.", "success");
       // Reset states after successful upload
       setFile(null);
       setDescription("");
@@ -92,7 +92,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       onClose(); // Close modal
     } catch (error) {
       console.error("Error uploading file:", error);
-      Swal.fire("Oops...", "Error uploading file.", "error");
+      Swal.fire("Oops...", "Error subiendo el archivo.", "error");
       setUploading(false);
     }
   };
