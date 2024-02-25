@@ -21,7 +21,7 @@ const BirthDateInput = ({ onNext, birthDate, onChange, error }) => {
 
   // Validar si el usuario tiene al menos 18 años
   const isEighteenOrOlder = (birthDate) => {
-    console.log(birthDate)
+    
     return calculateAge(birthDate) >= 18;
   };
 

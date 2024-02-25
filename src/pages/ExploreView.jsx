@@ -21,7 +21,7 @@ const ExploreView = () => {
     const apiFunc = viewMode === "forYou" ? fetchAllRecommendedPosts : fetchAllPublicPosts;
     try {
       const fetchedPosts = await apiFunc(1);
-      console.log(fetchedPosts)
+  
       setPosts(fetchedPosts);
       setHasMore(fetchedPosts.length > 0); // Solo habilitar la paginación si hay más posts disponibles
     } catch (error) {

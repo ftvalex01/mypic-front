@@ -47,17 +47,17 @@ const NotificationItem = ({ notification }) => {
   };
   return (
     <div
-      className={`notification-item ${notification.read ? "read" : "bg-blue-50"} p-4 mb-2 flex items-start rounded-lg cursor-pointer hover:bg-gray-100`}
-      onMouseEnter={handleMouseEnter}
-      onClick={handleClick}
-    >
-      <div className="notification-icon mr-3 text-lg">{renderIcon()}</div>
-      <div className="notification-content flex-1">
-        <h4 className="font-bold text-gray-800">
-          {notification.related_user.name} {notification.action}
-        </h4>
-        <p className="text-sm text-gray-600">{notification.message}</p>
-      </div>
+  className={`notification-item ${notification.read ? "bg-white" : "bg-blue-50"} p-4 mb-2 flex items-start rounded-lg cursor-pointer hover:bg-gray-100`}
+  onMouseEnter={handleMouseEnter}
+  onClick={handleClick}
+>
+  <div className="notification-icon mr-3 text-lg">{renderIcon()}</div>
+  <div className="notification-content flex-1">
+    <h4 className="font-bold text-gray-800">
+      {notification.related_user.name} {notification.action}
+    </h4>
+    <p className="text-sm text-gray-600">{notification.message}</p>
+  </div>
       {notification.type === "follow_request" && (
         <div className="ml-auto flex items-center space-x-2">
           <button onClick={handleAccept} className="text-green-500 hover:text-green-700">

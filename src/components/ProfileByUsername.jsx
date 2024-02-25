@@ -24,7 +24,9 @@ const ProfileByUsername = () => {
   const [isFollowRequestPending, setIsFollowRequestPending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-
+  const [activeTab, setActiveTab] = useState("postVivos");
+  const [livePosts, setLivePosts] = useState([]); // Almacenar publicaciones vivas
+  const [permanentPosts, setPermanentPosts] = useState([]);
   const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
 
   const loadUserProfile = useCallback(async () => {
@@ -44,9 +46,14 @@ const ProfileByUsername = () => {
 
         if (!userData.is_private || followInfo.isFollowing) {
           const imagesResponse = await getUserImages(userData.id);
+
           setUserImages(imagesResponse.data || []);
           const postsResponse = await getUserPosts(userData.id); // Suponiendo que exista esta función
           setUserPosts(postsResponse.data || []);
+
+          setLivePosts(imagesResponse.liveImages || []);
+          setPermanentPosts(imagesResponse.permanentImages || []);
+
         } else {
           setUserImages([]);
           setUserPosts([]);
@@ -56,28 +63,52 @@ const ProfileByUsername = () => {
       console.error("Error fetching user profile:", error);
     }
     setIsLoading(false);
+
   }, [username, fetchUserByUsername, getUserImages, getUserPosts, getFollowData, checkIfBlocked]);
+
+
 
   useEffect(() => {
     loadUserProfile();
   }, [loadUserProfile]);
+
 
   const openPostModal = (post) => {
     setSelectedPost(post);
     setIsPostModalOpen(true);
   };
 
+
+   useEffect(() => {
+    loadUserProfile();
+    const fetchBlockStatus = async () => {
+      try {
+        const result = await checkIfBlocked(profile.id);
+        setIsBlocked(result); // Asume que checkIfBlocked devuelve un booleano
+      } catch (error) {
+        console.error("Error al verificar el estado de bloqueo:", error);
+      }
+    };
+
+    if (profile) {
+      fetchBlockStatus();
+    }
+  }, [loadUserProfile, checkIfBlocked]);
+
+
+  const handlePostVivosTab = () => setActiveTab("postVivos");
+  const handleMuroTab = () => setActiveTab("muro");
+
   const handleFollowClick = async () => {
     try {
       const result = await followUser(profile.id);
 
-
       // Manejo de la respuesta del backend
-      if (result.message === 'Follow request cancelled') {
+      if (result.message === "Follow request cancelled") {
         // Si la solicitud de seguimiento se cancela
         setFollowRequestSent(false);
         setIsFollowRequestPending(false);
-      } else if (result.message === 'Follow request sent') {
+      } else if (result.message === "Follow request sent") {
         // Si se envía una solicitud de seguimiento
         setFollowRequestSent(true);
         setIsFollowRequestPending(true);
@@ -100,23 +131,24 @@ const ProfileByUsername = () => {
         const result = await unblockUser(profile.id);
         setIsBlocked(false); // Asume desbloqueo exitoso
         // Maneja cualquier lógica adicional aquí, por ejemplo, mostrar un mensaje
-        alert('Usuario desbloqueado exitosamente');
+        alert("Usuario desbloqueado exitosamente");
       } else {
         // Intenta bloquear el usuario
         const result = await blockUser(profile.id);
         setIsBlocked(true); // Asume bloqueo exitoso
         // Maneja cualquier lógica adicional aquí
-        alert('Usuario bloqueado exitosamente');
+        alert("Usuario bloqueado exitosamente");
       }
     } catch (error) {
       console.error("Error al cambiar estado de bloqueo:", error);
-      alert('No se pudo cambiar el estado de bloqueo del usuario');
+      alert("No se pudo cambiar el estado de bloqueo del usuario");
     }
   };
 
-  const profileImageUrl = profile && profile.profile_picture
-    ? `${baseUrl}${profile.profile_picture}`
-    : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+  const profileImageUrl =
+    profile && profile.profile_picture
+      ? `${baseUrl}${profile.profile_picture}`
+      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   if (isLoading) {
     return <div>Cargando perfil...</div>;
@@ -127,12 +159,31 @@ const ProfileByUsername = () => {
       {profile ? (
         <>
           <div className="flex flex-col justify-center md:flex-row md:items-center">
-            <img src={profileImageUrl} alt="Profile" className="rounded-full w-20 h-20 md:w-40 md:h-40" />
+            <img
+              src={profileImageUrl}
+              alt="Profile"
+              className="rounded-full w-20 h-20 md:w-40 md:h-40"
+            />
             <div className="md:ml-4">
               <h1 className="text-xl font-bold">{profile.username}</h1>
               <div className="flex space-x-4 my-2">
-                <button onClick={handleFollowClick} className={`px-4 py-2 rounded text-white ${isFollowing ? "bg-red-500" : followRequestSent || isFollowRequestPending ? "bg-yellow-500" : "bg-blue-500"}`}>
-                  {isFollowing ? "Dejar de seguir" : followRequestSent ? "Solicitud enviada" : isFollowRequestPending ? "Pendiente" : "Seguir"}
+                <button
+                  onClick={handleFollowClick}
+                  className={`px-4 py-2 rounded text-white ${
+                    isFollowing
+                      ? "bg-red-500"
+                      : followRequestSent || isFollowRequestPending
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
+                  }`}
+                >
+                  {isFollowing
+                    ? "Dejar de seguir"
+                    : followRequestSent
+                    ? "Solicitud enviada"
+                    : isFollowRequestPending
+                    ? "Pendiente"
+                    : "Seguir"}
                 </button>
                 <button className="btn" onClick={() => setShowSettings(!showSettings)}>
                   <FaCog />
@@ -145,6 +196,27 @@ const ProfileByUsername = () => {
                   </div>
                 )}
               </div>
+
+              <button
+                className="btn"
+                onClick={() => setShowSettings(!showSettings)}
+              >
+                <FaCog />
+              </button>
+              {showSettings && (
+                <div className="settings-dropdown">
+                  {/* Cambia esta parte para incluir la funcionalidad de bloqueo */}
+                  <button
+                    onClick={handleBlockClick}
+                    className={`px-4 py-2 rounded text-white ${
+                      isBlocked ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  >
+                    {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
+                  </button>{" "}
+                </div>
+              )}
+
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -156,16 +228,52 @@ const ProfileByUsername = () => {
           <div id="modal-root"></div>
 
           <hr className="my-4" />
-          {(!profile.is_private || isFollowing) ? (
+          {!profile.is_private || isFollowing ? (
             <div className="grid grid-cols-3 gap-3">
+
               {userImages.map((post, index) => (
                 <div key={index} className="cursor-pointer" onClick={() => openPostModal(post)}>
                   <img src={`${baseUrl}${post.url}`} alt={`Publicación ${index + 1}`} className="w-full h-auto" />
                 </div>
               ))}
+
+              <div className="flex mt-4 justify-center md:justify-start">
+                <button
+                  className={`btn ${
+                    activeTab === "postVivos" ? "btn-active" : ""
+                  }`}
+                  onClick={handlePostVivosTab}
+                >
+                  Post vivos
+                </button>
+                <button
+                  className={`btn ${activeTab === "muro" ? "btn-active" : ""}`}
+                  onClick={handleMuroTab}
+                >
+                  Muro
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {(activeTab === "postVivos" ? livePosts : permanentPosts).map(
+                  (post, index) => (
+                    <div key={index} className="w-full h-64 overflow-hidden">
+                      <img
+                        src={`${baseUrl}${post.url}`}
+                        alt={`User Post ${index}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+
             </div>
           ) : (
-            <p>Este perfil es privado. Sigue al usuario para ver sus publicaciones.</p>
+            <p>
+              Este perfil es privado. Sigue al usuario para ver sus
+              publicaciones.
+            </p>
           )}
           {isPostModalOpen && (
             <PostModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} post={selectedPost} />
