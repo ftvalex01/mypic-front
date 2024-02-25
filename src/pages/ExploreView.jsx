@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { usePostContext } from "../context/PostContext";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./ExploreView.css";
-
+import "../components/style.css"
 const ExploreView = () => {
   const { fetchAllPublicPosts, fetchAllRecommendedPosts } = usePostContext();
   const [posts, setPosts] = useState([]);

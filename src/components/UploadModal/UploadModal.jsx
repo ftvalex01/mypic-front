@@ -69,7 +69,11 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   const handleUpload = async () => {
     if (!file) {
-      Swal.fire("Espera...", "Por favor selecciona un archivo a subir.", "warning");
+      Swal.fire(
+        "Espera...",
+        "Por favor selecciona un archivo a subir.",
+        "warning"
+      );
       return;
     }
 
@@ -81,7 +85,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
     try {
       await uploadPost(formData);
-      
+
       Swal.fire("¡Subido!", "Tu post ha sido subido con éxito.", "success");
       // Reset states after successful upload
       setFile(null);
@@ -104,7 +108,11 @@ const UploadModal = ({ isOpen, onClose }) => {
       <div className={`modal-content ${isOpen ? "show" : ""}`}>
         <div className="modal-header">
           <span className="modal-title">
-            {step === 1 ? "Selecciona una foto" : step === 2 ? "Añade una descripción" : "Confirmar"}
+            {step === 1
+              ? "Selecciona una foto"
+              : step === 2
+              ? "Añade una descripción"
+              : "Confirmar"}
           </span>
           <button onClick={onClose} className="close-button">
             &times;
@@ -128,16 +136,19 @@ const UploadModal = ({ isOpen, onClose }) => {
                 placeholder="Añade una descripción... #hashtags (max 5)"
                 className="description-input"
               />
+              <button className="button-primary mb-4 w-full py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
+              onClick={() => setStep(3)}>
+                Siguiente
+              </button>
+
               <button
-                className="back-button"
+                className="button-primary w-full  file:py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
                 onClick={() => setStep(1)}
                 disabled={uploading}
               >
                 Atrás
               </button>
-              <button className="next-button" onClick={() => setStep(3)}>
-                Siguiente
-              </button>
+              
             </>
           )}
           {step === 3 && (
@@ -145,19 +156,20 @@ const UploadModal = ({ isOpen, onClose }) => {
               <img src={previewUrl} alt="Preview" className="preview-image" />
               <p>{description}</p>
               <button
-                className="back-button"
-                onClick={() => setStep(2)}
-                disabled={uploading}
-              >
-                Atrás
-              </button>
-              <button
-                className="confirm-button"
+                className="button-primary w-full mb-4 py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
                 onClick={handleConfirm}
                 disabled={uploading}
               >
                 {uploading ? "Subiendo..." : "Confirmar"}
               </button>
+              <button
+                className="button-primary w-full  py-2 rounded-md hover:bg-darkSienna focus:outline-none focus:ring-2 focus:ring-darkSienna-hover focus:ring-opacity-50"
+                onClick={() => setStep(2)}
+                disabled={uploading}
+              >
+                Atrás
+              </button>
+             
             </div>
           )}
         </div>
@@ -167,7 +179,3 @@ const UploadModal = ({ isOpen, onClose }) => {
 };
 
 export default UploadModal;
-
-
-
-

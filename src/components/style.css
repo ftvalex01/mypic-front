@@ -246,6 +246,21 @@
 .delete-icon {
   color: #606060; /* Color gris para el icono de eliminar */
 }
+.hashtag {
+  color: rgb(18, 1, 1); /* Color de los hashtags */
+  font-weight: bold; /* Opcional: Hacer el hashtag más destacado */
+}
+.post-description {
+  padding: 12px; /* Añade espacio alrededor del texto */ /* Añade margen a los lados *//* Añade una línea a la izquierda para destacar */
+  background-color: #f9f9f9; /* Color de fondo suave */
+  color: #333; /* Color de texto oscuro para contraste */
+  font-family: 'Arial', sans-serif; /* Tipo de letra (cambia según tus preferencias) */
+  font-size: 0.875rem; /* Tamaño de la fuente */
+  line-height: 1.5; /* Espaciado de línea para mejor legibilidad */
+  border-radius: 4px; /* Esquinas redondeadas */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  overflow-wrap: break-word; /* Asegura que las palabras largas no desborden */
+}
 
 /* Estilos para el input de comentario */
 .comment-input {

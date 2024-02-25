@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { useEffect, useReducer, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
