@@ -135,3 +135,66 @@
   font-size: 18px;
   margin-bottom: 15px;
 }
+
+.bg-eerieBlack {
+  position: relative; /* Posición relativa para colocar los pseudoelementos */
+  overflow: hidden; /* Oculta el desbordamiento */
+  background: linear-gradient(to bottom, rgba(255, 251, 251, 0.973), rgba(255, 0, 0, 0.4)); /* Gradiente de fondo */
+  background-attachment: fixed; /* Fija el fondo para que no se mueva con el scroll */
+  animation: animateBackground 10s linear infinite alternate; /* Animación para el fondo */
+}
+
+/* Pseudoelemento para crear un efecto de onda en el fondo */
+.bg-eerieBlack::before {
+  content: '';
+  position: absolute; /* Cambiado de 'fixed' a 'absolute' */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Coloca el fondo detrás del contenido */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(255, 0, 0, 0.2)); /* Gradiente de fondo */
+  background-attachment: fixed; /* Fija el fondo para que no se mueva con el scroll */
+  animation: animate 10s linear infinite alternate; /* Animación para el efecto de onda */
+}
+.sidebar {
+  min-height: 100vh;
+  background-color: #00000087; /* Color de fondo */
+  border: 2px solid #020000; /* Color del borde */
+  color: #0b090a; /* Color del texto */
+  border-radius: 5px; /* Borde redondeado */
+  padding: 10px; /* Espacio interno */
+  margin-bottom: 10px; /* Margen inferior */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex-col.space-y-6 {
+  flex-grow: 1; /* Esto permite que el contenedor crezca y ocupe todo el espacio disponible */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Esto distribuirá los elementos de la barra lateral uniformemente */
+}
+.topbar{
+  background-color: #00000087; /* Color de fondo */
+  border: 2px solid #020000; /* Color del borde */
+
+  border-radius: 5px; /* Borde redondeado */
+
+}
+
+
+.nav-link {
+
+  transition: background-color 0.5s; /* Ajusta el relleno como prefieras */
+}
+.nav-link:hover {
+  font-weight: bold;
+  color: #faf9f9; /* Cambia el color del texto a blanco */
+}
+
+/* Ajusta el estilo de tus enlaces aquí */
+.nav-link span {
+  margin-left: 8px; /* Espacio entre el ícono y el texto */
+}

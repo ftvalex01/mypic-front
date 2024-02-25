@@ -14,7 +14,8 @@ import {
   FaRegHeart,
   FaPlusSquare,
 } from "react-icons/fa";
-
+import '../pages/login.css';
+ 
 const SideBar = () => {
   const { logout, user, isLoading } = useAuthContext();
   const { hasUnreadNotifications } = useNotificationContext(); // Asegúrate de que esto esté correctamente implementado en tu NotificationContext
@@ -33,24 +34,24 @@ const SideBar = () => {
 
   return (
     <>
-      <aside className="hidden lg:flex flex-col bg-burgundy fixed inset-y-0 left-0 z-30 w-64">
+      <aside className=" sidebar hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 w-64">
         <div className="flex flex-col space-y-6 p-4">
           <h1 className="text-3xl font-bold mb-4 text-white">MyPic</h1>
           <nav className="flex flex-col space-y-6">
-            <Link to="/" className="flex items-center space-x-2 text-white">
+            <Link to="/" className="nav-link flex items-center space-x-2 text-white">
               <FaHome className="text-lg" />
               <span>Inicio</span>
             </Link>
             <button
               onClick={toggleSearchSidebar}
-              className="flex items-center space-x-2 text-white"
+              className="nav-link flex items-center space-x-2 text-white"
             >
               <FaSearch className="text-lg" />
               <span>Búsqueda</span>
             </button>
             <Link
               to="/explore"
-              className="flex items-center space-x-2 text-white"
+              className="nav-link flex items-center space-x-2 text-white"
             >
               <FaRegCompass className="text-lg" />
               <span>Explorar</span>
@@ -58,7 +59,7 @@ const SideBar = () => {
 
             <Link
               to="/notifications"
-              className="flex items-center space-x-2 text-white relative"
+              className="nav-link flex items-center space-x-2 text-white relative"
             >
               <FaRegHeart className="text-lg" />
               <span>Notificaciones</span>
@@ -68,14 +69,14 @@ const SideBar = () => {
             </Link>
             <button
               onClick={toggleModal}
-              className="flex items-center space-x-2 text-white"
+              className="nav-link flex items-center space-x-2 text-white"
             >
               <FaPlusSquare className="text-lg" />
               <span>Crear</span>
             </button>
             <Link
               to="/profile"
-              className="flex items-center space-x-2 text-white"
+              className="nav-link flex items-center space-x-2 text-white"
             >
               {user?.data.profile_picture ? (
                 <img
@@ -90,7 +91,7 @@ const SideBar = () => {
             </Link>
             <button
               onClick={logout}
-              className="flex items-center space-x-2 text-white"
+              className="nav-link flex items-center space-x-2 text-white"
             >
               <MdOutlineMoreHoriz className="text-lg" />
               <span>Logout</span>

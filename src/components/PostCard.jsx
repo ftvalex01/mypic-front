@@ -5,6 +5,7 @@ import { FiHeart, FiMessageCircle, FiTrash2, FiMoreHorizontal } from "react-icon
 import { IoHeartSharp } from "react-icons/io5";
 import { usePostContext } from "../context/PostContext";
 import { useUserContext } from "../context/UserContext"; // Asumiendo que necesitas datos del usuario para la autenticación y otras operaciones
+import '../pages/login.css';
 
 const PostCard = ({ post }) => {
 
@@ -67,8 +68,7 @@ const PostCard = ({ post }) => {
   };
 
   const handleLikeComment = async (commentId) => {
-    console.log(commentId)
-    console.log(post.id)
+
     try {
       // Espera la respuesta de la función likeComment del contexto
       const { likesCount, isLiked } = await likeComment(post.id, commentId);
@@ -181,7 +181,7 @@ const PostCard = ({ post }) => {
       {post.media && (
         <img
           src={`${baseUrl}${post.media.url}`}
-          alt={post.description}
+          alt={post.description || 'imagen'}
           className="w-full object-cover"
           style={{ maxHeight: "500px" }}
         />

@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 import BuscarPerfil from '../components/BuscarPerfil';
 import { FaRegHeart } from 'react-icons/fa';
 import { useNotificationContext } from '../context/NotificationContext';
-
+import './style.css'
 const TopBar = () => {
   const { hasUnreadNotifications } = useNotificationContext();
 
   return (
-    <div className="flex items-center justify-between py-3 px-4 bg-black text-white fixed top-0 inset-x-0 z-50 shadow-lg lg:hidden">
+    <div className=" topbar flex items-center justify-between py-3 px-4  text-white fixed top-0 inset-x-0 z-50 shadow-lg lg:hidden">
       <Link to="/" className="flex-shrink-0">
         <span className="text-lg font-bold">MyPic</span>
       </Link>

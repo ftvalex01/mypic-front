@@ -2,7 +2,7 @@ import  { useEffect } from 'react';
 import PostCard from '../components/PostCard';
 import { usePostContext } from '../context/PostContext';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
+import './style.css'
 const Feed = () => {
   const { posts, fetchAllPosts, hasMore } = usePostContext(); // Directamente usa 'posts' desde el contexto
 
@@ -22,7 +22,7 @@ const Feed = () => {
           <b>Yay! You have seen it all</b>
         </p>
       }
-      className='bg-bittersweet'
+      className='bg-eerieBlack'
     >
       {posts.map((post) => <PostCard key={post.id} post={post} />)}
     </InfiniteScroll>
