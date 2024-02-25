@@ -39,9 +39,9 @@ const ForgotPassword = () => {
     };
 
     return (
-        <section className="flex items-center justify-center w-full h-screen bg-teal-green">
+        <section className="flex items-center justify-center w-full h-screen bg-burgundy">
             <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
-                <h3 className="text-2xl my-3 font-bold text-center text-burgundy">Recuperar contraseña</h3>
+                <h3 className="text-2xl my-3 font-bold text-center text-misty-rose">Recuperar contraseña</h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <input
@@ -50,12 +50,12 @@ const ForgotPassword = () => {
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-bittersweet"
                         />
                         {error && <div className="text-red-500 text-xs mt-2">{error}</div>}
                     </div>
                     <button
-                        className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+                        className="w-full py-2 text-white rounded-md bg-burgundy hover:bg-rose focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
                     >
                         Recuperar contraseña
                     </button>

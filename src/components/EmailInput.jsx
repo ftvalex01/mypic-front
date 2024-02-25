@@ -44,13 +44,13 @@ const EmailInput = ({ onNext, value, onChange }) => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleEmailChange}
-          className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-corn-yellow"
+          className="input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-orange bg-bittersweet"
         />
         {emailError && <p className="text-red-500 text-xs mt-2">{emailError}</p>}
       </div>
       <button
         type="submit"
-        className="w-full py-2 text-white rounded-md bg-amber-orange hover:bg-peach-yellow focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
+        className="bg-burgundy w-full py-2 text-white rounded-md hover:bg-rose focus:outline-none focus:ring-2 focus:ring-amber-orange-hover focus:ring-opacity-50"
         style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
       >
         Siguiente

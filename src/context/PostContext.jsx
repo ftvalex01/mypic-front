@@ -18,7 +18,7 @@ export const PostProvider = ({ children }) => {
     try {
       const response = await postService.fetchAllPosts(page);
       const postsFromResponse = response.data; // Asigna los nuevos posts desde la respuesta
-  
+
       if (postsFromResponse.length === 0) {
         setHasMore(false);
       } else {
@@ -43,7 +43,7 @@ export const PostProvider = ({ children }) => {
     if (!user) return;
     try {
       const response = await postService.fetchAllRecommendedPosts(page);
-      
+
       return response.data
     } catch (error) {
       console.error("Error fetching recommended posts:", error.message);
@@ -95,17 +95,17 @@ export const PostProvider = ({ children }) => {
   }, [fetchAllPosts, user]);
 
   // Dentro de tu contexto, ajusta la función para aceptar y pasar el número de página
-const fetchAllPublicPosts = async (page) => {
-  try {
-    const response = await postService.fetchAllPublicPosts(page);
-    return response.data; // Asegúrate de que esto coincida con la estructura de tu respuesta
-  } catch (error) {
-    console.error("Error fetching public posts:", error.message);
-    return []; // Devolvemos un arreglo vacío en caso de error
-  }
-};
+  const fetchAllPublicPosts = async (page) => {
+    try {
+      const response = await postService.fetchAllPublicPosts(page);
+      return response.data; // Asegúrate de que esto coincida con la estructura de tu respuesta
+    } catch (error) {
+      console.error("Error fetching public posts:", error.message);
+      return []; // Devolvemos un arreglo vacío en caso de error
+    }
+  };
 
-  
+
   const likeComment = useCallback(async (postId, commentId) => {
     if (!user) return;
     try {
@@ -115,6 +115,16 @@ const fetchAllPublicPosts = async (page) => {
       console.error('Error liking comment:', error);
     }
   }, [user]);
+
+  const fetchCommentsForPost = useCallback(async (postId) => {
+    try {
+      const comments = await postService.fetchAllCommentsForPost(postId);
+      return comments;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      return []; // Devuelve un arreglo vacío en caso de error
+    }
+  }, []);
 
   const value = {
     posts,
@@ -126,6 +136,7 @@ const fetchAllPublicPosts = async (page) => {
     commentOnPost,
     deleteComment,
     likeComment,
+    fetchCommentsForPost
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;

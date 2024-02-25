@@ -87,13 +87,13 @@ const Register = () => {
 
 
   return (
-    <section className="flex items-center justify-center w-full h-screen bg-teal-green">
+    <section className="flex items-center justify-center w-full h-screen bg-burgundy">
       <div className="w-full max-w-md p-8 bg-white/50 rounded-lg shadow-md">
-        <h3 className="text-2xl my-3 font-bold text-center text-burgundy">Registrarse</h3>
+        <h3 className="text-2xl my-3 font-bold text-center text-misty-rose">Registrarse</h3>
         {stepComponents[step - 1]}
-        <div className="mt-6 text-center text-burgundy">
+        <div className="mt-6 text-center text-misty-rose">
           ¿Ya tienes una cuenta?
-          <Link to="/login" className="text-amber-600 hover:underline"> Inicia sesión</Link>
+          <Link to="/login" className="text-peach-pink-600 hover:underline"> Inicia sesión</Link>
         </div>
       </div>
     </section>

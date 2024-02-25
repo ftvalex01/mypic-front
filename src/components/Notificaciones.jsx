@@ -24,7 +24,7 @@ const Notifications = () => {
   const readNotifications = filteredNotifications.filter(notification => notification.read);
 
   return (
-    <div className="notifications-container max-w-lg mx-auto mt-4 bg-white shadow rounded-lg">
+    <div className="notifications-container max-w-lg mx-auto mt-4 bg-misty-rose shadow rounded-lg">
       <div className="flex justify-between items-center border-b p-4">
         <h2 className="text-xl font-semibold text-gray-800">Notificaciones</h2>
         <button onClick={markAllNotificationsAsRead} className="text-blue-600 hover:text-blue-800 flex items-center">

@@ -118,7 +118,7 @@ const PostCard = ({ post }) => {
   
 
   return (
-    <div className="bg-white rounded-lg shadow-lg max-w-md mx-auto my-5">
+    <div className="bg-misty-rose rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
       <div className="flex items-center space-x-3 p-4 border-b">
         <img

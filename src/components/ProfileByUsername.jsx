@@ -1,17 +1,21 @@
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import { useSocialInteractions } from "../context/SocialInteractionContext";
 import { useUserContext } from "../context/UserContext";
 import { FaCog, FaPlusCircle } from "react-icons/fa";
+import PostModal from "./PostModal/PostModal"; // Asegúrate de que la ruta sea correcta
 
 const ProfileByUsername = () => {
   const { username } = useParams();
   const { fetchUserByUsername } = useAuthContext();
-  const { getUserImages } = useUserContext();
-  const { followUser, getFollowData } = useSocialInteractions();
+  const { getUserImages, getUserPosts } = useUserContext(); // Suponiendo que exista una función para obtener posts
+  const { followUser, getFollowData, checkIfBlocked, blockUser, unblockUser } = useSocialInteractions();
   const [profile, setProfile] = useState(null);
   const [userImages, setUserImages] = useState([]);
+  const [userPosts, setUserPosts] = useState([]); // Estado para almacenar los posts del usuario
+  const [selectedPost, setSelectedPost] = useState(null); // Estado para el post seleccionado para mostrar en el modal
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false); // Estado para controlar la visibilidad del modal de post
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followRequestSent, setFollowRequestSent] = useState(false);
@@ -19,8 +23,6 @@ const ProfileByUsername = () => {
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowRequestPending, setIsFollowRequestPending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const { blockUser, unblockUser } = useSocialInteractions();
-  const { checkIfBlocked } = useSocialInteractions();
   const [isBlocked, setIsBlocked] = useState(false);
 
   const baseUrl = import.meta.REACT_APP_BASE_URL || "http://localhost:8000";
@@ -31,10 +33,8 @@ const ProfileByUsername = () => {
       const userData = await fetchUserByUsername(username);
       if (userData) {
         setProfile(userData);
-
         const followInfo = await getFollowData(userData.id);
         const blockedStatus = await checkIfBlocked(userData.id);
-
         setIsFollowing(followInfo.isFollowing);
         setFollowersCount(followInfo.followersCount);
         setFollowingCount(followInfo.followingCount);
@@ -45,31 +45,27 @@ const ProfileByUsername = () => {
         if (!userData.is_private || followInfo.isFollowing) {
           const imagesResponse = await getUserImages(userData.id);
           setUserImages(imagesResponse.data || []);
+          const postsResponse = await getUserPosts(userData.id); // Suponiendo que exista esta función
+          setUserPosts(postsResponse.data || []);
         } else {
           setUserImages([]);
+          setUserPosts([]);
         }
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
     setIsLoading(false);
-  }, [username, fetchUserByUsername, getUserImages, getFollowData, checkIfBlocked]);
+  }, [username, fetchUserByUsername, getUserImages, getUserPosts, getFollowData, checkIfBlocked]);
 
   useEffect(() => {
     loadUserProfile();
-    const fetchBlockStatus = async () => {
-      try {
-        const result = await checkIfBlocked(profile.id);
-        setIsBlocked(result); // Asume que checkIfBlocked devuelve un booleano
-      } catch (error) {
-        console.error("Error al verificar el estado de bloqueo:", error);
-      }
-    };
+  }, [loadUserProfile]);
 
-    if (profile) {
-      fetchBlockStatus();
-    }
-  }, [loadUserProfile,checkIfBlocked]);
+  const openPostModal = (post) => {
+    setSelectedPost(post);
+    setIsPostModalOpen(true);
+  };
 
   const handleFollowClick = async () => {
     try {
@@ -138,17 +134,17 @@ const ProfileByUsername = () => {
                 <button onClick={handleFollowClick} className={`px-4 py-2 rounded text-white ${isFollowing ? "bg-red-500" : followRequestSent || isFollowRequestPending ? "bg-yellow-500" : "bg-blue-500"}`}>
                   {isFollowing ? "Dejar de seguir" : followRequestSent ? "Solicitud enviada" : isFollowRequestPending ? "Pendiente" : "Seguir"}
                 </button>
+                <button className="btn" onClick={() => setShowSettings(!showSettings)}>
+                  <FaCog />
+                </button>
+                {showSettings && (
+                  <div className="settings-dropdown">
+                    <button onClick={handleBlockClick} className={`px-4 py-2 rounded text-white ${isBlocked ? "bg-green-500" : "bg-red-500"}`}>
+                      {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
+                    </button>
+                  </div>
+                )}
               </div>
-              <button className="btn" onClick={() => setShowSettings(!showSettings)}>
-                <FaCog />
-              </button>
-              {showSettings && (
-                <div className="settings-dropdown">
-                  {/* Cambia esta parte para incluir la funcionalidad de bloqueo */}
-                  <button onClick={handleBlockClick} className={`px-4 py-2 rounded text-white ${isBlocked ? "bg-green-500" : "bg-red-500"}`}>
-                    {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
-                  </button>                </div>
-              )}
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -157,21 +153,29 @@ const ProfileByUsername = () => {
               <p>{profile.bio}</p>
             </div>
           </div>
+          <div id="modal-root"></div>
+
           <hr className="my-4" />
           {(!profile.is_private || isFollowing) ? (
             <div className="grid grid-cols-3 gap-3">
-              {userImages.map((image, index) => (
-                <img key={index} src={`${baseUrl}${image.url}`} alt={`Publicación ${index + 1}`} className="w-full h-auto" />
+              {userImages.map((post, index) => (
+                <div key={index} className="cursor-pointer" onClick={() => openPostModal(post)}>
+                  <img src={`${baseUrl}${post.url}`} alt={`Publicación ${index + 1}`} className="w-full h-auto" />
+                </div>
               ))}
             </div>
           ) : (
             <p>Este perfil es privado. Sigue al usuario para ver sus publicaciones.</p>
           )}
+          {isPostModalOpen && (
+            <PostModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} post={selectedPost} />
+          )}
         </>
       ) : (
-        <div>Cargando perfil...</div>
+        <div>No se pudo cargar el perfil.</div>
       )}
     </div>
+
   );
 };
 
