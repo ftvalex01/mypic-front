@@ -29,11 +29,7 @@ const PostCard = ({ post }) => {
 
   useEffect(() => {
     const calculateRemainingHours = () => {
-      const publishDate = new Date(post.publish_date * 1000);
-      const currentDate = new Date();
-      const differenceInHours = Math.abs(currentDate - publishDate) / 36e5;
-      const remaining = post.life_time - differenceInHours;
-      return remaining > 0 ? Math.floor(remaining) : 0;
+      return post.life_time;
     };
     setRemainingHours(calculateRemainingHours());
   }, [post.publish_date, post.life_time]);
@@ -134,7 +130,7 @@ const PostCard = ({ post }) => {
       console.error("Error al enviar comentario:", error);
     }
   };
-
+  console.log(post);
   return (
     <div className="bg-misty-rose rounded-lg shadow-lg max-w-md mx-auto my-5">
       {/* Post Header */}
@@ -147,9 +143,15 @@ const PostCard = ({ post }) => {
           />
           <div>
             <h2 className="font-semibold">{post.user.username}</h2>
-            <p className="text-sm text-gray-500">{remainingHours}h restantes</p>
+            {/* Condición para mostrar las horas restantes si el post no es permanente */}
+            {!post.permanent && (
+              <p className="text-sm text-gray-500">
+                {remainingHours}h restantes
+              </p>
+            )}
           </div>
         </div>
+
         {user && user.data.id === post.user_id && (
           <FiMoreHorizontal
             className="cursor-pointer"
