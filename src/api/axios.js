@@ -7,7 +7,7 @@ const axios = Axios.create({
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
-    Accept: 'aplication/json',
+    Accept: 'application/json',
   }
 });
 // Add a response interceptor
