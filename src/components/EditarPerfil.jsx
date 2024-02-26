@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useUserContext } from '../context/UserContext';
 import Swal from 'sweetalert2';
+import './style.css'; // Asegúrate de tener un archivo CSS con este nombre
 
 const EditarPerfil = () => {
     const { user, updateProfile } = useUserContext();
@@ -8,14 +9,29 @@ const EditarPerfil = () => {
         nombre: user.data.name,
         bio: user.data.bio || '',
     });
+    const [previewImage, setPreviewImage] = useState(user.data.profile_picture || '');
     const profileImageRef = useRef(null);
+
+    useEffect(() => {
+        if (user.data.profile_picture) {
+            setPreviewImage(user.data.profile_picture);
+        }
+    }, [user.data.profile_picture]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        setFormData(prevData => ({ ...prevData, [name]: value }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file && validateAndSetImage(file)) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const validateAndSetImage = (file) => {
@@ -24,85 +40,79 @@ const EditarPerfil = () => {
         if (!validMimeTypes.includes(file.type) || fileSize > 2) {
             Swal.fire('Error', 'Archivo no válido. Asegúrate de que sea una imagen (jpg, jpeg, png) y no exceda los 2MB.', 'error');
             profileImageRef.current.value = ''; // Reset input file
+            setPreviewImage(user.data.profile_picture || ''); // Reset preview image
             return false;
         }
         return true;
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const file = profileImageRef.current.files[0];
-        if (file && !validateAndSetImage(file)) return;
 
-        const data = new FormData();
-        data.append('name', formData.nombre);
-        data.append('bio', formData.bio);
-        if (file) {
-            data.append('profile_picture', file);
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Estás a punto de actualizar tu perfil.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, actualizar!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const file = profileImageRef.current.files[0];
+                const data = new FormData();
+                data.append('name', formData.nombre);
+                data.append('bio', formData.bio);
+                if (file) {
+                    data.append('profile_picture', file);
+                }
 
-        try {
-            await updateProfile(data);
-            Swal.fire('¡Éxito!', 'Perfil actualizado correctamente.', 'success');
-        } catch (error) {
-            Swal.fire('Error', 'No se pudo actualizar el perfil.', 'error');
-        }
+                try {
+                    await updateProfile(data);
+                    Swal.fire('¡Éxito!', 'Perfil actualizado correctamente.', 'success');
+                } catch (error) {
+                    Swal.fire('Error', 'No se pudo actualizar el perfil.', 'error');
+                }
+            }
+        });
     };
 
     return (
-        <div className="max-w-md mx-auto bg-white p-5 border rounded-lg shadow-md mt-5">
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Nombre */}
-                <div>
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
-                        Nombre
-                    </label>
+        <div className="editar-perfil-container md:mt-4 sm:mt-4">
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="nombre">Nombre</label>
                     <input
-                        id="nombre"
-                        name="nombre" // Asegúrate de que el 'name' coincida con las claves del estado del formulario
                         type="text"
-                        required
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        id="nombre"
+                        name="nombre"
                         value={formData.nombre}
                         onChange={handleInputChange}
+                        required
                     />
                 </div>
-                {/* Biografía */}
-                <div>
-                    <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-                        Biografía
-                    </label>
+                <div className="form-group">
+                    <label htmlFor="bio">Biografía</label>
                     <textarea
                         id="bio"
                         name="bio"
-                        rows="3"
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         value={formData.bio}
                         onChange={handleInputChange}
-                    ></textarea>
+                        required
+                    />
                 </div>
-                {/* Carga de imagen */}
-                {/* Botón para seleccionar la imagen */}
-                <label className="block text-sm font-medium text-gray-700 cursor-pointer">
-                    Cambiar foto
+                <div className="form-group image-upload">
+                    <label htmlFor="image-upload" className="image-label">Selecciona una imagen</label>
                     <input
                         type="file"
-                        className="hidden"
+                        id="image-upload"
                         ref={profileImageRef}
-                        onChange={(e) => {
-                            if (e.target.files[0]) validateAndSetImage(e.target.files[0]);
-                        }}
-                        accept="image/jpeg, image/png, image/jpg"
+                        onChange={handleImageChange}
+                        accept="image/*"
                     />
-                </label>
-                {/* Botón de envío */}
-                <div className="flex justify-center">
-                    <button
-                        type="submit"
-                        className="w-full py-2 text-white rounded-md bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Guardar cambios
-                    </button>
+                    {previewImage && <img src={previewImage} alt="Vista previa" className="image-preview" />}
                 </div>
+                <button  className="submit-btn">Actualizar perfil</button>
             </form>
         </div>
     );

@@ -306,3 +306,116 @@
 *::-webkit-scrollbar-thumb:hover {
   background: #555; /* Color más oscuro al pasar el cursor */
 }
+
+
+.editar-perfil-container {
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fffbfb;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.image-upload {
+  margin-top: 20px;
+}
+
+.image-label {
+  display: block;
+  cursor: pointer;
+  background: #ff0000;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.image-label:hover {
+  background: #840909;
+}
+
+.image-preview {
+  display: block;
+  max-width: 100%; /* Asegura que la imagen no desborde el contenedor */
+  height: auto; /* Mantiene la proporción de la imagen */
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+#image-upload {
+  display: none;
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  background: #ff0000;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #840909;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .editar-perfil-container {
+    padding: 15px; /* Reduce el padding en dispositivos más pequeños */
+  }
+  
+  .form-group label {
+    margin-bottom: 10px; /* Aumenta el espacio debajo de las etiquetas */
+  }
+
+  .submit-btn {
+    font-size: 14px; /* Reduce el tamaño de la fuente del botón en dispositivos más pequeños */
+  }
+}
+
+@media (max-width: 480px) {
+  .editar-perfil-container {
+    max-width: 100%; /* Hace que el contenedor ocupe todo el ancho en dispositivos muy pequeños */
+    margin: 10px; /* Reduce el margen */
+    box-shadow: none; /* Opcional: elimina la sombra para un look más plano */
+  }
+  
+  .form-group input[type="text"],
+  .form-group textarea {
+    padding: 8px; /* Reduce el padding para inputs y textareas */
+  }
+}

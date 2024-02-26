@@ -2,13 +2,23 @@ import { useEffect, useState } from "react";
 
 import BlockModal from "./BlocksModal/BlockModal"; // Asume que este es tu componente de Modal correcto
 import PostModal from "./PostModal/PostModal";
-import { FaCog, FaPlusCircle, FaUnlockAlt } from "react-icons/fa";
+import {
+  FaCog,
+  FaLock,
+  FaLockOpen,
+  FaPlusCircle,
+  FaThumbtack,
+  FaUnlockAlt,
+  FaUserEdit,
+  FaUsers,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useUserContext } from "../context/UserContext";
 import { usePostContext } from "../context/PostContext";
 import { useSocialInteractions } from "../context/SocialInteractionContext";
 import { FiMoreHorizontal } from "react-icons/fi";
 import Swal from "sweetalert2";
+import "./profile.css";
 
 const Profile = () => {
   const { user, getUserImages, updateProfilePrivacy } = useUserContext();
@@ -46,7 +56,6 @@ const Profile = () => {
         }
       }
     };
-  
 
     const fetchFollowData = async () => {
       if (user && user.data.id) {
@@ -61,7 +70,7 @@ const Profile = () => {
         }
       }
     };
-   
+
     const fetchBlockedUsers = async () => {
       const data = await getBlockedUsers();
       setBlockedUsers(data);
@@ -194,16 +203,16 @@ const Profile = () => {
     });
   };
 
-  const handleToggleMenu = (postId) => {
+  const handleToggleMenu = (event, postId) => {
+    event.stopPropagation(); // Detiene la propagación del evento
     setShowMenu((prev) => ({
       ...prev,
-      [postId]: !prev[postId], // Cambia el estado de visibilidad basado en el ID del post
+      [postId]: !prev[postId],
     }));
   };
 
   const handlePostVivosTab = () => setActiveTab("postVivos");
   const handleMuroTab = () => setActiveTab("muro");
-
   return (
     <div className="pt-16 flex-1 flex flex-col overflow-auto">
       <div className="container mx-auto p-4 max-w-4xl">
@@ -215,52 +224,77 @@ const Profile = () => {
           />
           <div className="md:ml-10 mt-4 md:mt-0">
             <h1 className="text-2xl font-bold">{user?.username}</h1>
-            <div className="flex flex-wrap space-x-4 mt-4">
-              <Link to="edit" className="btn">
-                Editar perfil
+            <div className="flex flex-wrap items-center mt-4 space-x-4">
+              <Link to="edit" className="edit-profile-btn flex items-center">
+                <FaUserEdit className="mr-2" /> Editar perfil
               </Link>
-              <button
-                className="btn"
-                onClick={() => setShowSettings(!showSettings)}
+              <div
+                className={`settings-btn-container ${
+                  showSettings ? "show-dropdown" : ""
+                }`}
               >
-                <FaCog />
-              </button>
-              {showSettings && (
-                <div className="settings-dropdown">
-                  <button onClick={toggleProfilePrivacy}>
-                    {isProfilePrivate
-                      ? "Hacer perfil público"
-                      : "Hacer perfil privado"}
-                  </button>
-                  <button onClick={() => setIsBlockedUsersModalOpen(true)}>
-                    Ver usuarios bloqueados
-                  </button>
-                </div>
-              )}
+                <button
+                  className="settings-btn flex items-center"
+                  onClick={() => setShowSettings(!showSettings)}
+                >
+                  <FaCog className="mr-2" /> Configuración
+                </button>
+
+                {showSettings && (
+                  <div className="settings-dropdown mt-2">
+                    <button
+                      onClick={toggleProfilePrivacy}
+                      className="dropdown-item flex items-center"
+                    >
+                      {isProfilePrivate ? (
+                        <FaLockOpen className="mr-2" />
+                      ) : (
+                        <FaLock className="mr-2" />
+                      )}
+                      {isProfilePrivate
+                        ? "Hacer perfil público"
+                        : "Hacer perfil privado"}
+                    </button>
+                    <button
+                      onClick={() => setIsBlockedUsersModalOpen(true)}
+                      className="dropdown-item flex items-center"
+                    >
+                      <FaUsers className="mr-2" /> Ver usuarios bloqueados
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="mt-4">
-              <span className="mr-3">
-                {livePosts.length + permanentPosts.length} publicaciones
-              </span>
-              <span className="mr-3">{followData.followers} seguidores</span>
-              <span className="mr-3">{followData.following} seguidos</span>
-              <span className="mr-3">
-                Pins disponibles{user.data.available_pines}
-              </span>
+              <div className="stats-item flex items-center mr-3">
+                <FaThumbtack className="icon" />
+                <span>{user.data.available_pines} Pins disponibles</span>
+              </div>
+              <div className="stats flex space-x-3 mt-2">
+                <span className="stats-item">
+                  {livePosts.length + permanentPosts.length} publicaciones
+                </span>
+                <span className="stats-item">
+                  {followData.followers} seguidores
+                </span>
+                <span className="stats-item">
+                  {followData.following} seguidos
+                </span>
+              </div>
             </div>
             <p className="mt-2">{user?.bio}</p>
           </div>
         </div>
 
-        <div className="flex mt-4 justify-center md:justify-start">
+        <div className="tabs-container flex mt-4 justify-center md:justify-start">
           <button
-            className={`btn ${activeTab === "postVivos" ? "btn-active" : ""}`}
+            className={`tab-btn  ${activeTab === "postVivos" ? "btn-active" : ""}`}
             onClick={handlePostVivosTab}
           >
             Post vivos
           </button>
           <button
-            className={`btn ${activeTab === "muro" ? "btn-active" : ""}`}
+            className={`tab-btn ${activeTab === "muro" ? "btn-active" : ""}`}
             onClick={handleMuroTab}
           >
             Muro
@@ -294,7 +328,7 @@ const Profile = () => {
                 {user && user.data.id === post.user_id && (
                   <FiMoreHorizontal
                     className="cursor-pointer absolute top-0 right-0 m-2" // Posiciona el ícono en la esquina superior derecha
-                    onClick={() => handleToggleMenu(post.post.id)}
+                    onClick={(e) => handleToggleMenu(e, post.post.id)}
                   />
                 )}
                 {showMenu[post.post.id] && ( // Usa el ID del post para controlar la visualización del menú
@@ -302,7 +336,10 @@ const Profile = () => {
                     <ul>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                        onClick={() => handleDeletePost(post.post.id)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Detiene la propagación del evento aquí también
+                          handleDeletePost(post.post.id);
+                        }}
                       >
                         Eliminar post
                       </li>
@@ -311,7 +348,10 @@ const Profile = () => {
                         user.data.available_pines > 0 && ( // Solo muestra esta opción si el post no es permanente
                           <li
                             className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                            onClick={() => handlePinPost(post.post.id)}
+                            onClick={(e) => {
+                              e.stopPropagation(); // Detiene la propagación del evento aquí también
+                              handleDeletePost(post.post.id);
+                            }}
                           >
                             Pinear post
                           </li>
