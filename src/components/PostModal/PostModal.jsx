@@ -79,7 +79,7 @@ const PostModal = ({ isOpen, onClose, post }) => {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="close-icon" onClick={onClose}>X</button>
             <Link
-                            to={user && post.user_id === user.data.id ? `/profile` : `/profile/${post.user?.username || post.user_id}`}
+                            to={user && post.user_id === user.id ? `/profile` : `/profile/${post.user?.username || post.user_id}`}
                             className="user-profile-link"
                         >
                             <h2>{post.user?.username || ''}</h2>

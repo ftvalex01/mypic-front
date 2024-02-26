@@ -31,7 +31,7 @@ const SideBar = () => {
   if (!user) {
     return <div>No se encontró el usuario.</div>;
   }
-
+console.log(user)
   return (
     <>
       <aside className=" sidebar hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 w-64">
@@ -78,7 +78,7 @@ const SideBar = () => {
               to="/profile"
               className="nav-link flex items-center space-x-2 text-white"
             >
-              {user?.data.profile_picture ? (
+              {user?.profile_picture ? (
                 <img
                   src={user.data.profile_picture}
                   alt="Profile"
@@ -87,7 +87,7 @@ const SideBar = () => {
               ) : (
                 <CgProfile className="text-lg" />
               )}
-              <span>{user?.data.username}</span>
+              <span>{user?.username}</span>
             </Link>
             <button
               onClick={logout}
