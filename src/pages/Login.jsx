@@ -1,6 +1,5 @@
 // Login.js
-import { Link } from "react-router-dom";
-import { useLogin } from "../hooks/useLogin"; // Ajusta la ruta de importación según sea necesario
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
 import TwoFactorVerification from "../components/TwoFactorVerification";
@@ -8,6 +7,9 @@ import './login.css';
 import cc from '/public/images/cc-by-nc-nd.png';
 import accesibilidad from '/public/images/accesibilidad.png';
 import { FaGithub } from 'react-icons/fa';
+import { useState } from "react";
+import useAuthContext from "../context/AuthContext";
+import validator from "validator";
 
 const Login = () => {
 
