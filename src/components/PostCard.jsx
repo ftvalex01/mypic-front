@@ -150,7 +150,7 @@ const highlightHashtags = (text) => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-          <Link to={`/profile/${post.user.username}`} className="font-semibold hover:underline">
+          <Link  to={user && post.user_id === user.data.id ? `/profile` : `/profile/${post.user?.username || post.user_id}`} className="font-semibold hover:underline">
       {post.user.username}
     </Link>
             {/* Condición para mostrar las horas restantes si el post no es permanente */}

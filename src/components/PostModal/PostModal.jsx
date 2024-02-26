@@ -7,15 +7,14 @@ import { IoHeartSharp } from "react-icons/io5";
 import { usePostContext } from "../../context/PostContext";
 import { useUserContext } from "../../context/UserContext";
 import { Link } from 'react-router-dom';
-
+import './PostModal.css'
 const PostModal = ({ isOpen, onClose, post }) => {
-    const { commentOnPost, deleteComment, likePost, likeComment } = usePostContext();
+    const { commentOnPost, deleteComment, likeComment } = usePostContext();
     const { user } = useUserContext();
     const [newCommentText, setNewCommentText] = useState("");
     const [comments, setComments] = useState(post?.comments || []);
     const baseUrl = import.meta.REACT_APP_API_URL || "http://localhost:8000";
-    console.log(post)
-    console.log(user)
+ 
     const handleSubmitComment = async (e) => {
         e.preventDefault();
         if (!newCommentText.trim()) return;
@@ -23,7 +22,7 @@ const PostModal = ({ isOpen, onClose, post }) => {
         try {
             const newComment = await commentOnPost(post.id, newCommentText);
             if (newComment && newComment.data) {
-                setComments([...comments, { ...newComment.data, user: { username: "Tú" } }]);
+                setComments([...comments, { ...newComment.data, user}]);
                 setNewCommentText("");
             }
         } catch (error) {
@@ -33,12 +32,24 @@ const PostModal = ({ isOpen, onClose, post }) => {
 
     const handleLikeComment = async (commentId) => {
         try {
-            await likeComment(post.id, commentId);
-            // Opcional: Actualiza el estado local para reflejar el cambio de "Me gusta"
+          // Espera la respuesta de la función likeComment del contexto
+          const { likesCount, isLiked } = await likeComment(post.id, commentId);
+    
+          setComments((comments) =>
+            comments.map((comment) =>
+              comment.id === commentId
+                ? {
+                    ...comment,
+                    isLiked: isLiked,
+                    likesCount: likesCount,
+                  }
+                : comment
+            )
+          );
         } catch (error) {
-            console.error("Error al dar 'Me gusta' al comentario:", error);
+          console.error("Error al intentar dar like al comentario:", error);
         }
-    };
+      };
 
     const handleDeleteComment = async (commentId) => {
         try {
@@ -66,48 +77,43 @@ const PostModal = ({ isOpen, onClose, post }) => {
     return ReactDOM.createPortal(
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="flex">
-                    <div className="flex-none">
-                        <img src={imageSrc} alt="Post" className="object-cover modal-image" />
-                    </div>
-                    <div className="flex-grow p-4">
-                        {/* Enlace al perfil del usuario */}
-
-                        <Link
+            <button className="close-icon" onClick={onClose}>X</button>
+            <Link
                             to={user && post.user_id === user.data.id ? `/profile` : `/profile/${post.user?.username || post.user_id}`}
                             className="user-profile-link"
                         >
-                            <h2>{post.user?.username || 'Perfil del Usuario'}</h2>
+                            <h2>{post.user?.username || ''}</h2>
                         </Link>
-                        <h1>Comentarios</h1>
-                        <div className="comments-container overflow-y-auto">
-                            {comments.map((comment, index) => (
-                                <div key={index} className="comment">
-                                    <strong>{comment.user.username || comment.user.name}:</strong> {comment.text}
-                                    <div>
-                                        <button onClick={() => handleLikeComment(comment.id)}>
-                                            {comment.isLiked ? <IoHeartSharp /> : <FiHeart />}
+                <div className="modal-body">
+                    <img src={imageSrc} alt="Post" style={{ width: '100%', borderRadius: '10px' }} />
+                    {comments.map((comment, index) => (
+                        <div key={index} className="comment">
+                            <div className="comment-content">
+                                <div className="comment-author">{comment.user.username}</div>
+                                <div className="comment-text">{comment.text}</div>
+                                <div className="comment-actions">
+                                    <button className="icon-button" onClick={() => handleLikeComment(comment.id)}>
+                                        {comment.isLiked ? <IoHeartSharp /> : <FiHeart />}
+                                    </button>
+                                    {user && user.data.id === comment.user_id && (
+                                        <button className="icon-button" onClick={() => handleDeleteComment(comment.id)}>
+                                            <FiTrash2 />
                                         </button>
-                                        {user && user.data.id === comment.user_id && (
-                                            <button onClick={() => handleDeleteComment(comment.id)}>
-                                                <FiTrash2 />
-                                            </button>
-                                        )}
-                                    </div>
+                                    )}
                                 </div>
-                            ))}
+                            </div>
                         </div>
-                        <form onSubmit={handleSubmitComment}>
-                            <input
-                                type="text"
-                                placeholder="Añade un comentario..."
-                                value={newCommentText}
-                                onChange={(e) => setNewCommentText(e.target.value)}
-                                className="w-full p-2"
-                            />
-                            <button type="submit" className="p-2">Comentar</button>
-                        </form>
-                    </div>
+                    ))}
+                    <form onSubmit={handleSubmitComment}>
+                        <input
+                            type="text"
+                            placeholder="Añade un comentario..."
+                            value={newCommentText}
+                            onChange={(e) => setNewCommentText(e.target.value)}
+                            className="comment-input"
+                        />
+                        <button  className="submit-comment">Enviar</button>
+                    </form>
                 </div>
             </div>
         </div>,

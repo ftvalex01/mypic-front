@@ -158,7 +158,9 @@ const Profile = () => {
     });
   };
 
-  const handlePinPost = async (postId) => {
+
+  const handlePinPost = async (postId, event) => {
+    event.stopPropagation();
     Swal.fire({
       title: "¿Estás seguro?",
       text: "Quieres hacer este post permanente",
@@ -282,7 +284,7 @@ const Profile = () => {
                 </span>
               </div>
             </div>
-            <p className="mt-2">{user?.bio}</p>
+            <p className="mt-2">{user?.data?.bio}</p>
           </div>
         </div>
 
@@ -300,6 +302,10 @@ const Profile = () => {
             Muro
           </button>
         </div>
+
+
+
+
 
         <hr className="my-4" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -348,9 +354,9 @@ const Profile = () => {
                         user.data.available_pines > 0 && ( // Solo muestra esta opción si el post no es permanente
                           <li
                             className="cursor-pointer px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Detiene la propagación del evento aquí también
-                              handleDeletePost(post.post.id);
+                            onClick={(event) => {
+                       // Detiene la propagación del evento aquí también
+                              handlePinPost(post.post.id,event);
                             }}
                           >
                             Pinear post

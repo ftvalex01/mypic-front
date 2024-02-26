@@ -3,14 +3,18 @@ import { useParams } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
 import { useSocialInteractions } from "../context/SocialInteractionContext";
 import { useUserContext } from "../context/UserContext";
-import { FaCog, FaPlusCircle } from "react-icons/fa";
 import PostModal from "./PostModal/PostModal"; // Asegúrate de que la ruta sea correcta
+import { usePostContext } from "../context/PostContext";
+import { FaCog } from "react-icons/fa";
+import "./style.css";
 
 const ProfileByUsername = () => {
   const { username } = useParams();
   const { fetchUserByUsername } = useAuthContext();
-  const { getUserImages, getUserPosts } = useUserContext(); // Suponiendo que exista una función para obtener posts
-  const { followUser, getFollowData, checkIfBlocked, blockUser, unblockUser } = useSocialInteractions();
+  const { getUserImages } = useUserContext();
+  const { fetchCommentsForPost } = usePostContext(); // Suponiendo que exista una función para obtener posts
+  const { followUser, getFollowData, checkIfBlocked, blockUser, unblockUser } =
+    useSocialInteractions();
   const [profile, setProfile] = useState(null);
   const [userImages, setUserImages] = useState([]);
   const [userPosts, setUserPosts] = useState([]); // Estado para almacenar los posts del usuario
@@ -23,7 +27,9 @@ const ProfileByUsername = () => {
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowRequestPending, setIsFollowRequestPending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
   const [isBlocked, setIsBlocked] = useState(false);
+
   const [activeTab, setActiveTab] = useState("postVivos");
   const [livePosts, setLivePosts] = useState([]); // Almacenar publicaciones vivas
   const [permanentPosts, setPermanentPosts] = useState([]);
@@ -49,10 +55,8 @@ const ProfileByUsername = () => {
 
           setUserImages(imagesResponse.data || []);
 
-
           setLivePosts(imagesResponse.liveImages || []);
           setPermanentPosts(imagesResponse.permanentImages || []);
-
         } else {
           setUserImages([]);
           setUserPosts([]);
@@ -62,21 +66,31 @@ const ProfileByUsername = () => {
       console.error("Error fetching user profile:", error);
     }
     setIsLoading(false);
-
-  }, [username, fetchUserByUsername, getUserImages, getUserPosts, getFollowData, checkIfBlocked]);
-
-
+  }, [
+    username,
+    fetchUserByUsername,
+    getUserImages,
+    getFollowData,
+    checkIfBlocked,
+  ]);
 
   useEffect(() => {
     loadUserProfile();
   }, [loadUserProfile]);
 
-
-  const openPostModal = (post) => {
-    setSelectedPost(post);
-    setIsPostModalOpen(true);
+  const openPostModal = async (post) => {
+    try {
+      const comments = await fetchCommentsForPost(post.id);
+      setSelectedPost({ ...post, comments }); // Asume que `post` ya contiene la URL de la imagen y otros datos necesarios.
+      setIsPostModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
   };
-
+  const closePostModal = () => {
+    setIsPostModalOpen(false);
+    setSelectedPost(null);
+  };
 
   useEffect(() => {
     loadUserProfile();
@@ -93,7 +107,6 @@ const ProfileByUsername = () => {
       fetchBlockStatus();
     }
   }, [loadUserProfile, checkIfBlocked]);
-
 
   const handlePostVivosTab = () => setActiveTab("postVivos");
   const handleMuroTab = () => setActiveTab("muro");
@@ -151,6 +164,8 @@ const ProfileByUsername = () => {
   if (isLoading) {
     return <div>Cargando perfil...</div>;
   }
+  // Asegúrate de que comience como `false`
+
 
   return (
     <div className="container mx-auto p-4">
@@ -167,21 +182,59 @@ const ProfileByUsername = () => {
               <div className="flex space-x-4 my-2">
                 <button
                   onClick={handleFollowClick}
-                  className={`px-4 py-2 rounded text-white ${isFollowing
+                  className={`px-4 py-2 rounded text-white ${
+                    isFollowing
                       ? "bg-red-500"
                       : followRequestSent || isFollowRequestPending
-                        ? "bg-yellow-500"
-                        : "bg-blue-500"
-                    }`}
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
+                  }`}
                 >
                   {isFollowing
                     ? "Dejar de seguir"
                     : followRequestSent
-                      ? "Solicitud enviada"
-                      : isFollowRequestPending
-                        ? "Pendiente"
-                        : "Seguir"}
-                </button>              </div>
+                    ? "Solicitud enviada"
+                    : isFollowRequestPending
+                    ? "Pendiente"
+                    : "Seguir"}
+                </button>
+                <button
+                className="btn"
+                onClick={() => setShowSettings(!showSettings)}
+              >
+                <FaCog />
+              </button>
+              {showSettings && (
+  <div 
+    style={{
+  
+
+      backgroundColor: '#ff0000',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      width: '200px', 
+    }}
+  >
+    <button
+      onClick={handleBlockClick}
+      style={{
+        display: 'block',
+        width: '100%',
+        padding: '8px 16px',
+        backgroundColor: isBlocked ? 'bg-green-500' : 'bg-red-500', // Aquí necesitarás ajustar los colores correctamente
+        border: 'none',
+        textAlign: 'left',
+        cursor: 'pointer',
+        color: 'white', // Asegúrate de que el color del texto sea visible contra el fondo
+      }}
+    >
+      {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
+    </button>
+  </div>
+)}
+              </div>
+              
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -191,15 +244,17 @@ const ProfileByUsername = () => {
             </div>
           </div>
 
-          <div className="flex mt-4 justify-center md:justify-start">
+          <div className="tabs-container flex mt-4 justify-center md:justify-start">
             <button
-              className={`btn ${activeTab === "postVivos" ? "btn-active" : ""}`}
+              className={`tab-btn  ${
+                activeTab === "postVivos" ? "btn-active" : ""
+              }`}
               onClick={handlePostVivosTab}
             >
               Post vivos
             </button>
             <button
-              className={`btn ${activeTab === "muro" ? "btn-active" : ""}`}
+              className={`tab-btn ${activeTab === "muro" ? "btn-active" : ""}`}
               onClick={handleMuroTab}
             >
               Muro
@@ -228,16 +283,18 @@ const ProfileByUsername = () => {
             </div>
           ) : (
             <p>
-              Este perfil es privado. Sigue al usuario para ver sus publicaciones.
+              Este perfil es privado. Sigue al usuario para ver sus
+              publicaciones.
             </p>
           )}
           {isPostModalOpen && (
             <PostModal
               isOpen={isPostModalOpen}
-              onClose={() => setIsPostModalOpen(false)}
+              onClose={closePostModal}
               post={selectedPost}
             />
           )}
+          <div id="modal-root"></div>
         </>
       ) : (
         <div>No se pudo cargar el perfil.</div>
