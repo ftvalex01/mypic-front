@@ -11,7 +11,7 @@ const axios = Axios.create({
   }
 });
 // Add a response interceptor
-instance.interceptors.response.use((response) => {
+axios.interceptors.response.use((response) => {
   // If the request was successful, return the response
   return response;
 }, (error) => {
