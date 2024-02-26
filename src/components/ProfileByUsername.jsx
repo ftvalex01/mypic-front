@@ -182,6 +182,7 @@ const ProfileByUsername = () => {
               <div className="flex space-x-4 my-2">
                 <button
                   onClick={handleFollowClick}
+
                   className={`px-4 py-2 rounded text-white ${
                     isFollowing
                       ? "bg-red-500"
@@ -189,10 +190,12 @@ const ProfileByUsername = () => {
                       ? "bg-yellow-500"
                       : "bg-blue-500"
                   }`}
+
                 >
                   {isFollowing
                     ? "Dejar de seguir"
                     : followRequestSent
+
                     ? "Solicitud enviada"
                     : isFollowRequestPending
                     ? "Pendiente"
@@ -234,7 +237,7 @@ const ProfileByUsername = () => {
   </div>
 )}
               </div>
-              
+
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -298,8 +301,11 @@ const ProfileByUsername = () => {
         </>
       ) : (
         <div>No se pudo cargar el perfil.</div>
-      )}
-    </div>
+      )
+      }
+      <div id="modal-root"></div>
+
+    </div >
   );
 };
 
