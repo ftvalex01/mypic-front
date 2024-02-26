@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import useAuthContext from "../context/AuthContext";
-import validator from 'validator';
+// Login.js
+import { Link } from "react-router-dom";
+import { useLogin } from "../hooks/useLogin"; // Ajusta la ruta de importación según sea necesario
 import Logo from "../components/Logo";
 import SocialLogin from "../components/SocialLogin";
 import TwoFactorVerification from "../components/TwoFactorVerification";
@@ -11,6 +10,7 @@ import accesibilidad from '/public/images/accesibilidad.png';
 import { FaGithub } from 'react-icons/fa';
 
 const Login = () => {
+
   // Estados locales para manejar el correo electrónico, contraseña, errores y si está habilitado el 2FA.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,6 +64,7 @@ const Login = () => {
   const handleVerify2FA = async (code) => {
     await verify2FA(code, email); // Llama a la función de verificación de 2FA con el código y el correo electrónico
   };
+
 
   return (
     <>
