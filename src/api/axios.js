@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const axios = Axios.create({
-  baseURL: import.meta.REACT_APP_BASE_URL,
+  baseURL: "https://laravel-react-api-latest.onrender.com/",
   withCredentials: true,
   withXSRFToken: true,
   xsrfCookieName: "XSRF-TOKEN",
