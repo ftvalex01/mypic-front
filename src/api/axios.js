@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const axios = Axios.create({
-  baseURL: "https://lucas.informaticamajada.es/",
+  baseURL: import.meta.REACT_APP_BASE_URL,
   withCredentials: true,
   withXSRFToken: true,
   xsrfCookieName: "XSRF-TOKEN",
