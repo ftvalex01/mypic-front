@@ -22,11 +22,13 @@ export const AuthProvider = ({ children }) => {
     const login = useCallback(async (credentials) => {
         try {
             const response = await authService.login(credentials);
-         console.log(response.data)
+
             if (!response.data.requires_2fa_verification) {
+           
                 setUser(response.data);
                 navigate('/'); // Asegúrate de que esta línea se ejecuta
             }
+  
             return response.data;
         } catch (error) {
             // Aquí manejas el error específico para correo electrónico no encontrado
