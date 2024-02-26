@@ -18,7 +18,10 @@ function getCookie(name) {
 
 const axios = Axios.create({
   baseURL: 'https://lucas.informaticamajada.es/',
-  withCredentials: true, // Importante para que las cookies sean enviadas
+  withXSRFToken: true,
+  withCredentials: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'), // Aquí estableces el token CSRF
