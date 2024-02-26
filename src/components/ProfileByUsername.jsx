@@ -168,10 +168,10 @@ const ProfileByUsername = () => {
                 <button
                   onClick={handleFollowClick}
                   className={`px-4 py-2 rounded text-white ${isFollowing
-                      ? "bg-red-500"
-                      : followRequestSent || isFollowRequestPending
-                        ? "bg-yellow-500"
-                        : "bg-blue-500"
+                    ? "bg-red-500"
+                    : followRequestSent || isFollowRequestPending
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
                     }`}
                 >
                   {isFollowing
@@ -181,7 +181,19 @@ const ProfileByUsername = () => {
                       : isFollowRequestPending
                         ? "Pendiente"
                         : "Seguir"}
-                </button>              </div>
+                </button>
+                <button className="btn" onClick={() => setShowSettings(!showSettings)}>
+                  <FaCog />
+                </button>
+                {showSettings && (
+                  <div className="settings-dropdown">
+                    <button onClick={handleBlockClick} className={`px-4 py-2 rounded text-white ${isBlocked ? "bg-green-500" : "bg-red-500"}`}>
+                      {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -241,8 +253,11 @@ const ProfileByUsername = () => {
         </>
       ) : (
         <div>No se pudo cargar el perfil.</div>
-      )}
-    </div>
+      )
+      }
+      <div id="modal-root"></div>
+
+    </div >
   );
 };
 

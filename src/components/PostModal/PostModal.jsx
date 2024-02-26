@@ -77,7 +77,7 @@ const PostModal = ({ isOpen, onClose, post }) => {
                             to={user && post.user_id === user.data.id ? `/profile` : `/profile/${post.user?.username || post.user_id}`}
                             className="user-profile-link"
                         >
-                            <h2>{post.user?.username || 'Perfil del Usuario'}</h2>
+                            <h2>{post.user?.username || ''}</h2>
                         </Link>
                         <h1>Comentarios</h1>
                         <div className="comments-container overflow-y-auto">
