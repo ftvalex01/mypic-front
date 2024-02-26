@@ -1,15 +1,29 @@
 import Axios from "axios";
 
-const axios = Axios.create({
-  baseURL: "https://lucas.informaticamajada.es/",
-  withCredentials: true,
-  withXSRFToken: true,
-  xsrfCookieName: "XSRF-TOKEN",
-  xsrfHeaderName: "X-XSRF-TOKEN",
-  headers: {
-    Accept: "application/json",
-    // Agrega aquí tus encabezados personalizados si es necesario
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // ¿Esta cookie comienza con el nombre que queremos?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
   }
+  return cookieValue;
+}
+
+const axios = Axios.create({
+  baseURL: 'https://lucas.informaticamajada.es/',
+  withCredentials: true, // Importante para que las cookies sean enviadas
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'), // Aquí estableces el token CSRF
+    Accept: 'application/json', // Corrige la falta de ortografía aquí también
+  },
 });
 
 axios.interceptors.response.use(response => response, async error => {
