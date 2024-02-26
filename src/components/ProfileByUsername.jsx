@@ -48,7 +48,7 @@ const ProfileByUsername = () => {
           const imagesResponse = await getUserImages(userData.id);
 
           setUserImages(imagesResponse.data || []);
-          
+
 
           setLivePosts(imagesResponse.liveImages || []);
           setPermanentPosts(imagesResponse.permanentImages || []);
@@ -78,7 +78,7 @@ const ProfileByUsername = () => {
   };
 
 
-   useEffect(() => {
+  useEffect(() => {
     loadUserProfile();
     const fetchBlockStatus = async () => {
       try {
@@ -167,36 +167,21 @@ const ProfileByUsername = () => {
               <div className="flex space-x-4 my-2">
                 <button
                   onClick={handleFollowClick}
-                  className={`px-4 py-2 rounded text-white ${
-                    isFollowing
+                  className={`px-4 py-2 rounded text-white ${isFollowing
                       ? "bg-red-500"
                       : followRequestSent || isFollowRequestPending
-                      ? "bg-yellow-500"
-                      : "bg-blue-500"
-                  }`}
+                        ? "bg-yellow-500"
+                        : "bg-blue-500"
+                    }`}
                 >
                   {isFollowing
                     ? "Dejar de seguir"
                     : followRequestSent
-                    ? "Solicitud enviada"
-                    : isFollowRequestPending
-                    ? "Pendiente"
-                    : "Seguir"}
-                </button>
-                <button className="btn" onClick={() => setShowSettings(!showSettings)}>
-                  <FaCog />
-                </button>
-                {showSettings && (
-                  <div className="settings-dropdown">
-                    <button onClick={handleBlockClick} className={`px-4 py-2 rounded text-white ${isBlocked ? "bg-green-500" : "bg-red-500"}`}>
-                      {isBlocked ? "Desbloquear Usuario" : "Bloquear Usuario"}
-                    </button>
-                  </div>
-                )}
-              </div>
-             
-
-
+                      ? "Solicitud enviada"
+                      : isFollowRequestPending
+                        ? "Pendiente"
+                        : "Seguir"}
+                </button>              </div>
               <div className="flex space-x-4">
                 <span>{userImages.length} publicaciones</span>
                 <span>{followersCount} seguidores</span>
@@ -205,64 +190,59 @@ const ProfileByUsername = () => {
               <p>{profile.bio}</p>
             </div>
           </div>
-          <div id="modal-root"></div>
+
+          <div className="flex mt-4 justify-center md:justify-start">
+            <button
+              className={`btn ${activeTab === "postVivos" ? "btn-active" : ""}`}
+              onClick={handlePostVivosTab}
+            >
+              Post vivos
+            </button>
+            <button
+              className={`btn ${activeTab === "muro" ? "btn-active" : ""}`}
+              onClick={handleMuroTab}
+            >
+              Muro
+            </button>
+          </div>
 
           <hr className="my-4" />
           {!profile.is_private || isFollowing ? (
-            <div className="grid grid-cols-3 gap-3">
-
-              {userImages.map((post, index) => (
-                <div key={index} className="cursor-pointer" onClick={() => openPostModal(post)}>
-                  <img src={`${baseUrl}${post.url}`} alt={`Publicación ${index + 1}`} className="w-full h-auto" />
-                </div>
-              ))}
-<div className="flex mt-4 justify-center md:justify-start">
-                <button
-                  className={`btn ${
-                    activeTab === "postVivos" ? "btn-active" : ""
-                  }`}
-                  onClick={handlePostVivosTab}
-                >
-                  Post vivos
-                </button>
-                <button
-                  className={`btn ${activeTab === "muro" ? "btn-active" : ""}`}
-                  onClick={handleMuroTab}
-                >
-                  Muro
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {(activeTab === "postVivos" ? livePosts : permanentPosts).map(
-                  (post, index) => (
-                    <div key={index} className="w-full h-64 overflow-hidden">
-                      <img
-                        src={`${baseUrl}${post.url}`}
-                        alt={`User Post ${index}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )
-                )}
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {(activeTab === "postVivos" ? livePosts : permanentPosts).map(
+                (post, index) => (
+                  <div
+                    key={index}
+                    className="w-full h-64 overflow-hidden relative"
+                    onClick={() => openPostModal(post)}
+                  >
+                    <img
+                      src={`${baseUrl}${post.url}`}
+                      alt={`User Post ${index}`}
+                      className="w-full h-full object-cover cursor-pointer"
+                    />
+                    {/* Asegúrate de agregar aquí la superposición de tiempo y los botones si son necesarios */}
+                  </div>
+                )
+              )}
             </div>
           ) : (
             <p>
-              Este perfil es privado. Sigue al usuario para ver sus
-              publicaciones.
+              Este perfil es privado. Sigue al usuario para ver sus publicaciones.
             </p>
           )}
           {isPostModalOpen && (
-            <PostModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} post={selectedPost} />
+            <PostModal
+              isOpen={isPostModalOpen}
+              onClose={() => setIsPostModalOpen(false)}
+              post={selectedPost}
+            />
           )}
         </>
       ) : (
         <div>No se pudo cargar el perfil.</div>
       )}
     </div>
-
   );
 };
 
