@@ -20,29 +20,32 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const login = useCallback(async (credentials) => {
+        setIsLoading(true);
         try {
-            const response = await authService.login(credentials);
-
-            if (!response.data.requires_2fa_verification) {
-           
-                setUser(response.data);
-                navigate('/'); // Asegúrate de que esta línea se ejecuta
+            // Usando authService.login en lugar de axios.post directamente
+            const userData = await authService.login(credentials);
+            
+            if (!userData.requires_2fa_verification) {
+                setUser(userData);
+                navigate('/'); // Asegúrate de que esta línea se ejecute
             }
-  
-            return response.data;
+            return userData;
+            
         } catch (error) {
-            // Aquí manejas el error específico para correo electrónico no encontrado
-            {
-                // Para otros errores, podrías querer mostrar un mensaje genérico o basado en el error devuelto por el servidor
-                setErrors({ general: [error.response.data.message || "Error al iniciar sesión."] });
-            }
+            // Manejar errores específicos o mostrar un mensaje de error genérico
+            setErrors(error.response?.data?.errors || { general: ["Error al iniciar sesión."] });
+            
+            // Limpiar errores después de 2 segundos
             setTimeout(() => {
                 setErrors({});
-            }, 2000); // Limpiar errores después de 2 segundos
+            }, 2000);
+            
+            // Propagar el error para manejo adicional si es necesario
             throw error;
+        } finally {
+            setIsLoading(false);
         }
     }, [navigate]);
-      
     
     const register = useCallback(async (credentials) => {
         setIsLoading(true);

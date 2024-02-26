@@ -49,7 +49,6 @@ const Login = () => {
       return;
     }
 
-    // Intenta iniciar sesión
     try {
       const response = await login({ email, password });
       if (response.requires_2fa_verification) {
